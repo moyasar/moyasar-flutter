@@ -65,6 +65,8 @@ class PaymentMethods extends StatelessWidget {
   final paymentConfig = PaymentConfig(
     publishableApiKey: 'YOUR_API_KEY',
     amount: 25758, // SAR 257.58
+    description: 'Blue Coffee Beans',
+    metadata: {'size': '250g'},
   );
 
   void onPaymentResult(result) {
