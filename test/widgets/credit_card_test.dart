@@ -3,8 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:moyasar/moyasar.dart';
 
 Widget createTestableApp(Localization? locale) {
-  final paymentConfig =
-      PaymentConfig(publishableApiKey: "api_key", amount: 123);
+  final paymentConfig = PaymentConfig(
+      publishableApiKey: "api_key", amount: 123, description: "Coffee");
 
   void onPaymentResult() {}
 

@@ -15,7 +15,7 @@ class PaymentConfig {
 
   /// Can be any string you want to tag the payment.
   /// For example `Payment for Order #34321`
-  String? description;
+  String description;
 
   /// Used internally to manage the 3DS step.
   String callbackUrl = "https://example.com/thanks";
@@ -28,9 +28,10 @@ class PaymentConfig {
     required this.publishableApiKey,
     required this.amount,
     this.currency = 'SAR',
-    this.description,
+    required this.description,
     this.metadata,
   })  : assert(publishableApiKey.isNotEmpty,
             'Please fill `publishableApiKey` argument with your key.'),
-        assert(amount > 0, 'Please add a positive amount.');
+        assert(amount > 0, 'Please add a positive amount.'),
+        assert(description.isNotEmpty, 'Please add a description.');
 }
