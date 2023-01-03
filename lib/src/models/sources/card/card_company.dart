@@ -1,5 +1,1 @@
-enum CardCompany {
-  amex,
-  visa,
-  master,
-}
+enum CardCompany { amex, visa, master, mada }
