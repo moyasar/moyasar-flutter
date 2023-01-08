@@ -1,0 +1,11 @@
+{
+  "provider": "apple_pay",
+  "data": {
+    "merchantIdentifier": "merchant.nuha.io.second",
+    "displayName": "Coffee Shop",
+    "merchantCapabilities": ["3DS", "debit", "credit"],
+    "supportedNetworks": ["amex", "visa", "mada", "masterCard"],
+    "countryCode": "SA",
+    "currencyCode": "SAR"
+  }
+}
