@@ -1,7 +1,7 @@
 {
   "provider": "apple_pay",
   "data": {
-    "merchantIdentifier": "merchant.nuha.io.second",
+    "merchantIdentifier": "merchant.mysr.fghurayri",
     "displayName": "Coffee Shop",
     "merchantCapabilities": ["3DS", "debit", "credit"],
     "supportedNetworks": ["amex", "visa", "mada", "masterCard"],
