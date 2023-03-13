@@ -50,7 +50,7 @@ android {
 ### Installation
 
 ```sh
-flutter pub get moyasar
+flutter pub add moyasar
 ```
 
 ## Usage
