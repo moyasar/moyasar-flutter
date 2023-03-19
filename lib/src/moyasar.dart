@@ -5,7 +5,7 @@ import 'package:moyasar/moyasar.dart';
 
 import 'package:moyasar/src/models/payment_request.dart';
 
-const version = "1.0.1";
+const version = "1.0.2";
 
 class Moyasar {
   static const String apiUrl = 'https://api.moyasar.com/v1/payments';
