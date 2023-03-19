@@ -1,5 +1,9 @@
 ## 1.0.1
 
+- [Apple Pay] Fix showing the merchant name during the Apple Pay payment session to avoid possible app rejection.
+
+## 1.0.1
+
 - [Apple Pay] Fix handling the Apple Pay response when the `company` and `name` fields aren't returned from the API.
 - [Docs] Fix a typo in the installation command.
 - [Docs] Improve the application description in pub.dev
