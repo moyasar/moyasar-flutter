@@ -1,6 +1,6 @@
 Easily accept payments through Apple Pay or Credit Card (with managed 3DS step) in your Flutter app with Moyasar.
 
-![Moyasar Flutter SDK Demo](./assets/demo.gif)
+![Moyasar Flutter SDK Demo](https://i.imgur.com/nis9yCm.gif)
 
 ## Features
 
@@ -17,23 +17,8 @@ Use this plugin to support:
 
 Complete the following steps to easily accept Apple Pay payments:
 
-- Follow [this guide](https://moyasar.com/docs/dashboard/apple-pay/developer-account/) to setup your Apple developer account and integrate it with Moyasar.
+- Follow [this guide](https://help.moyasar.com/en/article/moyasar-dashboard-apple-pay-certificate-activation-9l6sd5/) to setup your Apple developer account and integrate it with Moyasar.
 - Follow [this guide](https://help.apple.com/xcode/mac/9.3/#/deva43983eb7?sub=dev44ce8ef13) to enable accepting Apple Pay in your application using xCode.
-- Create a file named `default_payment_profile_apple_pay.json` under the root of your assets folder. e.g. `assets/default_payment_profile_apple_pay.json`, and don't forget to update the `merchantIdentifier` and `displayName` values.
-
-```json
-{
-  "provider": "apple_pay",
-  "data": {
-    "merchantIdentifier": "YOUR_MERCHANT_ID",
-    "displayName": "YOUR_SHOP_NAME",
-    "merchantCapabilities": ["3DS", "debit", "credit"],
-    "supportedNetworks": ["amex", "visa", "mada", "masterCard"],
-    "countryCode": "SA",
-    "currencyCode": "SAR"
-  }
-}
-```
 
 #### **Accepting Credit Card Payments in Android**
 
@@ -65,8 +50,9 @@ class PaymentMethods extends StatelessWidget {
   final paymentConfig = PaymentConfig(
     publishableApiKey: 'YOUR_API_KEY',
     amount: 25758, // SAR 257.58
-    description: 'Blue Coffee Beans',
+    description: 'order #1324',
     metadata: {'size': '250g'},
+    applePay: ApplePayConfig(merchantId: 'YOUR_MERCHANT_ID', label: 'YOUR_STORE_NAME'),
   );
 
   void onPaymentResult(result) {
@@ -99,4 +85,23 @@ class PaymentMethods extends StatelessWidget {
     );
   }
 }
+```
+
+## Migration Guide
+
+### From `1.0` to `2.0`
+
+This upgrade changes how Apple Pay is configured. Do the following changes to complete the upgrade:
+
+- Delete the `default_payment_profile_apple_pay.json` file under your assets file.
+- Update the `paymentConfig` instance to include the new `applePay` configuration.
+
+```diff
+final paymentConfig = PaymentConfig(
+    publishableApiKey: 'YOUR_API_KEY',
+    amount: 25758, // SAR 257.58
+    description: 'order #1324',
+    metadata: {'size': '250g'},
++   applePay: ApplePayConfig(merchantId: 'YOUR_MERCHANT_ID', label: 'YOUR_STORE_NAME'),
+);
 ```
