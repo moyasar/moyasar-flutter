@@ -11,7 +11,7 @@ void main() {
     expect(paymentConfig.currency, "SAR");
     expect(paymentConfig.description, "Coffee");
     expect(paymentConfig.metadata, null);
-    expect(paymentConfig.callbackUrl, "https://example.com/thanks");
+    expect(PaymentConfig.callbackUrl, "https://example.com/thanks");
   });
 
   test('should create a valid payment config with all fields.', () {
@@ -22,14 +22,19 @@ void main() {
         amount: 123,
         currency: "USD",
         description: "Coffee!",
-        metadata: meta);
+        metadata: meta,
+        applePay: ApplePayConfig(
+            label: "Blue Coffee", merchantId: "merchant.mysr.fghurayri"));
 
     expect(paymentConfig.publishableApiKey, "api_key");
     expect(paymentConfig.amount, 123);
     expect(paymentConfig.currency, "USD");
     expect(paymentConfig.description, "Coffee!");
     expect(paymentConfig.metadata, meta);
-    expect(paymentConfig.callbackUrl, "https://example.com/thanks");
+    expect(PaymentConfig.callbackUrl, "https://example.com/thanks");
+
+    expect(paymentConfig.applePay!.label, "Blue Coffee");
+    expect(paymentConfig.applePay!.merchantId, "merchant.mysr.fghurayri");
   });
 
   test(

@@ -1,5 +1,10 @@
+import 'package:moyasar/src/models/apple_pay_config.dart';
+
 /// Used by Moyasar API along with any of the supported sources.
 class PaymentConfig {
+  /// Used internally to manage the 3DS step.
+  static String callbackUrl = "https://example.com/thanks";
+
   /// You can find your [publishableApiKey] in your Moyasar Dashboard.
   /// Go to https://moyasar.com/docs/dashboard/api-keys for more details.
   late String publishableApiKey;
@@ -17,20 +22,21 @@ class PaymentConfig {
   /// For example `Payment for Order #34321`
   String description;
 
-  /// Used internally to manage the 3DS step.
-  String callbackUrl = "https://example.com/thanks";
-
   /// The [metadata] adds searchable key/value pairs to the payment.
   /// For example `{"size": "xl"}`
   Map<String, String>? metadata;
 
-  PaymentConfig({
-    required this.publishableApiKey,
-    required this.amount,
-    this.currency = 'SAR',
-    required this.description,
-    this.metadata,
-  })  : assert(publishableApiKey.isNotEmpty,
+  /// The config required to setup Apple Pay.
+  ApplePayConfig? applePay;
+
+  PaymentConfig(
+      {required this.publishableApiKey,
+      required this.amount,
+      this.currency = 'SAR',
+      required this.description,
+      this.metadata,
+      this.applePay})
+      : assert(publishableApiKey.isNotEmpty,
             'Please fill `publishableApiKey` argument with your key.'),
         assert(amount > 0, 'Please add a positive amount.'),
         assert(description.isNotEmpty, 'Please add a description.');

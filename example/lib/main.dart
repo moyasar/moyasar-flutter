@@ -29,11 +29,12 @@ class CoffeeShop extends StatefulWidget {
 
 class _CoffeeShopState extends State<CoffeeShop> {
   final paymentConfig = PaymentConfig(
-    publishableApiKey: 'pk_test_RV3Q4ZKLdA22ZNVkCR72WBDxb3oYnj9D14h6czGA',
-    amount: 25758, // SAR 257.58
-    description: 'Blue Coffee Beans',
-    metadata: {'size': '2xl'},
-  );
+      publishableApiKey: 'pk_test_RV3Q4ZKLdA22ZNVkCR72WBDxb3oYnj9D14h6czGA',
+      amount: 25758, // SAR 257.58
+      description: 'order #1324',
+      metadata: {'size': '250g'},
+      applePay: ApplePayConfig(
+          merchantId: 'merchant.mysr.fghurayri', label: 'Blue Coffee Beans'));
 
   void onPaymentResult(result) {
     if (result is PaymentResponse) {

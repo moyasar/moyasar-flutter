@@ -5,6 +5,7 @@ export 'src/widgets/credit_card.dart' show CreditCard;
 export 'src/widgets/apple_pay.dart' show ApplePay;
 
 export 'src/models/payment_config.dart' show PaymentConfig;
+export 'src/models/apple_pay_config.dart' show ApplePayConfig;
 export 'src/models/payment_response.dart' show PaymentResponse, PaymentStatus;
 
 export 'src/models/sources/card/card_response_source.dart'

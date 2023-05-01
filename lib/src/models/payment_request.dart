@@ -6,15 +6,15 @@ class PaymentRequest {
   late String currency;
   String? description;
   Map<String, String>? metadata;
-  String? callbackUrl;
   late PaymentRequestSource source;
+
+  String callbackUrl = PaymentConfig.callbackUrl;
 
   PaymentRequest(
       PaymentConfig config, PaymentRequestSource paymentRequestSource) {
     amount = config.amount;
     currency = config.currency;
     description = config.description;
-    callbackUrl = config.callbackUrl;
     metadata = config.metadata;
     source = paymentRequestSource;
   }
