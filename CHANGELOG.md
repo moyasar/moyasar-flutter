@@ -1,3 +1,7 @@
+## 2.0.1
+
+- [Credit Card] Add an option to tokenize (save) the credit card upon successful payment.
+
 ## 2.0.0
 
 **Breaking Change For Apple Pay**: Apple Pay should be configured as part of the `PaymentConfig` object. Check the `Migrating Guide` > `From 1.0 to 2.0` section in the Readme for more details.
