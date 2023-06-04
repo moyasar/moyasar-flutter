@@ -33,6 +33,7 @@ class _CoffeeShopState extends State<CoffeeShop> {
       amount: 25758, // SAR 257.58
       description: 'order #1324',
       metadata: {'size': '250g'},
+      creditCard: CreditCardConfig(saveCard: true),
       applePay: ApplePayConfig(
           merchantId: 'merchant.mysr.fghurayri', label: 'Blue Coffee Beans'));
 
@@ -52,6 +53,7 @@ class _CoffeeShopState extends State<CoffeeShop> {
     }
 
     // handle other type of failures.
+    if (result is ApiError) {}
     if (result is AuthError) {}
     if (result is ValidationError) {}
     if (result is PaymentCanceledError) {}

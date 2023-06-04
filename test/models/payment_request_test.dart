@@ -24,7 +24,8 @@ void main() {
         year: "2030",
         cvc: "123");
 
-    CardPaymentRequestSource cprs = CardPaymentRequestSource(creditCardData);
+    CardPaymentRequestSource cprs = CardPaymentRequestSource(
+        creditCardData: creditCardData, tokenizeCard: true);
 
     PaymentRequest pr = PaymentRequest(config, cprs);
 
@@ -42,6 +43,7 @@ void main() {
     expect((pr.source as CardPaymentRequestSource).month, "12");
     expect((pr.source as CardPaymentRequestSource).year, "2030");
     expect((pr.source as CardPaymentRequestSource).cvc, "123");
+    expect((pr.source as CardPaymentRequestSource).saveCard, "true");
   });
 
   test('should create a valid payment request with Apple Pay.', () {

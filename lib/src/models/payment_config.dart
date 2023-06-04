@@ -1,4 +1,5 @@
 import 'package:moyasar/src/models/apple_pay_config.dart';
+import 'package:moyasar/src/models/credit_card_config.dart';
 
 /// Used by Moyasar API along with any of the supported sources.
 class PaymentConfig {
@@ -29,13 +30,17 @@ class PaymentConfig {
   /// The config required to setup Apple Pay.
   ApplePayConfig? applePay;
 
+  /// The config required to extend the Credit Card payment feature.
+  CreditCardConfig? creditCard;
+
   PaymentConfig(
       {required this.publishableApiKey,
       required this.amount,
       this.currency = 'SAR',
       required this.description,
       this.metadata,
-      this.applePay})
+      this.applePay,
+      this.creditCard})
       : assert(publishableApiKey.isNotEmpty,
             'Please fill `publishableApiKey` argument with your key.'),
         assert(amount > 0, 'Please add a positive amount.'),

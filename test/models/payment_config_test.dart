@@ -23,6 +23,7 @@ void main() {
         currency: "USD",
         description: "Coffee!",
         metadata: meta,
+        creditCard: CreditCardConfig(saveCard: true),
         applePay: ApplePayConfig(
             label: "Blue Coffee", merchantId: "merchant.mysr.fghurayri"));
 
@@ -32,6 +33,8 @@ void main() {
     expect(paymentConfig.description, "Coffee!");
     expect(paymentConfig.metadata, meta);
     expect(PaymentConfig.callbackUrl, "https://example.com/thanks");
+
+    expect(paymentConfig.creditCard!.saveCard, true);
 
     expect(paymentConfig.applePay!.label, "Blue Coffee");
     expect(paymentConfig.applePay!.merchantId, "merchant.mysr.fghurayri");

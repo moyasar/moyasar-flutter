@@ -5,7 +5,7 @@ import 'package:moyasar/moyasar.dart';
 
 import 'package:moyasar/src/models/payment_request.dart';
 
-const version = "2.0.0";
+const version = "2.0.1";
 
 class Moyasar {
   static const String apiUrl = 'https://api.moyasar.com/v1/payments';
@@ -34,6 +34,10 @@ class Moyasar {
           return ValidationError(jsonBody['message'], jsonBody['errors']);
         }
       }
+    }
+
+    if (res.statusCode.toString().startsWith('5')) {
+      return ApiError(jsonBody['message']);
     }
 
     return PaymentResponse.fromJson(jsonBody, paymentRequest.source.type);
