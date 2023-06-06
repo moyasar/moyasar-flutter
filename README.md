@@ -19,6 +19,7 @@ Complete the following steps to easily accept Apple Pay payments:
 
 - Follow [this guide](https://help.moyasar.com/en/article/moyasar-dashboard-apple-pay-certificate-activation-9l6sd5/) to setup your Apple developer account and integrate it with Moyasar.
 - Follow [this guide](https://help.apple.com/xcode/mac/9.3/#/deva43983eb7?sub=dev44ce8ef13) to enable accepting Apple Pay in your application using xCode.
+- Make sure to test Apply Pay on a real device, simulators won't work.
 
 #### **Accepting Credit Card Payments in Android**
 
