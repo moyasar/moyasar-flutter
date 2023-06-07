@@ -19,7 +19,6 @@ Complete the following steps to easily accept Apple Pay payments:
 
 - Follow [this guide](https://help.moyasar.com/en/article/moyasar-dashboard-apple-pay-certificate-activation-9l6sd5/) to setup your Apple developer account and integrate it with Moyasar.
 - Follow [this guide](https://help.apple.com/xcode/mac/9.3/#/deva43983eb7?sub=dev44ce8ef13) to enable accepting Apple Pay in your application using xCode.
-- Make sure to test Apply Pay on a real device, simulators won't work.
 
 #### **Accepting Credit Card Payments in Android**
 
@@ -106,3 +105,13 @@ final paymentConfig = PaymentConfig(
 +   applePay: ApplePayConfig(merchantId: 'YOUR_MERCHANT_ID', label: 'YOUR_STORE_NAME'),
 );
 ```
+
+## Testing
+
+### Credit Cards
+Moyasar provides a sandbox environment for testing credit card payments without charging any real money. This allows you to test your integration and ensure that everything is working correctly before going live with actual payments. Learn more about our testing cards [here](https://moyasar.com/docs/testing/credit-cards)
+
+### Apple Pay
+When using Apple Pay in the sandbox environment, you can try to make payments, but they will always fail. You can make sure that the integration has been completed once you go to Moyasar Dashboard and see the payment. Make sure to use a real device, not a simulator.
+
+it's recommended that you test Apple Pay using our live environment, and voiding the payment after.
