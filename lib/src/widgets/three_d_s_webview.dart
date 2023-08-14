@@ -53,8 +53,8 @@ class _ThreeDSWebViewState extends State<ThreeDSWebView> {
       backgroundColor: Colors.white,
       body: SafeArea(
         child: SizedBox(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
+          height: WidgetsBinding.instance.window.physicalSize.height,
+          width: WidgetsBinding.instance.window.physicalSize.width,
           child: WebViewWidget(
             controller: _controller,
           ),
