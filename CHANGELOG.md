@@ -1,6 +1,7 @@
 ## 2.0.1
 
 - [Credit Card] Add an option to tokenize (save) the credit card upon successful payment.
+- [Credit Card] Fix an issue where some devices experience 3DS form rerendering when the user try to insert the OTP.
 
 ## 2.0.0
 
