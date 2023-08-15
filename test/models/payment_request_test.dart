@@ -25,7 +25,9 @@ void main() {
         cvc: "123");
 
     CardPaymentRequestSource cprs = CardPaymentRequestSource(
-        creditCardData: creditCardData, tokenizeCard: true);
+        creditCardData: creditCardData,
+        tokenizeCard: true,
+        manualPayment: false);
 
     PaymentRequest pr = PaymentRequest(config, cprs);
 

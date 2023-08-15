@@ -29,11 +29,11 @@ class CoffeeShop extends StatefulWidget {
 
 class _CoffeeShopState extends State<CoffeeShop> {
   final paymentConfig = PaymentConfig(
-      publishableApiKey: 'pk_test_RV3Q4ZKLdA22ZNVkCR72WBDxb3oYnj9D14h6czGA',
+      publishableApiKey: 'pk_test_r6eZg85QyduWZ7PNTHT56BFvZpxJgNJ2PqPMDoXA',
       amount: 25758, // SAR 257.58
       description: 'order #1324',
       metadata: {'size': '250g'},
-      creditCard: CreditCardConfig(saveCard: true),
+      creditCard: CreditCardConfig(saveCard: false, manual: true),
       applePay: ApplePayConfig(
           merchantId: 'merchant.mysr.fghurayri', label: 'Blue Coffee Beans'));
 
@@ -46,6 +46,10 @@ class _CoffeeShopState extends State<CoffeeShop> {
           break;
         case PaymentStatus.failed:
           // handle failure.
+          break;
+        case PaymentStatus.authorized:
+          // handle authorized
+
           break;
         default:
       }
