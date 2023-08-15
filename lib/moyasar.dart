@@ -6,6 +6,7 @@ export 'src/widgets/apple_pay.dart' show ApplePay;
 
 export 'src/models/payment_config.dart' show PaymentConfig;
 export 'src/models/apple_pay_config.dart' show ApplePayConfig;
+export 'src/models/credit_card_config.dart' show CreditCardConfig;
 export 'src/models/payment_response.dart' show PaymentResponse, PaymentStatus;
 
 export 'src/models/sources/card/card_response_source.dart'
@@ -15,6 +16,7 @@ export 'src/models/sources/apple_pay/apple_pay_response_source.dart'
 
 export 'src/locales/localizaton.dart' show Localization;
 
+export 'src/errors/api_error.dart' show ApiError;
 export 'src/errors/auth_error.dart' show AuthError;
 export 'src/errors/validation_error.dart' show ValidationError;
 export 'src/errors/payment_canceled_error.dart' show PaymentCanceledError;

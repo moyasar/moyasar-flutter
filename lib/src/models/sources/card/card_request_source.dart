@@ -14,14 +14,17 @@ class CardPaymentRequestSource implements PaymentRequestSource {
   late String cvc;
   late String month;
   late String year;
+  late String saveCard;
 
-  CardPaymentRequestSource(CardFormModel creditCardData) {
+  CardPaymentRequestSource(
+      {required CardFormModel creditCardData, required bool tokenizeCard}) {
     company = CardUtils.getCardCompanyFromNumber(creditCardData.number);
     name = creditCardData.name;
     number = creditCardData.number;
     cvc = creditCardData.cvc;
     month = creditCardData.month;
     year = creditCardData.year;
+    saveCard = tokenizeCard ? 'true' : 'false';
   }
 
   @override
@@ -33,5 +36,6 @@ class CardPaymentRequestSource implements PaymentRequestSource {
         'cvc': cvc,
         'month': month,
         'year': year,
+        'save_card': saveCard
       };
 }

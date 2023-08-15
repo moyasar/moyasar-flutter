@@ -36,7 +36,17 @@ class _CreditCardState extends State<CreditCard> {
 
   AutovalidateMode _autoValidateMode = AutovalidateMode.disabled;
 
-  bool isSubmitting = false;
+  bool _isSubmitting = false;
+
+  bool _tokenizeCard = false;
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      _tokenizeCard = widget.config.creditCard?.saveCard ?? false;
+    });
+  }
 
   void _saveForm() async {
     closeKeyboard();
@@ -51,16 +61,17 @@ class _CreditCardState extends State<CreditCard> {
 
     _formKey.currentState?.save();
 
-    final source = CardPaymentRequestSource(_cardData);
+    final source = CardPaymentRequestSource(
+        creditCardData: _cardData, tokenizeCard: _tokenizeCard);
     final paymentRequest = PaymentRequest(widget.config, source);
 
-    setState(() => isSubmitting = true);
+    setState(() => _isSubmitting = true);
 
     final result = await Moyasar.pay(
         apiKey: widget.config.publishableApiKey,
         paymentRequest: paymentRequest);
 
-    setState(() => isSubmitting = false);
+    setState(() => _isSubmitting = false);
 
     if (result is! PaymentResponse ||
         result.status != PaymentStatus.initiated) {
@@ -162,11 +173,10 @@ class _CreditCardState extends State<CreditCard> {
                 style: ButtonStyle(
                   minimumSize:
                       const MaterialStatePropertyAll<Size>(Size.fromHeight(55)),
-                  backgroundColor:
-                      MaterialStatePropertyAll<Color>(Colors.blue[700]!),
+                  backgroundColor: MaterialStatePropertyAll<Color>(blueColor),
                 ),
-                onPressed: isSubmitting ? () {} : _saveForm,
-                child: isSubmitting
+                onPressed: _isSubmitting ? () {} : _saveForm,
+                child: _isSubmitting
                     ? const CircularProgressIndicator(
                         color: Colors.white,
                         strokeWidth: 2,
@@ -175,9 +185,43 @@ class _CreditCardState extends State<CreditCard> {
               ),
             ),
           ),
+          SaveCardNotice(tokenizeCard: _tokenizeCard, locale: widget.locale)
         ],
       ),
     );
+  }
+}
+
+class SaveCardNotice extends StatelessWidget {
+  const SaveCardNotice(
+      {super.key, required this.tokenizeCard, required this.locale});
+
+  final bool tokenizeCard;
+  final Localization locale;
+
+  @override
+  Widget build(BuildContext context) {
+    return tokenizeCard
+        ? Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.info,
+                  color: blueColor,
+                ),
+                const Padding(
+                  padding: EdgeInsets.only(right: 5),
+                ),
+                Text(
+                  locale.saveCardNotice,
+                  style: TextStyle(color: blueColor),
+                ),
+              ],
+            ))
+        : const SizedBox.shrink();
   }
 }
 
@@ -250,3 +294,5 @@ OutlineInputBorder defaultFocusedBorder = OutlineInputBorder(
 OutlineInputBorder defaultErrorBorder = OutlineInputBorder(
     borderSide: const BorderSide(color: Colors.red),
     borderRadius: defaultBorderRadius);
+
+Color blueColor = Colors.blue[700]!;

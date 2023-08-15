@@ -52,6 +52,7 @@ class PaymentMethods extends StatelessWidget {
     amount: 25758, // SAR 257.58
     description: 'order #1324',
     metadata: {'size': '250g'},
+    creditCard: CreditCardConfig(saveCard: true),
     applePay: ApplePayConfig(merchantId: 'YOUR_MERCHANT_ID', label: 'YOUR_STORE_NAME'),
   );
 

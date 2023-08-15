@@ -2,21 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moyasar/moyasar.dart';
 
-Widget createTestableApp(Localization? locale) {
+Widget createTestableApp(
+    {required Localization locale, required bool tokenizeCard}) {
   final paymentConfig = PaymentConfig(
-      publishableApiKey: "api_key", amount: 123, description: "Coffee");
+      publishableApiKey: "api_key",
+      amount: 123,
+      description: "Coffee",
+      creditCard: CreditCardConfig(saveCard: tokenizeCard));
 
   void onPaymentResult() {}
 
   return MaterialApp(
       home: Scaffold(
-          body: locale == null
-              ? CreditCard(
-                  config: paymentConfig, onPaymentResult: onPaymentResult)
-              : CreditCard(
-                  locale: locale,
-                  config: paymentConfig,
-                  onPaymentResult: onPaymentResult)));
+          body: CreditCard(
+              locale: locale,
+              config: paymentConfig,
+              onPaymentResult: onPaymentResult)));
 }
 
 void main() {
@@ -24,7 +25,8 @@ void main() {
     testWidgets('should require all fields', (tester) async {
       const locale = Localization.en();
 
-      await tester.pumpWidget(createTestableApp(null));
+      await tester
+          .pumpWidget(createTestableApp(locale: locale, tokenizeCard: false));
 
       const payButtonText = "Pay SAR 1.23";
 
@@ -57,6 +59,26 @@ void main() {
       expect(find.text(locale.cardNumberRequired), findsNothing);
       expect(find.text(locale.expiryRequired), findsNothing);
       expect(find.text(locale.cvcRequired), findsNothing);
+    });
+
+    testWidgets('should show notice about saving credit card data.',
+        (tester) async {
+      const locale = Localization.en();
+
+      await tester
+          .pumpWidget(createTestableApp(locale: locale, tokenizeCard: true));
+
+      expect(find.text(locale.saveCardNotice), findsOneWidget);
+    });
+
+    testWidgets('should not show notice about saving credit card data.',
+        (tester) async {
+      const locale = Localization.en();
+
+      await tester
+          .pumpWidget(createTestableApp(locale: locale, tokenizeCard: false));
+
+      expect(find.text(locale.saveCardNotice), findsNothing);
     });
   });
 }
