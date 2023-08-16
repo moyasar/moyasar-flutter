@@ -3,12 +3,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:moyasar/moyasar.dart';
 
 Widget createTestableApp(
-    {required Localization locale, required bool tokenizeCard}) {
+    {required Localization locale,
+    required bool tokenizeCard,
+    required bool manual}) {
   final paymentConfig = PaymentConfig(
       publishableApiKey: "api_key",
       amount: 123,
       description: "Coffee",
-      creditCard: CreditCardConfig(saveCard: tokenizeCard));
+      creditCard: CreditCardConfig(saveCard: tokenizeCard, manual: manual));
 
   void onPaymentResult() {}
 
@@ -25,8 +27,8 @@ void main() {
     testWidgets('should require all fields', (tester) async {
       const locale = Localization.en();
 
-      await tester
-          .pumpWidget(createTestableApp(locale: locale, tokenizeCard: false));
+      await tester.pumpWidget(createTestableApp(
+          locale: locale, tokenizeCard: false, manual: false));
 
       const payButtonText = "Pay SAR 1.23";
 
@@ -65,8 +67,8 @@ void main() {
         (tester) async {
       const locale = Localization.en();
 
-      await tester
-          .pumpWidget(createTestableApp(locale: locale, tokenizeCard: true));
+      await tester.pumpWidget(
+          createTestableApp(locale: locale, tokenizeCard: true, manual: false));
 
       expect(find.text(locale.saveCardNotice), findsOneWidget);
     });
@@ -75,8 +77,8 @@ void main() {
         (tester) async {
       const locale = Localization.en();
 
-      await tester
-          .pumpWidget(createTestableApp(locale: locale, tokenizeCard: false));
+      await tester.pumpWidget(createTestableApp(
+          locale: locale, tokenizeCard: false, manual: false));
 
       expect(find.text(locale.saveCardNotice), findsNothing);
     });

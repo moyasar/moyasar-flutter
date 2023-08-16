@@ -23,7 +23,7 @@ void main() {
         currency: "USD",
         description: "Coffee!",
         metadata: meta,
-        creditCard: CreditCardConfig(saveCard: true),
+        creditCard: CreditCardConfig(saveCard: true, manual: true),
         applePay: ApplePayConfig(
             label: "Blue Coffee", merchantId: "merchant.mysr.fghurayri"));
 

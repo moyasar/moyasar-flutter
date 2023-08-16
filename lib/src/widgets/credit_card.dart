@@ -40,11 +40,16 @@ class _CreditCardState extends State<CreditCard> {
 
   bool _tokenizeCard = false;
 
+  bool _manualPayment = false;
+
   @override
   void initState() {
     super.initState();
     setState(() {
       _tokenizeCard = widget.config.creditCard?.saveCard ?? false;
+    });
+    setState(() {
+      _manualPayment = widget.config.creditCard?.manual ?? false;
     });
   }
 
@@ -62,7 +67,9 @@ class _CreditCardState extends State<CreditCard> {
     _formKey.currentState?.save();
 
     final source = CardPaymentRequestSource(
-        creditCardData: _cardData, tokenizeCard: _tokenizeCard);
+        creditCardData: _cardData,
+        tokenizeCard: _tokenizeCard,
+        manualPayment: _manualPayment);
     final paymentRequest = PaymentRequest(widget.config, source);
 
     setState(() => _isSubmitting = true);
@@ -93,12 +100,13 @@ class _CreditCardState extends State<CreditCard> {
                 on3dsDone: (String status, String message) async {
                   if (status == PaymentStatus.paid.name) {
                     result.status = PaymentStatus.paid;
+                  } else if (status == PaymentStatus.authorized.name) {
+                    result.status = PaymentStatus.authorized;
                   } else {
                     result.status = PaymentStatus.failed;
                     (result.source as CardPaymentResponseSource).message =
                         message;
                   }
-
                   Navigator.pop(context);
                   widget.onPaymentResult(result);
                 })),

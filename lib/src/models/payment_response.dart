@@ -62,4 +62,4 @@ class PaymentResponse {
   }
 }
 
-enum PaymentStatus { initiated, paid, failed }
+enum PaymentStatus { initiated, paid, failed, authorized, captured }
