@@ -47,8 +47,6 @@ class _CreditCardState extends State<CreditCard> {
     super.initState();
     setState(() {
       _tokenizeCard = widget.config.creditCard?.saveCard ?? false;
-    });
-    setState(() {
       _manualPayment = widget.config.creditCard?.manual ?? false;
     });
   }
@@ -284,7 +282,8 @@ InputDecoration buildInputDecoration(
       focusedErrorBorder: defaultErrorBorder,
       enabledBorder: defaultEnabledBorder,
       focusedBorder: defaultFocusedBorder,
-      errorBorder: defaultErrorBorder);
+      errorBorder: defaultErrorBorder,
+      contentPadding: const EdgeInsets.all(8.0));
 }
 
 void closeKeyboard() => FocusManager.instance.primaryFocus?.unfocus();
