@@ -22,7 +22,7 @@ class ApplePay extends StatelessWidget {
 
   void onApplePayResult(paymentResult) async {
     final token = paymentResult['token'];
-    final source = ApplePayPaymentRequestSource(token);
+    final source = ApplePayPaymentRequestSource(token, config.applePay!.manual);
     final paymentRequest = PaymentRequest(config, source);
 
     final result = await Moyasar.pay(

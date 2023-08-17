@@ -7,11 +7,12 @@ class ApplePayPaymentRequestSource implements PaymentRequestSource {
 
   late String token;
 
-  ApplePayPaymentRequestSource(this.token);
+  late String manual;
 
+  ApplePayPaymentRequestSource(this.token, bool manualPayment) {
+    manual = manualPayment ? 'true' : 'false';
+  }
   @override
-  Map<String, dynamic> toJson() => {
-        'type': type.name,
-        'token': token,
-      };
+  Map<String, dynamic> toJson() =>
+      {'type': type.name, 'token': token, 'manual': manual};
 }
