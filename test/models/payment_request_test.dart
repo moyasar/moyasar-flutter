@@ -58,7 +58,7 @@ void main() {
         metadata: metadata);
 
     ApplePayPaymentRequestSource apprs =
-        ApplePayPaymentRequestSource("toktoken");
+        ApplePayPaymentRequestSource("toktoken", false);
 
     PaymentRequest pr = PaymentRequest(config, apprs);
 
@@ -71,5 +71,32 @@ void main() {
     expect(
         (pr.source as ApplePayPaymentRequestSource).type, PaymentType.applepay);
     expect((pr.source as ApplePayPaymentRequestSource).token, "toktoken");
+    expect((pr.source as ApplePayPaymentRequestSource).manual, 'false');
+  });
+
+  test('should create a valid manual paymentrequest with Apple Pay.', () {
+    Map<String, String> metadata = {"size": "xl"};
+
+    PaymentConfig config = PaymentConfig(
+        publishableApiKey: "api_key",
+        amount: 123,
+        description: "Coffee!",
+        metadata: metadata);
+
+    ApplePayPaymentRequestSource apprs =
+        ApplePayPaymentRequestSource("toktoken", true);
+
+    PaymentRequest pr = PaymentRequest(config, apprs);
+
+    expect(pr.amount, 123);
+    expect(pr.callbackUrl, "https://example.com/thanks");
+    expect(pr.currency, "SAR");
+    expect(pr.description, "Coffee!");
+    expect(pr.metadata, metadata);
+
+    expect(
+        (pr.source as ApplePayPaymentRequestSource).type, PaymentType.applepay);
+    expect((pr.source as ApplePayPaymentRequestSource).token, "toktoken");
+    expect((pr.source as ApplePayPaymentRequestSource).manual, 'true');
   });
 }
