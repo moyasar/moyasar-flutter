@@ -5,10 +5,10 @@ class NetworkIcons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return const Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       mainAxisSize: MainAxisSize.min,
-      children: const [
+      children: [
         NetworkIcon(name: 'assets/images/visa.png'),
         NetworkIcon(name: 'assets/images/mada.png'),
         NetworkIcon(name: 'assets/images/mastercard.png'),
