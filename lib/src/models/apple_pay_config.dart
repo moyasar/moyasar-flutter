@@ -6,5 +6,9 @@ class ApplePayConfig {
   /// The store name to be displayed in the Apple Pay payment session.
   String label;
 
-  ApplePayConfig({required this.merchantId, required this.label});
+  /// An option to enable the manual auth and capture
+  bool manual;
+
+  ApplePayConfig(
+      {required this.merchantId, required this.label, required this.manual});
 }

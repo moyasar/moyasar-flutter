@@ -1,3 +1,8 @@
+## 2.0.2
+
+- [Credit Card] Add an option to create manual payments, this will let you authorize payment but will not collect the amount from the user untill you send a capture request.
+- [Apple Pay] Add an option to create manual payments, this will let you authorize payment but will not collect the amount from the user untill you send a capture request.
+
 ## 2.0.1
 
 - [Credit Card] Add an option to tokenize (save) the credit card upon successful payment.

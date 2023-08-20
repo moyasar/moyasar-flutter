@@ -23,9 +23,11 @@ void main() {
         currency: "USD",
         description: "Coffee!",
         metadata: meta,
-        creditCard: CreditCardConfig(saveCard: true, manual: true),
+        creditCard: CreditCardConfig(saveCard: false, manual: false),
         applePay: ApplePayConfig(
-            label: "Blue Coffee", merchantId: "merchant.mysr.fghurayri"));
+            label: "Blue Coffee",
+            merchantId: "merchant.mysr.fghurayri",
+            manual: false));
 
     expect(paymentConfig.publishableApiKey, "api_key");
     expect(paymentConfig.amount, 123);
@@ -34,10 +36,12 @@ void main() {
     expect(paymentConfig.metadata, meta);
     expect(PaymentConfig.callbackUrl, "https://example.com/thanks");
 
-    expect(paymentConfig.creditCard!.saveCard, true);
+    expect(paymentConfig.creditCard!.saveCard, false);
+    expect(paymentConfig.creditCard!.manual, false);
 
     expect(paymentConfig.applePay!.label, "Blue Coffee");
     expect(paymentConfig.applePay!.merchantId, "merchant.mysr.fghurayri");
+    expect(paymentConfig.applePay!.manual, false);
   });
 
   test(
