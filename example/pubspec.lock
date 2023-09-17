@@ -100,10 +100,10 @@ packages:
     dependency: transitive
     description:
       name: http
-      sha256: "6aa2946395183537c8b880962d935877325d6a09a2867c3970c05c0fed6ac482"
+      sha256: "759d1a329847dd0f39226c688d3e06a6b8679668e350e2891a6474f8b4bb8525"
       url: "https://pub.dev"
     source: hosted
-    version: "0.13.5"
+    version: "1.1.0"
   http_parser:
     dependency: transitive
     description:
@@ -187,26 +187,26 @@ packages:
     dependency: transitive
     description:
       name: pay
-      sha256: f32c846b1373ae46cfca47298d89ebfa865927ed226b40e1f5fc22c68dc7b018
+      sha256: d7525538a66af1982a0932d3969416e835a6aeafda59e280ed2d1f410b4aaa09
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.1"
+    version: "1.1.2"
   pay_android:
     dependency: transitive
     description:
       name: pay_android
-      sha256: "51fb98aaaf1ce3058b62b451fbb0ce980675128912cc2d117cf0be113a8334b5"
+      sha256: "1018a21650109a829bfc35794aa548a087dde5170b14bcb5c603f8b723f985d2"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.10"
+    version: "1.0.11"
   pay_ios:
     dependency: transitive
     description:
       name: pay_ios
-      sha256: "04c12e73d404e69f8a6e3cc0a3261d0b3980007a7bd6a2de2940b856d3de9d4c"
+      sha256: eb83e70282de8aed3ceca31ed045ee1d80bf4b50d331411a9d62ad0428a91808
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.8"
+    version: "1.0.9"
   pay_platform_interface:
     dependency: transitive
     description:
@@ -328,10 +328,10 @@ packages:
     dependency: transitive
     description:
       name: webview_flutter
-      sha256: "1a37bdbaaf5fbe09ad8579ab09ecfd473284ce482f900b5aea27cf834386a567"
+      sha256: "82f6787d5df55907aa01e49bd9644f4ed1cc82af7a8257dd9947815959d2e755"
       url: "https://pub.dev"
     source: hosted
-    version: "4.2.0"
+    version: "4.2.4"
   webview_flutter_android:
     dependency: transitive
     description:
@@ -373,5 +373,5 @@ packages:
     source: hosted
     version: "3.1.1"
 sdks:
-  dart: ">=3.0.0-0 <4.0.0"
-  flutter: ">=3.7.0-0"
+  dart: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.3"
