@@ -1,3 +1,14 @@
+## 2.0.3
+
+The main theme of this release is to support latest versions of the Flutter tooling and the utilized dependencies.
+
+- [Flutter] Upgrade to latest versions of Flutter tooling; Flutter to `3.16.0`, Dart to `3.2.0`, DevTools to `2.28.2`.
+- [Moyasar] Upgrade `http` dependency to `1.1.0`.
+- [Apple Pay] Upgrade `pay` dependency to `1.1.2`.
+- [Credit Card] Upgrade `webview_flutter` dependency to `4.4.2`.
+- [Credit Card] Explicitly set the text color of the Pay button to white.
+- [Docs] Fix coding style (line wrapping) in the example.
+
 ## 2.0.2
 
 - [Credit Card] Add an option to create manual payments, this will let you authorize payment but will not collect the amount from the user untill you send a capture request.
