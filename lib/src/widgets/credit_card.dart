@@ -187,7 +187,8 @@ class _CreditCardState extends State<CreditCard> {
                         color: Colors.white,
                         strokeWidth: 2,
                       )
-                    : Text(showAmount(widget.config.amount, widget.locale)),
+                    : Text(showAmount(widget.config.amount, widget.locale),
+                        style: const TextStyle(color: Colors.white)),
               ),
             ),
           ),
@@ -240,14 +241,14 @@ class CardFormField extends StatelessWidget {
   final InputDecoration? inputDecoration;
 
   const CardFormField({
-    Key? key,
+    super.key,
     required this.onSaved,
     this.validator,
     this.inputDecoration,
     this.keyboardType = TextInputType.number,
     this.textInputAction = TextInputAction.next,
     this.inputFormatters,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
