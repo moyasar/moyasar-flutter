@@ -4,6 +4,9 @@ import 'package:moyasar/src/models/sources/card/card_company.dart';
 import 'package:moyasar/src/models/sources/payment_request_source.dart';
 import 'package:moyasar/src/utils/card_utils.dart';
 
+/// Required data to setup a Credit Card payment.
+///
+/// Use only when you need to customize the UI.
 class CardPaymentRequestSource implements PaymentRequestSource {
   @override
   PaymentType type = PaymentType.creditcard;

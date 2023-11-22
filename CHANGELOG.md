@@ -1,3 +1,7 @@
+## 2.0.4
+
+- [Moyasar] Support customizing the UI
+
 ## 2.0.3
 
 The main theme of this release is to support latest versions of the Flutter tooling and the utilized dependencies.

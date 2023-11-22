@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// The widget that shows the Credit Cards icons.
 class NetworkIcons extends StatelessWidget {
   const NetworkIcons({super.key});
 
