@@ -1,6 +1,9 @@
 import 'package:moyasar/moyasar.dart';
 import 'package:moyasar/src/models/sources/payment_request_source.dart';
 
+/// Required data to setup a payment.
+///
+/// Use only when you need to customize the UI.
 class PaymentRequest {
   late int amount;
   late String currency;

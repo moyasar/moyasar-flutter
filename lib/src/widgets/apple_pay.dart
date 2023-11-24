@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
-
 import 'package:pay/pay.dart';
-
 import 'package:moyasar/moyasar.dart';
-import 'package:moyasar/src/moyasar.dart';
-import 'package:moyasar/src/models/payment_request.dart';
-import 'package:moyasar/src/models/sources/apple_pay/apple_pay_request_source.dart';
 
 /// The widget that shows the Apple Pay button.
 class ApplePay extends StatelessWidget {

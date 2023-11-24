@@ -1,12 +1,12 @@
 import 'dart:convert';
-
 import 'package:http/http.dart' as http;
 import 'package:moyasar/moyasar.dart';
 
-import 'package:moyasar/src/models/payment_request.dart';
+const version = "2.0.4";
 
-const version = "2.0.3";
-
+/// Payment service.
+///
+/// Use only when you need to customize the UI.
 class Moyasar {
   static const String apiUrl = 'https://api.moyasar.com/v1/payments';
 

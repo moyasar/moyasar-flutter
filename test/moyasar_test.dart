@@ -1,9 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moyasar/moyasar.dart';
-import 'package:moyasar/src/models/card_form_model.dart';
-import 'package:moyasar/src/models/payment_request.dart';
-import 'package:moyasar/src/models/sources/card/card_request_source.dart';
-import 'package:moyasar/src/moyasar.dart';
 
 void main() {
   test('should perform credit card payment successfully without tokenizing.',
