@@ -1,5 +1,4 @@
 import 'package:moyasar/moyasar.dart';
-import 'package:moyasar/src/models/sources/card/card_company.dart';
 
 class CardUtils {
   static String? validateName(String? value, Localization locale) {

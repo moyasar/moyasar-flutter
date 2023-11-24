@@ -1,11 +1,8 @@
 import 'dart:convert';
-
 import 'package:http/http.dart' as http;
 import 'package:moyasar/moyasar.dart';
 
-import 'package:moyasar/src/models/payment_request.dart';
-
-const version = "2.0.3";
+const version = "2.0.4";
 
 /// Payment service.
 ///

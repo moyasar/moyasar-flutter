@@ -1,3 +1,5 @@
+# Moyasar Flutter SDK
+
 Easily accept payments through Apple Pay or Credit Card (with managed 3DS step) in your Flutter app with Moyasar.
 
 ![Moyasar Flutter SDK Demo](https://i.imgur.com/nis9yCm.gif)
@@ -24,7 +26,7 @@ Complete the following steps to easily accept Apple Pay payments:
 
 Due to depending on the `flutter_webview` package to manage the 3DS step, make sure to set the correct minSdkVersion in android/app/build.gradle if it was previously lower than 19:
 
-```
+```gradle
 android {
     defaultConfig {
         minSdkVersion 19
@@ -39,6 +41,8 @@ flutter pub add moyasar
 ```
 
 ## Usage
+
+### Moyasar Widgets
 
 ```dart
 import 'package:flutter/material.dart';
@@ -88,16 +92,84 @@ class PaymentMethods extends StatelessWidget {
 }
 ```
 
+### Custom Widgets
+
+```dart
+// Unified config for Moyasar API
+  final paymentConfig = PaymentConfig(
+    publishableApiKey: 'YOUR_API_KEY',
+    amount: 25758, // SAR 257.58
+    description: 'order #1324',
+    metadata: {'size': '250g'},
+    creditCard: CreditCardConfig(saveCard: true, manual: false),
+    applePay: ApplePayConfig(
+        merchantId: 'YOUR_MERCHANT_ID',
+        label: 'YOUR_STORE_NAME',
+        manual: false),
+  );
+
+  // Callback once the user clicks on the custom Apple Pay widget
+  void onSubmitApplePay(applePay) async {
+    final source = ApplePayPaymentRequestSource(
+        applePay['token'], (paymentConfig.applePay as ApplePayConfig).manual);
+    final paymentRequest = PaymentRequest(paymentConfig, source);
+
+    final result = await Moyasar.pay(
+        apiKey: paymentConfig.publishableApiKey,
+        paymentRequest: paymentRequest);
+
+    onPaymentResult(result);
+  }
+
+  // Callback once the user fills & submit their CC information using the custom form widget
+  void onSubmitCcForm() async {
+    final source = CardPaymentRequestSource(
+        creditCardData: CardFormModel(
+            name: 'John Doe',
+            number: '4111111111111111',
+            month: '05',
+            year: '2025'),
+        tokenizeCard: (paymentConfig.creditCard as CreditCardConfig).saveCard,
+        manualPayment: (paymentConfig.creditCard as CreditCardConfig).manual);
+
+    final paymentRequest = PaymentRequest(paymentConfig, source);
+
+    final result = await Moyasar.pay(
+        apiKey: paymentConfig.publishableApiKey,
+        paymentRequest: paymentRequest);
+
+    onPaymentResult(result);
+  }
+
+  // Unified payment result processor
+  void onPaymentResult(result) {
+    if (result is PaymentResponse) {
+      switch (result.status) {
+        case PaymentStatus.initiated:
+          // handle 3DS redirection.
+          break;
+        case PaymentStatus.paid:
+          // handle success.
+          break;
+        case PaymentStatus.failed:
+          // handle failure.
+          break;
+      }
+    }
+  }
+```
+
 ## Testing
 
 ### Credit Cards
+
 Moyasar provides a sandbox environment for testing credit card payments without charging any real money. This allows you to test your integration and ensure that everything is working correctly before going live with actual payments. Learn more about our testing cards [here](https://moyasar.com/docs/testing/credit-cards)
 
 ### Apple Pay
+
 When using Apple Pay in the sandbox environment, you can try to make payments, but they will always fail. You can make sure that the integration has been completed once you go to Moyasar Dashboard and see the payment. Make sure to use a real device, not a simulator.
 
 it's recommended that you test Apple Pay using our live environment, and voiding the payment after.
-
 
 ## Migration Guide
 

@@ -5,8 +5,6 @@ export 'src/moyasar.dart' show Moyasar;
 
 export 'src/widgets/credit_card.dart' show CreditCard;
 export 'src/widgets/apple_pay.dart' show ApplePay;
-export 'src/widgets/three_d_s_webview.dart' show ThreeDSWebView;
-export 'src/widgets/network_icons.dart' show NetworkIcons;
 
 export 'src/models/card_form_model.dart' show CardFormModel;
 export 'src/models/payment_config.dart' show PaymentConfig;
