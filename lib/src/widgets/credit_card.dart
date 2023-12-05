@@ -88,7 +88,7 @@ class _CreditCardState extends State<CreditCard> {
       try {
         final result = await FlutterWebAuth2.authenticate(
           url: transactionUrl,
-          callbackUrlScheme: widget.config.callbackUrl,
+          callbackUrlScheme: 'auth',
           options: const FlutterWebAuth2Options(
             timeout: 5, // example: 5 seconds timeout
           ),

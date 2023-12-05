@@ -29,3 +29,5 @@ export 'src/errors/api_error.dart' show ApiError;
 export 'src/errors/auth_error.dart' show AuthError;
 export 'src/errors/validation_error.dart' show ValidationError;
 export 'src/errors/payment_canceled_error.dart' show PaymentCanceledError;
+
+export 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
