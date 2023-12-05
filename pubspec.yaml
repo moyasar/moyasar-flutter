@@ -12,6 +12,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_web_auth_2: ^3.0.4
   http: ^1.1.0
   pay: ^1.1.2
   webview_flutter: ^4.4.2

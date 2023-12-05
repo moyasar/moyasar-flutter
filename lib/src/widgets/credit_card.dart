@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 import 'package:moyasar/moyasar.dart';
 import 'package:moyasar/src/utils/card_utils.dart';
 import 'package:moyasar/src/utils/input_formatters.dart';
@@ -80,28 +82,51 @@ class _CreditCardState extends State<CreditCard> {
     final String transactionUrl =
         (result.source as CardPaymentResponseSource).transactionUrl;
 
-    if (mounted) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            fullscreenDialog: true,
-            maintainState: false,
-            builder: (context) => ThreeDSWebView(
-                transactionUrl: transactionUrl,
-                on3dsDone: (String status, String message) async {
-                  if (status == PaymentStatus.paid.name) {
-                    result.status = PaymentStatus.paid;
-                  } else if (status == PaymentStatus.authorized.name) {
-                    result.status = PaymentStatus.authorized;
-                  } else {
-                    result.status = PaymentStatus.failed;
-                    (result.source as CardPaymentResponseSource).message =
-                        message;
-                  }
-                  Navigator.pop(context);
-                  widget.onPaymentResult(result);
-                })),
-      );
+    if (kIsWeb) {
+    
+
+      try {
+        final result = await FlutterWebAuth2.authenticate(
+          url: transactionUrl,
+          callbackUrlScheme: 'auth',
+          options: const FlutterWebAuth2Options(
+            timeout: 5, // example: 5 seconds timeout
+          ),
+        );
+        print('result ${result}');
+        // setState(() {
+        //   _status = 'Got result: $result';
+        // });
+      } on PlatformException catch (e) {
+        print('result ${e}');
+        // setState(() {
+        //   _status = 'Got error: $e';
+        // });
+      }
+    } else {
+      if (mounted) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              fullscreenDialog: true,
+              maintainState: false,
+              builder: (context) => ThreeDSWebView(
+                  transactionUrl: transactionUrl,
+                  on3dsDone: (String status, String message) async {
+                    if (status == PaymentStatus.paid.name) {
+                      result.status = PaymentStatus.paid;
+                    } else if (status == PaymentStatus.authorized.name) {
+                      result.status = PaymentStatus.authorized;
+                    } else {
+                      result.status = PaymentStatus.failed;
+                      (result.source as CardPaymentResponseSource).message =
+                          message;
+                    }
+                    Navigator.pop(context);
+                    widget.onPaymentResult(result);
+                  })),
+        );
+      }
     }
   }
 
@@ -117,6 +142,7 @@ class _CreditCardState extends State<CreditCard> {
                 hintText: widget.locale.nameOnCard,
               ),
               keyboardType: TextInputType.text,
+              
               validator: (String? input) =>
                   CardUtils.validateName(input, widget.locale),
               onSaved: (value) => _cardData.name = value ?? '',
