@@ -29,11 +29,14 @@ class CoffeeShop extends StatefulWidget {
 
 class _CoffeeShopState extends State<CoffeeShop> {
   final paymentConfig = PaymentConfig(
-      publishableApiKey: 'pk_test_r6eZg85QyduWZ7PNTHT56BFvZpxJgNJ2PqPMDoXA',
+      publishableApiKey: 'pk_test_KjYR9npiw3UJJpwXpvaADS3ut5bKtyC6ip18FeDC',
       amount: 100, // SAR 1
       description: 'order #1324',
+      callbackUrl: 'http://localhost:9542/auth.html',
       metadata: {'size': '250g'},
       creditCard: CreditCardConfig(saveCard: false, manual: false),
+
+
       applePay: ApplePayConfig(
           merchantId: 'merchant.mysr.fghurayri',
           label: 'Blue Coffee Beans',
@@ -74,10 +77,10 @@ class _CoffeeShopState extends State<CoffeeShop> {
             width: MediaQuery.of(context).size.width * 0.9,
             child: ListView(
               children: [
-                const CoffeeImage(),
                 PaymentMethods(
                   paymentConfig: paymentConfig,
                   onPaymentResult: onPaymentResult,
+                  
                 ),
               ],
             ),

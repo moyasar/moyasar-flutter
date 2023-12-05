@@ -1,4 +1,5 @@
 import 'package:moyasar/moyasar.dart';
+import 'package:moyasar/src/models/payment_config.dart';
 import 'package:moyasar/src/models/sources/payment_request_source.dart';
 
 /// Required data to setup a payment.
@@ -11,7 +12,7 @@ class PaymentRequest {
   Map<String, String>? metadata;
   late PaymentRequestSource source;
 
-  String callbackUrl = PaymentConfig.callbackUrl;
+  String callbackUrl = defaultCallbackUrl;
 
   PaymentRequest(
       PaymentConfig config, PaymentRequestSource paymentRequestSource) {
@@ -20,6 +21,7 @@ class PaymentRequest {
     description = config.description;
     metadata = config.metadata;
     source = paymentRequestSource;
+    callbackUrl = config.callbackUrl;
   }
 
   Map<String, dynamic> toJson() => {
@@ -29,5 +31,6 @@ class PaymentRequest {
         'description': description,
         'metadata': metadata,
         'callback_url': callbackUrl,
+        
       };
 }

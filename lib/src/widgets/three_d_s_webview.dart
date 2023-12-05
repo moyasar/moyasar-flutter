@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:moyasar/moyasar.dart';
+import 'package:moyasar/src/models/payment_config.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 /// The widget that shows the 3DS step.
@@ -31,7 +32,7 @@ class _ThreeDSWebViewState extends State<ThreeDSWebView> {
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setNavigationDelegate(NavigationDelegate(onPageFinished: (pageUrl) {
         final redirectedTo = Uri.parse(pageUrl);
-        final callbackUri = Uri.parse(PaymentConfig.callbackUrl);
+        final callbackUri = Uri.parse(defaultCallbackUrl);
 
         final bool hasReachedFinalRedirection =
             redirectedTo.host == callbackUri.host;
