@@ -19,7 +19,7 @@ class PaymentResponse {
   late String refundedFormat;
   late String capturedFormat;
   String? invoiceId;
-  late String ip;
+  String? ip;
   String? callbackUrl;
   late String createdAt;
   late String updatedAt;
