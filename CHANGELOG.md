@@ -1,3 +1,12 @@
+## 2.0.5
+
+- [Flutter] Upgrade to latest versions of Flutter tooling; Flutter to `3.16.3`, Dart to `3.2.3`, DevTools to `2.28.4`.
+- [Moyasar] Upgrade `http` dependency to `1.1.2`.
+- [Moyasar] Handle potential HTTP request failures.
+- [Apple Pay] Handle when the Apple Pay token is unprocessable.
+- [Docs] Update the testing guides with latest help links.
+- [Docs] Update the Apple Pay testing guide.
+
 ## 2.0.4
 
 - [Moyasar] Support customizing the UI
