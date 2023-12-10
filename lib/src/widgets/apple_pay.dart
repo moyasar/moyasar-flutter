@@ -19,7 +19,7 @@ class ApplePay extends StatelessWidget {
     final token = paymentResult['token'];
 
     if (((token ?? '') == '')) {
-      onPaymentResult(UnprocessableToken());
+      onPaymentResult(UnprocessableTokenError());
       return;
     }
 

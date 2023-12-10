@@ -62,7 +62,7 @@ class _CoffeeShopState extends State<CoffeeShop> {
     if (result is AuthError) {}
     if (result is ValidationError) {}
     if (result is PaymentCanceledError) {}
-    if (result is UnprocessableToken) {}
+    if (result is UnprocessableTokenError) {}
     if (result is TimeoutError) {}
     if (result is NetworkError) {}
     if (result is UnspecifiedError) {}
