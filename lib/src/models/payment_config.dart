@@ -7,7 +7,7 @@ class PaymentConfig {
   static String callbackUrl = "https://example.com/thanks";
 
   /// You can find your [publishableApiKey] in your Moyasar Dashboard.
-  /// Go to https://moyasar.com/docs/dashboard/api-keys for more details.
+  /// Go to https://docs.moyasar.com/get-your-api-keys for more details.
   late String publishableApiKey;
 
   /// The smallest currency unit.

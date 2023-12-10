@@ -29,3 +29,7 @@ export 'src/errors/api_error.dart' show ApiError;
 export 'src/errors/auth_error.dart' show AuthError;
 export 'src/errors/validation_error.dart' show ValidationError;
 export 'src/errors/payment_canceled_error.dart' show PaymentCanceledError;
+export 'src/errors/unprocessable_token_error.dart' show UnprocessableTokenError;
+export 'src/errors/unspecified_error.dart' show UnspecifiedError;
+export 'src/errors/timeout_error.dart' show TimeoutError;
+export 'src/errors/network_error.dart' show NetworkError;

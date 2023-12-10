@@ -3,13 +3,12 @@ import 'package:moyasar/moyasar.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 /// The widget that shows the 3DS step.
-///
-/// Use only when you need to customize the UI.
 class ThreeDSWebView extends StatefulWidget {
   final String transactionUrl;
   final Function on3dsDone;
+  final Uri callbackUri = Uri.parse(PaymentConfig.callbackUrl);
 
-  const ThreeDSWebView(
+  ThreeDSWebView(
       {super.key, required this.transactionUrl, required this.on3dsDone});
 
   @override
@@ -31,16 +30,15 @@ class _ThreeDSWebViewState extends State<ThreeDSWebView> {
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setNavigationDelegate(NavigationDelegate(onPageFinished: (pageUrl) {
         final redirectedTo = Uri.parse(pageUrl);
-        final callbackUri = Uri.parse(PaymentConfig.callbackUrl);
 
         final bool hasReachedFinalRedirection =
-            redirectedTo.host == callbackUri.host;
+            redirectedTo.host == widget.callbackUri.host;
 
         if (hasReachedFinalRedirection) {
           final queryParams = redirectedTo.queryParameters;
 
-          String? status = queryParams['status'];
-          String? message = queryParams['message'];
+          String status = queryParams['status'] ?? '';
+          String message = queryParams['message'] ?? '';
 
           widget.on3dsDone(status, message);
         }

@@ -163,13 +163,11 @@ class PaymentMethods extends StatelessWidget {
 
 ### Credit Cards
 
-Moyasar provides a sandbox environment for testing credit card payments without charging any real money. This allows you to test your integration and ensure that everything is working correctly before going live with actual payments. Learn more about our testing cards [here](https://moyasar.com/docs/testing/credit-cards)
+Moyasar provides a sandbox environment for testing credit card payments without charging any real money. This allows you to test your integration and ensure that everything is working correctly before going live with actual payments. Learn more about our testing cards [here](https://docs.moyasar.com/testing-cards)
 
 ### Apple Pay
 
-When using Apple Pay in the sandbox environment, you can try to make payments, but they will always fail. You can make sure that the integration has been completed once you go to Moyasar Dashboard and see the payment. Make sure to use a real device, not a simulator.
-
-it's recommended that you test Apple Pay using our live environment, and voiding the payment after.
+Testing using a simulator will not work! Learn more about Apple Pay testing [here](https://docs.moyasar.com/apple-pay-testing).
 
 ## Migration Guide
 

@@ -1,6 +1,6 @@
 name: moyasar
 description: Accept payments in your Flutter app with ease by using Moyasar. With this SDK, you can quickly and safely accept payments through Apple Pay and Credit Card (with managed 3DS step).
-version: 2.0.4
+version: 2.0.5
 homepage: https://moyasar.com/en/
 repository: https://github.com/moyasar/moyasar-flutter
 issue_tracker: https://github.com/moyasar/moyasar-flutter/issues
