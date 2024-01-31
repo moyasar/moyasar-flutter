@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pay/pay.dart';
 import 'package:moyasar/moyasar.dart';
+import 'dart:convert';
 
 /// The widget that shows the Apple Pay button.
 class ApplePay extends StatelessWidget {
@@ -38,8 +39,8 @@ class ApplePay extends StatelessWidget {
         "data": {
           "merchantIdentifier": "${config.applePay?.merchantId}",
           "displayName": "${config.applePay?.label}",
-          "merchantCapabilities": ["3DS", "debit", "credit"],
-          "supportedNetworks": ["amex", "visa", "mada", "masterCard"],
+          "merchantCapabilities": ${jsonEncode(config.applePay?.merchantCapabilities)},
+          "supportedNetworks": ${jsonEncode(config.applePay?.supportedNetworks)},
           "countryCode": "SA",
           "currencyCode": "SAR"
         }
