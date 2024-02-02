@@ -1,15 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:pay/pay.dart';
 import 'package:moyasar/moyasar.dart';
+import 'dart:convert';
 
 /// The widget that shows the Apple Pay button.
 class ApplePay extends StatelessWidget {
-  ApplePay({super.key, required this.config, required this.onPaymentResult})
+  ApplePay(
+      {super.key,
+      required this.config,
+      required this.onPaymentResult,
+      this.buttonType = ApplePayButtonType.inStore,
+      this.buttonStyle = ApplePayButtonStyle.black})
       : assert(config.applePay != null,
             "Please add applePayConfig when instantiating the paymentConfig.");
 
   final PaymentConfig config;
   final Function onPaymentResult;
+  final ApplePayButtonType buttonType;
+  final ApplePayButtonStyle buttonStyle;
 
   void onApplePayError(error) {
     onPaymentResult(PaymentCanceledError());
@@ -38,8 +46,8 @@ class ApplePay extends StatelessWidget {
         "data": {
           "merchantIdentifier": "${config.applePay?.merchantId}",
           "displayName": "${config.applePay?.label}",
-          "merchantCapabilities": ["3DS", "debit", "credit"],
-          "supportedNetworks": ["amex", "visa", "mada", "masterCard"],
+          "merchantCapabilities": ${jsonEncode(config.applePay?.merchantCapabilities)},
+          "supportedNetworks": ${jsonEncode(config.applePay?.supportedNetworks)},
           "countryCode": "SA",
           "currencyCode": "SAR"
         }
@@ -57,7 +65,8 @@ class ApplePay extends StatelessWidget {
           amount: (config.amount / 100).toStringAsFixed(2),
         )
       ],
-      type: ApplePayButtonType.inStore,
+      type: buttonType,
+      style: buttonStyle,
       onPaymentResult: onApplePayResult,
       width: MediaQuery.of(context).size.width,
       height: 40,
