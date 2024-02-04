@@ -1,3 +1,12 @@
+## 2.0.6
+
+- [Flutter] Upgrade to latest versions of Flutter tooling; Flutter to `3.16.9`, Dart to `3.2.6`, DevTools to `2.28.5`.
+- [Moyasar] Upgrade `http` dependency to `1.2.0`.
+- [Moyasar] Support customizing the accepted networks with `supportedNetworks` in the `PaymentConfig`.
+- [Apple Pay] Support customizing the accepted payment capabilities with `merchantCapabilities` in the `ApplePayConfig`.
+- [Apple Pay] Support customizing the Apple Pay button type and styling.
+- [Credit Card] Upgrade `webview_flutter` dependency to `4.5.0`.
+ 
 ## 2.0.5
 
 - [Flutter] Upgrade to latest versions of Flutter tooling; Flutter to `3.16.3`, Dart to `3.2.3`, DevTools to `2.28.4`.
