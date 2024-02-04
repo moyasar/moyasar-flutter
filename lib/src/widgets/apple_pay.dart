@@ -47,7 +47,7 @@ class ApplePay extends StatelessWidget {
           "merchantIdentifier": "${config.applePay?.merchantId}",
           "displayName": "${config.applePay?.label}",
           "merchantCapabilities": ${jsonEncode(config.applePay?.merchantCapabilities)},
-          "supportedNetworks": ${jsonEncode(config.applePay?.supportedNetworks)},
+          "supportedNetworks": ${jsonEncode(config.supportedNetworks)},
           "countryCode": "SA",
           "currencyCode": "SAR"
         }
