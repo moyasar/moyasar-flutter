@@ -27,6 +27,10 @@ class PaymentConfig {
   /// For example `{"size": "xl"}`
   Map<String, String>? metadata;
 
+  /// Optional configuration used to set accepted card networks.
+  /// Supported Networks: ["amex", "visa", "mada", "masterCard"]
+  List<String> supportedNetworks;
+
   /// The config required to setup Apple Pay.
   ApplePayConfig? applePay;
 
@@ -39,10 +43,13 @@ class PaymentConfig {
       this.currency = 'SAR',
       required this.description,
       this.metadata,
+      this.supportedNetworks = const ["amex", "visa", "mada", "masterCard"],
       this.applePay,
       this.creditCard})
       : assert(publishableApiKey.isNotEmpty,
             'Please fill `publishableApiKey` argument with your key.'),
         assert(amount > 0, 'Please add a positive amount.'),
-        assert(description.isNotEmpty, 'Please add a description.');
+        assert(description.isNotEmpty, 'Please add a description.'),
+        assert(supportedNetworks.isNotEmpty,
+            'At least 1 network must be supported.');
 }
