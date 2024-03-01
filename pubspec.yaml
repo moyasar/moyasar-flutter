@@ -22,5 +22,9 @@ dev_dependencies:
   flutter_lints: ^3.0.1
 
 flutter:
+  plugin:
+    platforms:
+      ios:
+        pluginClass: ApplePayAvailability
   assets:
     - assets/images/
