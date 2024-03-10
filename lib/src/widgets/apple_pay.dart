@@ -28,13 +28,14 @@ class ApplePay extends StatefulWidget {
 
 class _ApplePayState extends State<ApplePay> {
   bool isApplePayAvailable = true;
+  final String applePayButtonViewNativeId =
+      "flutter.moyasar.com/apple_pay/button";
 
   @override
   void initState() {
     widget.channel.invokeMethod<bool>("isApplePayAvailable", {
       "supportedNetworks": widget.config.supportedNetworks
     }).then((isApplePayAvailableCheckFlag) {
-      // We will only display the 'Setup Apple Pay' button when we are sure the user can't use Apple Pay.
       if (isApplePayAvailableCheckFlag != null &&
           !isApplePayAvailableCheckFlag) {
         // Done like this to not cause a useless rebuild.
@@ -51,7 +52,7 @@ class _ApplePayState extends State<ApplePay> {
     super.initState();
   }
 
-  void onApplePayError(error) {
+  void onApplePayError() {
     widget.onPaymentResult(PaymentCanceledError());
   }
 
@@ -88,26 +89,63 @@ class _ApplePayState extends State<ApplePay> {
     }''';
   }
 
+  String createCustomNativeConfig() {
+    return jsonEncode({
+      "merchantIdentifier": "${widget.config.applePay?.merchantId}",
+      "paymentLabel": "${widget.config.applePay?.label}",
+      "merchantCapabilities": widget.config.applePay?.merchantCapabilities,
+      "supportedNetworks": widget.config.supportedNetworks,
+      "countryCode": "SA",
+      "currencyCode": "SAR",
+      "paymentAmount": (widget.config.amount / 100).toStringAsFixed(2)
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ApplePayButton(
-      paymentConfiguration:
-          PaymentConfiguration.fromJsonString(createConfigString()),
-      paymentItems: [
-        PaymentItem(
-          label: widget.config.applePay?.label,
-          amount: (widget.config.amount / 100).toStringAsFixed(2),
-        )
-      ],
-      type: isApplePayAvailable ? widget.buttonType : ApplePayButtonType.setUp,
-      style: widget.buttonStyle,
-      onPaymentResult: onApplePayResult,
-      width: MediaQuery.of(context).size.width,
-      height: 40,
-      onError: onApplePayError,
-      loadingIndicator: const Center(
-        child: CircularProgressIndicator(),
-      ),
-    );
+    // For now, We will only use the native Apple Pay button when we are sure the user can't use Apple Pay.
+    // TODO: Should only use the native widget later on when it's more stable.
+    return isApplePayAvailable
+        ? ApplePayButton(
+            paymentConfiguration:
+                PaymentConfiguration.fromJsonString(createConfigString()),
+            paymentItems: [
+              PaymentItem(
+                label: widget.config.applePay?.label,
+                amount: (widget.config.amount / 100).toStringAsFixed(2),
+              )
+            ],
+            type: widget.buttonType,
+            style: widget.buttonStyle,
+            onPaymentResult: onApplePayResult,
+            width: MediaQuery.of(context).size.width,
+            height: 40,
+            onError: (_) {
+              onApplePayError();
+            },
+            loadingIndicator: const Center(
+              child: CircularProgressIndicator(),
+            ),
+          )
+        : ConstrainedBox(
+            constraints: BoxConstraints.tightFor(
+              width: MediaQuery.of(context).size.width,
+              height: 40,
+            ),
+            child: UiKitView(
+              viewType: applePayButtonViewNativeId,
+              creationParamsCodec: const StandardMessageCodec(),
+              creationParams: createCustomNativeConfig(),
+              onPlatformViewCreated: (_) {
+                widget.channel.setMethodCallHandler((call) async {
+                  if (call.method == 'onApplePayResult') {
+                    onApplePayResult(call.arguments);
+                  } else if (call.method == 'onApplePayError') {
+                    onApplePayError();
+                  }
+                });
+              },
+            ),
+          );
   }
 }

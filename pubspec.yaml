@@ -25,6 +25,6 @@ flutter:
   plugin:
     platforms:
       ios:
-        pluginClass: ApplePayAvailability
+        pluginClass: SwiftPlugin
   assets:
     - assets/images/
