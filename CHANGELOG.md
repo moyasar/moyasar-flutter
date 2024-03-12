@@ -1,3 +1,7 @@
+## 2.0.7
+
+- [Apple Pay] Improve the UX by allowing the user to setup Apple Pay card if none is added yet.
+ 
 ## 2.0.6
 
 - [Flutter] Upgrade to latest versions of Flutter tooling; Flutter to `3.16.9`, Dart to `3.2.6`, DevTools to `2.28.5`.
