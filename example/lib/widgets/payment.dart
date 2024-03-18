@@ -3,7 +3,7 @@ import 'package:moyasar/moyasar.dart';
 
 class PaymentMethods extends StatelessWidget {
   final PaymentConfig paymentConfig;
-  final Function onPaymentResult;
+  final Function(dynamic) onPaymentResult;
 
   const PaymentMethods(
       {super.key, required this.paymentConfig, required this.onPaymentResult});

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moyasar/moyasar.dart';
@@ -12,7 +14,7 @@ Widget createTestableApp(
       description: "Coffee",
       creditCard: CreditCardConfig(saveCard: tokenizeCard, manual: manual));
 
-  void onPaymentResult() {}
+  FutureOr<void> onPaymentResult(dynamic) {}
 
   return MaterialApp(
       home: Scaffold(
