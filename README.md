@@ -22,14 +22,14 @@ Complete the following steps to easily accept Apple Pay payments:
 - Follow [this guide](https://help.moyasar.com/en/article/moyasar-dashboard-apple-pay-certificate-activation-9l6sd5/) to setup your Apple developer account and integrate it with Moyasar.
 - Follow [this guide](https://help.apple.com/xcode/mac/9.3/#/deva43983eb7?sub=dev44ce8ef13) to enable accepting Apple Pay in your application using xCode.
 
-#### **Accepting Credit Card Payments in Android**
+#### **Accepting Payments in Android**
 
-Due to depending on the `flutter_webview` package to manage the 3DS step, make sure to set the correct minSdkVersion in android/app/build.gradle if it was previously lower than 19:
+Due to depending on the `pay` package, make sure to set the correct minSdkVersion in android/app/build.gradle if it was previously lower than 21:
 
 ```gradle
 android {
     defaultConfig {
-        minSdkVersion 19
+        minSdkVersion 21
     }
 }
 ```

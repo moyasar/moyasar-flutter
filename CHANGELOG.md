@@ -1,3 +1,12 @@
+## 2.0.8
+
+The main theme of this release is to support latest versions of the Flutter tooling and the utilized dependencies.
+
+- [Flutter] Upgrade to latest versions of Flutter tooling; Flutter to `3.19.5`, Dart to `3.3.3`, DevTools to `2.31.1`.
+- [Moyasar] Upgrade `http` dependency to `1.2.1`.
+- [Apple Pay] Upgrade `pay` dependency to `2.0.0`.
+- [Credit Card] Upgrade `webview_flutter` dependency to `4.7.0`.
+ 
 ## 2.0.7
 
 - [Apple Pay] Improve the UX by allowing the user to setup Apple Pay card if none is added yet.
