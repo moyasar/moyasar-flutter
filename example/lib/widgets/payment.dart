@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:moyasar/moyasar.dart';
 
@@ -12,14 +14,13 @@ class PaymentMethods extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Padding(
+        if (Platform.isIOS) Padding(
           padding: const EdgeInsets.symmetric(vertical: 10),
           child: ApplePay(
             config: paymentConfig,
             onPaymentResult: onPaymentResult,
           ),
-        ),
-        const Text("or"),
+        ) else const SizedBox.shrink(),
         CreditCard(
           config: paymentConfig,
           onPaymentResult: onPaymentResult,
