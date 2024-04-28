@@ -1,3 +1,7 @@
+## 2.0.9
+
+- [iOS] Add Privacy Manifest file.
+
 ## 2.0.8
 
 The main theme of this release is to support latest versions of the Flutter tooling and the utilized dependencies.
