@@ -8,15 +8,18 @@ import 'package:moyasar/src/widgets/three_d_s_webview.dart';
 
 /// The widget that shows the Credit Card form and manages the 3DS step.
 class CreditCard extends StatefulWidget {
-  const CreditCard(
+  CreditCard(
       {super.key,
       required this.config,
       required this.onPaymentResult,
-      this.locale = const Localization.en()});
+      this.locale = const Localization.en()})
+      : textDirection =
+            locale.languageCode == 'ar' ? TextDirection.rtl : TextDirection.ltr;
 
   final Function onPaymentResult;
   final PaymentConfig config;
   final Localization locale;
+  final TextDirection textDirection;
 
   @override
   State<CreditCard> createState() => _CreditCardState();
@@ -114,8 +117,8 @@ class _CreditCardState extends State<CreditCard> {
         children: [
           CardFormField(
               inputDecoration: buildInputDecoration(
-                hintText: widget.locale.nameOnCard,
-              ),
+                  hintText: widget.locale.nameOnCard,
+                  hintTextDirection: widget.textDirection),
               keyboardType: TextInputType.text,
               validator: (String? input) =>
                   CardUtils.validateName(input, widget.locale),
@@ -125,7 +128,9 @@ class _CreditCardState extends State<CreditCard> {
               ]),
           CardFormField(
             inputDecoration: buildInputDecoration(
-                hintText: widget.locale.cardNumber, addNetworkIcons: true),
+                hintText: widget.locale.cardNumber,
+                hintTextDirection: widget.textDirection,
+                addNetworkIcons: true),
             validator: (String? input) =>
                 CardUtils.validateCardNum(input, widget.locale),
             inputFormatters: [
@@ -139,6 +144,7 @@ class _CreditCardState extends State<CreditCard> {
           CardFormField(
             inputDecoration: buildInputDecoration(
               hintText: '${widget.locale.expiry} (MM / YY)',
+              hintTextDirection: widget.textDirection,
             ),
             inputFormatters: [
               FilteringTextInputFormatter.digitsOnly,
@@ -156,6 +162,7 @@ class _CreditCardState extends State<CreditCard> {
           CardFormField(
             inputDecoration: buildInputDecoration(
               hintText: widget.locale.cvc,
+              hintTextDirection: widget.textDirection,
             ),
             inputFormatters: [
               FilteringTextInputFormatter.digitsOnly,
@@ -180,8 +187,12 @@ class _CreditCardState extends State<CreditCard> {
                         color: Colors.white,
                         strokeWidth: 2,
                       )
-                    : Text(showAmount(widget.config.amount, widget.locale),
-                        style: const TextStyle(color: Colors.white)),
+                    : Text(
+                        showAmount(widget.config.amount, widget.config.currency,
+                            widget.locale),
+                        style: const TextStyle(color: Colors.white),
+                        textDirection: widget.textDirection,
+                      ),
               ),
             ),
           ),
@@ -258,21 +269,19 @@ class CardFormField extends StatelessWidget {
   }
 }
 
-String showAmount(int amount, Localization locale) {
+String showAmount(int amount, String currency, Localization locale) {
   final formattedAmount = (amount / 100).toStringAsFixed(2);
-
-  if (locale.languageCode == 'en') {
-    return '${locale.pay} SAR $formattedAmount';
-  }
-
-  return '${locale.pay} $formattedAmount ر.س';
+  return '${locale.pay} $currency $formattedAmount';
 }
 
 InputDecoration buildInputDecoration(
-    {required String hintText, bool addNetworkIcons = false}) {
+    {required String hintText,
+    required TextDirection hintTextDirection,
+    bool addNetworkIcons = false}) {
   return InputDecoration(
       suffixIcon: addNetworkIcons ? const NetworkIcons() : null,
       hintText: hintText,
+      hintTextDirection: hintTextDirection,
       focusedErrorBorder: defaultErrorBorder,
       enabledBorder: defaultEnabledBorder,
       focusedBorder: defaultFocusedBorder,

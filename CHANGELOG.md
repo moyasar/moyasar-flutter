@@ -1,3 +1,8 @@
+## 2.0.10
+
+- [Credit Card] Show the correct currency on the Pay widget.
+- [Credit Card] Make the hintText in RTL direction for each TextFormField when the locale is Arabic.
+
 ## 2.0.9
 
 - [iOS] Add Privacy Manifest file.
