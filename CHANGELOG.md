@@ -1,3 +1,11 @@
+## 2.0.11
+
+The main theme of this release is to support latest versions of the Flutter tooling and the utilized dependencies.
+
+- [Flutter] Upgrade to latest versions of Flutter tooling; Flutter to `3.22.2`, Dart to `3.4.3`, DevTools to `2.34.3`.
+- [Credit Card] Upgrade `webview_flutter` dependency to `4.8.0`.
+- [Credit Card] Replace deprecated `MaterialStatePropertyAll` to the new `WidgetStatePropertyAll`.
+
 ## 2.0.10
 
 - [Credit Card] Show the correct currency on the Pay widget.
