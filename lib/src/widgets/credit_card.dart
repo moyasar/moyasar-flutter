@@ -178,8 +178,8 @@ class _CreditCardState extends State<CreditCard> {
               child: ElevatedButton(
                 style: ButtonStyle(
                   minimumSize:
-                      const MaterialStatePropertyAll<Size>(Size.fromHeight(55)),
-                  backgroundColor: MaterialStatePropertyAll<Color>(blueColor),
+                      const WidgetStatePropertyAll<Size>(Size.fromHeight(55)),
+                  backgroundColor: WidgetStatePropertyAll<Color>(blueColor),
                 ),
                 onPressed: _isSubmitting ? () {} : _saveForm,
                 child: _isSubmitting
