@@ -39,10 +39,20 @@ class _CoffeeShopState extends State<CoffeeShop> {
           label: 'Blue Coffee Beans',
           manual: false));
 
-  void onPaymentResult(result) {
+  Future<void> onPaymentResult(result) async {
     if (result is PaymentResponse) {
       showToast(context, result.status.name);
       switch (result.status) {
+        case PaymentStatus.initiated:
+          // handle initiated.
+          // register the payment id on the server in the user payments data
+          await Future.delayed(
+            Durations.medium2,
+            () {
+              print("initiated payment with Id: ${result.id}");
+            },
+          );
+          break;
         case PaymentStatus.paid:
           // handle success.
           break;
