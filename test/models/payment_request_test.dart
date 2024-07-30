@@ -4,7 +4,7 @@ import 'package:moyasar/src/models/payment_type.dart';
 
 void main() {
   test('should create a valid payment request with CC.', () {
-    Map<String, String> metadata = {"size": "xl"};
+    Map<String, dynamic> metadata = {"size": "xl", "code": 255};
 
     PaymentConfig config = PaymentConfig(
         publishableApiKey: "api_key",
@@ -44,7 +44,7 @@ void main() {
   });
 
   test('should create a valid payment request with Apple Pay.', () {
-    Map<String, String> metadata = {"size": "xl"};
+    Map<String, dynamic> metadata = {"size": "xl", "code": 255};
 
     PaymentConfig config = PaymentConfig(
         publishableApiKey: "api_key",
@@ -69,8 +69,8 @@ void main() {
     expect((pr.source as ApplePayPaymentRequestSource).manual, 'false');
   });
 
-  test('should create a valid manual paymentrequest with Apple Pay.', () {
-    Map<String, String> metadata = {"size": "xl"};
+  test('should create a valid manual payment request with Apple Pay.', () {
+    Map<String, dynamic> metadata = {"size": "xl", "code": 255};
 
     PaymentConfig config = PaymentConfig(
         publishableApiKey: "api_key",

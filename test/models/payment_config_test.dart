@@ -17,7 +17,7 @@ void main() {
   });
 
   test('should create a valid payment config with all fields.', () {
-    const meta = {"size": "2xl"};
+    const meta = {"size": "2xl", "code": 255};
 
     PaymentConfig paymentConfig = PaymentConfig(
         publishableApiKey: "api_key",
