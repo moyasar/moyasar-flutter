@@ -23,7 +23,7 @@ class PaymentResponse {
   String? callbackUrl;
   late String createdAt;
   late String updatedAt;
-  Map<String, String>? metadata;
+  Map<String, dynamic>? metadata;
   late dynamic source;
 
   PaymentResponse.fromJson(Map<String, dynamic> json, PaymentType paymentType) {
@@ -49,7 +49,7 @@ class PaymentResponse {
     updatedAt = json['updated_at'];
 
     if (json['metadata'] != null) {
-      metadata = Map<String, String>.from(json['metadata']);
+      metadata = Map<String, dynamic>.from(json['metadata']);
     }
 
     if (paymentType == PaymentType.creditcard) {

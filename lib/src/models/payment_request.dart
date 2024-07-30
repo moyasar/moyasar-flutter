@@ -8,7 +8,7 @@ class PaymentRequest {
   late int amount;
   late String currency;
   String? description;
-  Map<String, String>? metadata;
+  Map<String, dynamic>? metadata;
   late PaymentRequestSource source;
 
   String callbackUrl = PaymentConfig.callbackUrl;
