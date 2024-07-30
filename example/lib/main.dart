@@ -32,7 +32,7 @@ class _CoffeeShopState extends State<CoffeeShop> {
       publishableApiKey: 'pk_test_r6eZg85QyduWZ7PNTHT56BFvZpxJgNJ2PqPMDoXA',
       amount: 100, // SAR 1
       description: 'order #1324',
-      metadata: {'size': '250g'},
+      metadata: {'size': '250g', 'code': 255},
       creditCard: CreditCardConfig(saveCard: false, manual: false),
       applePay: ApplePayConfig(
           merchantId: 'merchant.mysr.fghurayri',

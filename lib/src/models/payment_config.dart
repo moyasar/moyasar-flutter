@@ -25,7 +25,7 @@ class PaymentConfig {
 
   /// The [metadata] adds searchable key/value pairs to the payment.
   /// For example `{"size": "xl"}`
-  Map<String, String>? metadata;
+  Map<String, dynamic>? metadata;
 
   /// Optional configuration used to set accepted card networks.
   /// Supported Networks: ["amex", "visa", "mada", "masterCard"]
