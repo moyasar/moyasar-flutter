@@ -1,3 +1,9 @@
+## 2.0.12
+
+- [Flutter] Upgrade to latest versions of Flutter tooling; Flutter to `3.22.3`, Dart to `3.4.4`, DevTools to `2.34.3`.
+- [Moyasar] Support any primitive JSON type in the payment metadata instead of String only.
+- [Moyasar] Upgrade `http` dependency to `1.2.2`.
+ 
 ## 2.0.11
 
 The main theme of this release is to support latest versions of the Flutter tooling and the utilized dependencies.
