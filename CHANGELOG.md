@@ -1,3 +1,8 @@
+## 2.0.13
+
+- [Flutter] Upgrade to latest versions of Flutter tooling; Flutter to `3.24.0`, Dart to `3.5.0`, DevTools to `2.37.2`.
+- [Apple Pay] Expose `supportedCountries` config with default of `["SA"]` to accept payments from set countries.
+
 ## 2.0.12
 
 - [Flutter] Upgrade to latest versions of Flutter tooling; Flutter to `3.22.3`, Dart to `3.4.4`, DevTools to `2.34.3`.
