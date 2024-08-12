@@ -82,6 +82,7 @@ class _ApplePayState extends State<ApplePay> {
           "merchantIdentifier": "${widget.config.applePay?.merchantId}",
           "displayName": "${widget.config.applePay?.label}",
           "merchantCapabilities": ${jsonEncode(widget.config.applePay?.merchantCapabilities)},
+          "supportedCountries": ${jsonEncode(widget.config.applePay?.supportedCountries)},
           "supportedNetworks": ${jsonEncode(widget.config.supportedNetworks)},
           "countryCode": "SA",
           "currencyCode": "SAR"
@@ -94,6 +95,7 @@ class _ApplePayState extends State<ApplePay> {
       "merchantIdentifier": "${widget.config.applePay?.merchantId}",
       "paymentLabel": "${widget.config.applePay?.label}",
       "merchantCapabilities": widget.config.applePay?.merchantCapabilities,
+      "supportedCountries": widget.config.applePay?.supportedCountries,
       "supportedNetworks": widget.config.supportedNetworks,
       "countryCode": "SA",
       "currencyCode": "SAR",
