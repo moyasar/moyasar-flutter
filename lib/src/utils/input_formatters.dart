@@ -28,7 +28,7 @@ String getFormattedExpiryDate(String date) {
   var buffer = StringBuffer();
 
   for (int i = 0; i < date.length; i++) {
-    buffer.write(date[i]);
+    buffer.write("\u200E${date[i]}");
     int nonZeroIndex = i + 1;
     if (nonZeroIndex == 2 && nonZeroIndex != date.length) {
       buffer.write(' / ');
@@ -61,5 +61,5 @@ String getFormattedCardNumber(String number) {
       }
     }
   }
-  return buffer.toString();
+  return "\u200E$buffer";
 }

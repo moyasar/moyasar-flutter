@@ -14,14 +14,18 @@ class PaymentMethods extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        if (Platform.isIOS) Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          child: ApplePay(
-            config: paymentConfig,
-            onPaymentResult: onPaymentResult,
-          ),
-        ) else const SizedBox.shrink(),
+        if (Platform.isIOS)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: ApplePay(
+              config: paymentConfig,
+              onPaymentResult: onPaymentResult,
+            ),
+          )
+        else
+          const SizedBox.shrink(),
         CreditCard(
+          locale: Localization.ar(),
           config: paymentConfig,
           onPaymentResult: onPaymentResult,
         )
