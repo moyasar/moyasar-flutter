@@ -1,3 +1,11 @@
+## 2.0.14
+
+The main theme of this release is to support latest versions of the Flutter tooling and the utilized dependencies.
+
+- [Flutter] Upgrade to latest versions of Flutter tooling; Flutter to `3.27.2`, Dart to `3.6.1`, DevTools to `2.40.2`.
+- [Apple Pay] Upgrade `pay` dependency to `3.1.0`.
+- [Credit Card] Upgrade `webview_flutter` dependency to `4.10.0`.
+ 
 ## 2.0.13
 
 - [Flutter] Upgrade to latest versions of Flutter tooling; Flutter to `3.24.0`, Dart to `3.5.0`, DevTools to `2.37.2`.

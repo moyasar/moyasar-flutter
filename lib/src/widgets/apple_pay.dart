@@ -113,7 +113,7 @@ class _ApplePayState extends State<ApplePay> {
                 PaymentConfiguration.fromJsonString(createConfigString()),
             paymentItems: [
               PaymentItem(
-                label: widget.config.applePay?.label,
+                label: widget.config.applePay!.label,
                 amount: (widget.config.amount / 100).toStringAsFixed(2),
               )
             ],
