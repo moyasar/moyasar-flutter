@@ -26,4 +26,14 @@ class ApplePayPaymentResponseSource implements PaymentResponseSource {
         gatewayId = json['gateway_id'],
         referenceNumber = json['reference_number'],
         message = json['message'];
+
+  Map<String, dynamic> toJson() {
+    return {
+      'type': type.toString().split('.').last,
+      'number': number,
+      'gateway_id': gatewayId,
+      'reference_number': referenceNumber,
+      'message': message,
+    };
+  }
 }
