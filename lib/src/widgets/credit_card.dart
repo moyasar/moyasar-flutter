@@ -151,15 +151,15 @@ class _CreditCardState extends State<CreditCard> {
               LengthLimitingTextInputFormatter(4),
               CardMonthInputFormatter(),
             ],
-            validator: (String? input) =>
-                CardUtils.validateDate(input, widget.locale),
+            validator: (String? input) => CardUtils.validateDate(
+                input!.replaceAll('\u200E', ''), widget.locale),
             onSaved: (value) {
-              List<String> expireDate = CardUtils.getExpiryDate(value!);
-              _cardData.month = expireDate.first;
-              _cardData.year = expireDate[1];
+              List<String> expireDate =
+              CardUtils.getExpiryDate(value!.replaceAll('\u200E', ''));
+              _cardData.month = expireDate.first.replaceAll('\u200E', '');
+              _cardData.year = expireDate[1].replaceAll('\u200E', '');
             },
-          ),
-          CardFormField(
+          ),          CardFormField(
             inputDecoration: buildInputDecoration(
               hintText: widget.locale.cvc,
               hintTextDirection: widget.textDirection,
