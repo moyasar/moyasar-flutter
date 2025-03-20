@@ -1,3 +1,10 @@
+## 2.0.15
+
+- [Credit Card] Improve RTL styling compatibility with localization libraries. (Thank you @ahmadkhedr)
+- [Flutter] Upgrade to latest versions of Flutter tooling; Flutter to `3.29.2`, Dart to `3.7.2`, DevTools to `2.42.3`.
+- [Moyasar] Upgrade `http` dependency to `1.3.0`.
+- [Apple Pay] Upgrade `pay` dependency to `3.2.0`.
+ 
 ## 2.0.14
 
 The main theme of this release is to support latest versions of the Flutter tooling and the utilized dependencies.
