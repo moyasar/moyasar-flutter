@@ -1,3 +1,7 @@
+## 2.0.16
+
+- [Moyasar] Add toJson() method to the response models. (Thank you @AliAlhajji)
+ 
 ## 2.0.15
 
 - [Credit Card] Improve RTL styling compatibility with localization libraries. (Thank you @ahmadkhedr)
