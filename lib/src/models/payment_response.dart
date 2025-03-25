@@ -60,6 +60,43 @@ class PaymentResponse {
       source = json['source'];
     }
   }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['status'] = status.name;
+    data['amount'] = amount;
+    data['fee'] = fee;
+    data['currency'] = currency;
+    data['refunded'] = refunded;
+    data['refunded_at'] = refundedAt;
+    data['captured'] = captured;
+    data['captured_at'] = capturedAt;
+    data['voided_at'] = voidedAt;
+    data['description'] = description;
+    data['amount_format'] = amountFormat;
+    data['fee_format'] = feeFormat;
+    data['refunded_format'] = refundedFormat;
+    data['captured_format'] = capturedFormat;
+    data['invoice_id'] = invoiceId;
+    data['ip'] = ip;
+    data['callback_url'] = callbackUrl;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
+    if (metadata != null) {
+      data['metadata'] = metadata;
+    }
+    if (source != null) {
+      if (source is CardPaymentResponseSource) {
+        data['source'] = (source as CardPaymentResponseSource).toJson();
+      } else if (source is ApplePayPaymentResponseSource) {
+        data['source'] = (source as ApplePayPaymentResponseSource).toJson();
+      } else {
+        data['source'] = source;
+      }
+    }
+    return data;
+  }
 }
 
 enum PaymentStatus { initiated, paid, failed, authorized, captured }
