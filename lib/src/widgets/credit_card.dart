@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:moyasar/moyasar.dart';
@@ -16,7 +18,7 @@ class CreditCard extends StatefulWidget {
       : textDirection =
             locale.languageCode == 'ar' ? TextDirection.rtl : TextDirection.ltr;
 
-  final Function onPaymentResult;
+  final FutureOr<void> Function(dynamic) onPaymentResult;
   final PaymentConfig config;
   final Localization locale;
   final TextDirection textDirection;
@@ -79,6 +81,12 @@ class _CreditCardState extends State<CreditCard> {
       widget.onPaymentResult(result);
       return;
     }
+
+    /// return the initiated status with the payment id
+    /// wait the [onPaymentResult] to complete to make sure that
+    /// the app register this payment on the backend before continue.
+    /// if [onPaymentResult] has any exception this will stop open [ThreeDSWebView]
+    await widget.onPaymentResult(result);
 
     final String transactionUrl =
         (result.source as CardPaymentResponseSource).transactionUrl;
