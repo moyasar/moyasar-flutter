@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:moyasar/moyasar.dart';
 
+import '../main.dart';
+
 class PaymentMethods extends StatelessWidget {
   final PaymentConfig paymentConfig;
   final Function onPaymentResult;
@@ -24,7 +26,61 @@ class PaymentMethods extends StatelessWidget {
         CreditCard(
           config: paymentConfig,
           onPaymentResult: onPaymentResult,
+        ),
+
+        //pay with STC Demo Button
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: SizedBox(
+            child: ElevatedButton(
+                style: ButtonStyle(
+                  minimumSize: const WidgetStatePropertyAll<Size>(Size.fromHeight(55)),
+                  backgroundColor: const WidgetStatePropertyAll<Color>( Colors.white,
+                  ),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => STCPaymentScreen(config: paymentConfig, onPaymentResult: (result) {
+                        if (result is PaymentResponse) {
+                          showToast(context, result.status.name);
+                          switch (result.status) {
+                            case PaymentStatus.paid:
+                            // handle success.
+                              break;
+                            case PaymentStatus.failed:
+                            // handle failure.
+                              break;
+                            case PaymentStatus.authorized:
+                            // handle authorized.
+                              break;
+                            default:
+                          }
+                          return;
+                        }
+                      }),
+                    ),
+                  );
+                },
+                child: const Text(
+                  'Pay with STC Demo',
+                  style: TextStyle(
+                    color: Colors.blue,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                )
+
+            ),
+          ),
         )
+
       ],
     );
   }
