@@ -1,1 +1,1 @@
-enum PaymentType { creditcard, applepay }
+enum PaymentType { creditcard, applepay, stcpay }

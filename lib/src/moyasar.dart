@@ -2,6 +2,9 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:moyasar/moyasar.dart';
 
+import 'models/payment_type.dart';
+import 'models/sources/otp/otp_request_source.dart';
+
 const version = '2.0.16';
 
 /// Payment service.
@@ -27,6 +30,52 @@ class Moyasar {
 
     if (res.statusCode.toString().startsWith('2')) {
       return PaymentResponse.fromJson(jsonBody, paymentRequest.source.type);
+    }
+
+    if (res.statusCode.toString().startsWith('5')) {
+      return ApiError(jsonBody['message']);
+    }
+
+    if (res.statusCode.toString().startsWith('4')) {
+      String errorType = jsonBody['type'];
+
+      switch (errorType) {
+        case 'authentication_error':
+          return AuthError(jsonBody['message']);
+        case 'network_error':
+          return NetworkError();
+        case 'timeout_error':
+          return TimeoutError();
+        default:
+          if (jsonBody['errors'] is String) {
+            return ValidationError.messageOnly(jsonBody['errors']);
+          }
+
+          return ValidationError(jsonBody['message'], jsonBody['errors']);
+      }
+    }
+
+    return UnspecifiedError(jsonBody?.toString() ?? "");
+  }
+
+  static Future<dynamic> verifyOTP(
+      {required String transactionURL,
+      required OtpRequestSource otpRequest}) async {
+    final body = jsonEncode(otpRequest.toJson());
+
+    final res = await http
+        .post(Uri.parse(transactionURL),
+            headers: {'Content-Type': 'application/json'}, body: body)
+        .onError((error, stackTrace) =>
+            http.Response(jsonEncode({'type': NetworkError.type}), 400))
+        .timeout(const Duration(seconds: 45),
+            onTimeout: () =>
+                http.Response(jsonEncode({'type': TimeoutError.type}), 408));
+
+    dynamic jsonBody = jsonDecode(res.body);
+
+    if (res.statusCode.toString().startsWith('2')) {
+      return PaymentResponse.fromJson(jsonBody, PaymentType.stcpay);
     }
 
     if (res.statusCode.toString().startsWith('5')) {

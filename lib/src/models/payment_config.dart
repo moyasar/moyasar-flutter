@@ -15,7 +15,7 @@ class PaymentConfig {
   /// In other words, 10 SAR = 10 * 100 Halalas.
   late int amount;
 
-  /// Must be in ISO 4217 3-letter currency code format.
+  /// Must be in ISO 3166-1 alpha-3 country code format.
   /// The default value is "SAR".
   String currency;
 
