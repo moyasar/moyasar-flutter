@@ -262,6 +262,7 @@ class _STCPaymentFormState extends State<STCPaymentComponent> {
   void closeKeyboard() => FocusManager.instance.primaryFocus?.unfocus();
 
   @override
+  @override
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,
@@ -275,7 +276,7 @@ class _STCPaymentFormState extends State<STCPaymentComponent> {
             SizedBox(height: 24),
             Text(
               widget.locale.mobileNumber,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
@@ -291,6 +292,12 @@ class _STCPaymentFormState extends State<STCPaymentComponent> {
                 LengthLimitingTextInputFormatter(12), // 05x xxx xxxx = 12 chars
               ],
               decoration: InputDecoration(
+                // ↓ Make the field more compact:
+                isDense: true,
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 12.0,
+                  horizontal: 16.0,
+                ),
                 hintText: '05x xxx xxxx',
                 hintStyle: TextStyle(
                   color: Colors.grey[400],
@@ -298,8 +305,6 @@ class _STCPaymentFormState extends State<STCPaymentComponent> {
                 ),
                 filled: true,
                 fillColor: Colors.white,
-                contentPadding: const EdgeInsets.symmetric(
-                    vertical: 20.0, horizontal: 16.0),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16.0),
                   borderSide: BorderSide(color: Colors.grey[300]!),
@@ -328,56 +333,58 @@ class _STCPaymentFormState extends State<STCPaymentComponent> {
               width: double.infinity,
               child: ElevatedButton(
                 style: ButtonStyle(
-                    minimumSize:
-                        const WidgetStatePropertyAll<Size>(Size.fromHeight(55)),
-                    backgroundColor: WidgetStatePropertyAll<Color>(
-                      _isValid ? purpleColor : lightPurpleColor,
-                    )),
+                  minimumSize:
+                  const WidgetStatePropertyAll<Size>(Size.fromHeight(55)),
+                  backgroundColor: WidgetStatePropertyAll<Color>(
+                    _isValid ? purpleColor : lightPurpleColor,
+                  ),
+                ),
                 onPressed: _isValid
                     ? () {
-                        if (_formKey.currentState!.validate()) {
-                          _payWithSTC();
-                        }
-                      }
+                  if (_formKey.currentState!.validate()) {
+                    _payWithSTC();
+                  }
+                }
                     : null,
                 child: _isSubmitting
                     ? const CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeWidth: 2,
-                      )
+                  color: Colors.white,
+                  strokeWidth: 2,
+                )
                     : Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Spacer(),
-                          Text(
-                            '${widget.locale.pay} ',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                            textDirection: widget.textDirection,
-                          ),
-                          SizedBox(
-                              width: 16,
-                              child: Image.asset(
-                                'assets/images/saudiriyal.png',
-                                color: Colors.white, // Tint color
-                                package: 'moyasar',
-                              )),
-                          const SizedBox(width: 4),
-                          Text(
-                            getAmount(widget.config.amount),
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                            textDirection: widget.textDirection,
-                          ),
-                          Spacer(),
-                        ],
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Spacer(),
+                    Text(
+                      '${widget.locale.pay} ',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
                       ),
+                      textDirection: widget.textDirection,
+                    ),
+                    SizedBox(
+                      width: 16,
+                      child: Image.asset(
+                        'assets/images/saudiriyal.png',
+                        color: Colors.white,
+                        package: 'moyasar',
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      getAmount(widget.config.amount),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                      textDirection: widget.textDirection,
+                    ),
+                    Spacer(),
+                  ],
+                ),
               ),
             ),
             SizedBox(height: 24),

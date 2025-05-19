@@ -183,6 +183,7 @@ class _CreditCardState extends State<CreditCard> {
                 fontSize: 16,
                 color: _nameError != null ? Colors.red : Colors.black,
               )),
+          SizedBox(height: 8,),
           Container(
             decoration: BoxDecoration(
               color: Colors.white,
@@ -308,6 +309,7 @@ class _CreditCardState extends State<CreditCard> {
               ],
             ),
           ),
+          SizedBox(height: 8,),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: SizedBox(
