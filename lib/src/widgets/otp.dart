@@ -3,8 +3,8 @@ import 'package:moyasar/src/models/sources/otp/otp_request_source.dart';
 
 import '../../moyasar.dart';
 
-class OtpScreen extends StatefulWidget {
-  OtpScreen(
+class OtpComponent extends StatefulWidget {
+  OtpComponent(
       {super.key,
       required this.transactionUrl,
       required this.onPaymentResult,
@@ -13,7 +13,7 @@ class OtpScreen extends StatefulWidget {
             locale.languageCode == 'ar' ? TextDirection.rtl : TextDirection.ltr;
 
   @override
-  _OtpScreenState createState() => _OtpScreenState();
+  _OtpComponentState createState() => _OtpComponentState();
 
   final String transactionUrl;
   final Function onPaymentResult;
@@ -21,7 +21,7 @@ class OtpScreen extends StatefulWidget {
   final TextDirection textDirection;
 }
 
-class _OtpScreenState extends State<OtpScreen> {
+class _OtpComponentState extends State<OtpComponent> {
   final _otpController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _isSubmitting = false;
@@ -49,124 +49,7 @@ class _OtpScreenState extends State<OtpScreen> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Row(
-                children: [
-                  Text(
-                    widget.locale.oneTimePassword,
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
-                  Spacer(),
-                ],
-              ),
-              SizedBox(height: 30),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.1),
-                      spreadRadius: 1,
-                      blurRadius: 5,
-                      offset: Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: TextFormField(
-                  controller: _otpController,
-                  decoration: InputDecoration(
-                    hintText: 'XXXXXX',
-                    hintStyle: TextStyle(
-                      color: Colors.grey.shade400,
-                      letterSpacing: 8,
-                      fontSize: 16,
-                    ),
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
-                    ),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                    // Add shadow through elevation
-                  ),
-                  textAlign: TextAlign.start,
-                  style: TextStyle(
-                    fontSize: 24,
-                    letterSpacing: 10,
-                  ),
-                  keyboardType: TextInputType.number,
-                  maxLength: 6,
-                  // Hide the counter
-                  buildCounter: (context, {required currentLength, required isFocused, maxLength}) => null,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return widget.locale.pleaseEnterOtp;
-                    }
-                    if (value.length != 6) {
-                      return widget.locale.otpValidation;
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              SizedBox(height: 30),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      // Process the OTP
-                      _sendOtp();
-                    }
-                  },
-                  style: ButtonStyle(
-                      minimumSize: const WidgetStatePropertyAll<Size>(
-                          Size.fromHeight(55)),
-                      backgroundColor: WidgetStatePropertyAll<Color>(
-                        _isFormValid ? purpleColor : lightPurpleColor,
-                      )),
-                  child: _isSubmitting
-                      ? const CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2,
-                        )
-                      : Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 15),
-                          child: Text(
-                            widget.locale.confirm,
-                            style: TextStyle(fontSize: 18, color: Colors.white),
-                          ),
-                        ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  void closeKeyboard() => FocusManager.instance.primaryFocus?.unfocus();
 
   void _sendOtp() async {
     setState(() => _isSubmitting = true);
@@ -188,7 +71,121 @@ class _OtpScreenState extends State<OtpScreen> {
     }
   }
 
-  void closeKeyboard() => FocusManager.instance.primaryFocus?.unfocus();
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: _formKey,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(
+              children: [
+                Text(
+                  widget.locale.oneTimePassword,
+                  style: TextStyle(
+                    fontSize: 16,
+                  ),
+                ),
+                Spacer(),
+              ],
+            ),
+            SizedBox(height: 30),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.1),
+                    spreadRadius: 1,
+                    blurRadius: 5,
+                    offset: Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: TextFormField(
+                controller: _otpController,
+                decoration: InputDecoration(
+                  hintText: 'XXXXXX',
+                  hintStyle: TextStyle(
+                    color: Colors.grey.shade400,
+                    letterSpacing: 8,
+                    fontSize: 16,
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                  // Add shadow through elevation
+                ),
+                textAlign: TextAlign.start,
+                style: TextStyle(
+                  fontSize: 24,
+                  letterSpacing: 10,
+                ),
+                keyboardType: TextInputType.number,
+                maxLength: 6,
+                // Hide the counter
+                buildCounter: (context, {required currentLength, required isFocused, maxLength}) => null,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return widget.locale.pleaseEnterOtp;
+                  }
+                  if (value.length != 6) {
+                    return widget.locale.otpValidation;
+                  }
+                  return null;
+                },
+              ),
+            ),
+            SizedBox(height: 30),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    // Process the OTP
+                    _sendOtp();
+                  }
+                },
+                style: ButtonStyle(
+                    minimumSize: const WidgetStatePropertyAll<Size>(
+                        Size.fromHeight(55)),
+                    backgroundColor: WidgetStatePropertyAll<Color>(
+                      _isFormValid ? purpleColor : lightPurpleColor,
+                    )),
+                child: _isSubmitting
+                    ? const CircularProgressIndicator(
+                  color: Colors.white,
+                  strokeWidth: 2,
+                )
+                    : Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 15),
+                  child: Text(
+                    widget.locale.confirm,
+                    style: TextStyle(fontSize: 18, color: Colors.white),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 Color purpleColor = Color(0xFF470793);

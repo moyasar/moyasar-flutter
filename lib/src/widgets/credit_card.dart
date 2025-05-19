@@ -183,7 +183,6 @@ class _CreditCardState extends State<CreditCard> {
                 fontSize: 16,
                 color: _nameError != null ? Colors.red : Colors.black,
               )),
-          SizedBox(height: 8,),
           Container(
             decoration: BoxDecoration(
               color: Colors.white,
@@ -309,7 +308,6 @@ class _CreditCardState extends State<CreditCard> {
               ],
             ),
           ),
-          SizedBox(height: 16,),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: SizedBox(
@@ -319,7 +317,7 @@ class _CreditCardState extends State<CreditCard> {
                   backgroundColor: WidgetStatePropertyAll<Color>(
                     _isButtonEnabled ? blueColor : lightBlueColor,
                   ),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.0),
                     ),
@@ -463,10 +461,6 @@ InputDecoration buildInputDecoration(
       hintText: hintText,
       border: hideBorder ? InputBorder.none : defaultEnabledBorder,
       hintTextDirection: hintTextDirection,
-      // focusedErrorBorder: defaultErrorBorder,
-      // enabledBorder: defaultEnabledBorder,
-      // focusedBorder: defaultFocusedBorder,
-      // errorBorder: defaultErrorBorder,
       contentPadding: const EdgeInsets.all(8.0));
 }
 

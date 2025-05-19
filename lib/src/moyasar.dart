@@ -5,7 +5,7 @@ import 'package:moyasar/moyasar.dart';
 import 'models/payment_type.dart';
 import 'models/sources/otp/otp_request_source.dart';
 
-const version = '2.0.16';
+const version = '2.0.17';
 
 /// Payment service.
 ///

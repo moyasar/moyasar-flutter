@@ -12,13 +12,15 @@ class StcRequestSource implements PaymentRequestSource {
   late String referenceNumber;
   late String transactionUrl;
   late String message;
+  final String? branch;
 
-  StcRequestSource({required this.mobile, this.cashier});
+  StcRequestSource({required this.mobile, this.cashier, this.branch});
 
   @override
   Map<String, dynamic> toJson() => {
     'type': type.name,
     'mobile': mobile,
     'cashier': cashier,
+    'branch': branch,
   };
 }

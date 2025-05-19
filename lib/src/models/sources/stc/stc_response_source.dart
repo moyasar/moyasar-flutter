@@ -9,6 +9,7 @@ class StcResponseSource implements PaymentResponseSource {
   final String? referenceNumber;
   final String? transactionUrl;
   final String? message;
+  final String? branch;
 
   StcResponseSource({
     required this.type,
@@ -16,6 +17,7 @@ class StcResponseSource implements PaymentResponseSource {
     required this.referenceNumber,
     required this.transactionUrl,
     this.message,
+    this.branch
   });
 
   factory StcResponseSource.fromJson(Map<String, dynamic> json) {
@@ -25,6 +27,7 @@ class StcResponseSource implements PaymentResponseSource {
       referenceNumber: json['referenceNumber'],
       transactionUrl: json['transaction_url'],
       message: json['message'],
+      branch: json['branch'],
     );
   }
 
@@ -35,6 +38,7 @@ class StcResponseSource implements PaymentResponseSource {
       'referenceNumber': referenceNumber,
       'transaction_url': transactionUrl,
       'message': message,
+      'branch': branch,
     };
   }
 }

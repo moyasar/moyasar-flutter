@@ -8,8 +8,8 @@ import 'package:moyasar/src/models/sources/stc/stc_request_source.dart';
 import '../models/sources/stc/stc_response_source.dart';
 import 'otp.dart';
 
-class STCPaymentScreen extends StatefulWidget {
-  STCPaymentScreen(
+class STCPaymentComponent extends StatefulWidget {
+  STCPaymentComponent(
       {super.key,
       required this.config,
       required this.onPaymentResult,
@@ -23,11 +23,12 @@ class STCPaymentScreen extends StatefulWidget {
   final TextDirection textDirection;
 
   @override
-  State<STCPaymentScreen> createState() => _STCPaymentScreenState();
+  State<STCPaymentComponent> createState() => _STCPaymentFormState();
 }
 
-class _STCPaymentScreenState extends State<STCPaymentScreen> {
+class _STCPaymentFormState extends State<STCPaymentComponent> {
   final TextEditingController _controller = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
   bool _isValid = false;
   bool _has05Prefix = false;
   bool _isSubmitting = false;
@@ -136,8 +137,9 @@ class _STCPaymentScreenState extends State<STCPaymentScreen> {
       processedDigits = digitsOnly.substring(0, min(digitsOnly.length, 10));
     } else {
       // No prefix yet, add "05" and limit remaining digits
-      processedDigits = '05' + digitsOnly.substring(0, min(digitsOnly.length, 8));
-      hasPrefix = true;  // Now we have a prefix
+      processedDigits =
+          '05${digitsOnly.substring(0, min(digitsOnly.length, 8))}';
+      hasPrefix = true; // Now we have a prefix
     }
 
     // Format the phone number
@@ -147,9 +149,11 @@ class _STCPaymentScreenState extends State<STCPaymentScreen> {
     if (processedDigits.length <= 3) {
       formatted = processedDigits;
     } else if (processedDigits.length <= 6) {
-      formatted = '${processedDigits.substring(0, 3)} ${processedDigits.substring(3)}';
+      formatted =
+          '${processedDigits.substring(0, 3)} ${processedDigits.substring(3)}';
     } else {
-      formatted = '${processedDigits.substring(0, 3)} ${processedDigits.substring(3, 6)} ${processedDigits.substring(6)}';
+      formatted =
+          '${processedDigits.substring(0, 3)} ${processedDigits.substring(3, 6)} ${processedDigits.substring(6)}';
     }
 
     // Only update if the text has changed
@@ -192,7 +196,8 @@ class _STCPaymentScreenState extends State<STCPaymentScreen> {
       _controller.removeListener(_handleTextChanges);
       _controller.value = TextEditingValue(
         text: formatted,
-        selection: TextSelection.collapsed(offset: min(newCursorPosition, formatted.length)),
+        selection: TextSelection.collapsed(
+            offset: min(newCursorPosition, formatted.length)),
       );
       _controller.addListener(_handleTextChanges);
     }
@@ -204,150 +209,13 @@ class _STCPaymentScreenState extends State<STCPaymentScreen> {
     });
   }
 
-// Helper method to format phone number
-  String _formatPhoneNumber(String digitsOnly) {
-    if (digitsOnly.isEmpty) return '';
-
-    // Ensure we don't exceed 10 digits
-    digitsOnly = digitsOnly.substring(0, min(digitsOnly.length, 10));
-
-    String formatted = '';
-
-    // Keep original digits (don't force 05 prefix)
-    if (digitsOnly.length <= 2) {
-      return digitsOnly;
+  String? _validatePhoneNumber(String? value) {
+    // We'll use this for form validation, but the real-time validation
+    // is handled by _handleTextChanges
+    if (!_isValid && value != null && value.isNotEmpty) {
+      return widget.locale.invalidPhoneNumber;
     }
-
-    // Format as 05x
-    if (digitsOnly.length <= 3) {
-      return digitsOnly;
-    }
-
-    // Format as 05x xxx
-    if (digitsOnly.length <= 6) {
-      return '${digitsOnly.substring(0, 3)} ${digitsOnly.substring(3)}';
-    }
-
-    // Format as 05x xxx xxxx
-    return '${digitsOnly.substring(0, 3)} ${digitsOnly.substring(3, 6)} ${digitsOnly.substring(6)}';
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Spacer(),
-             Text(
-              widget.locale.mobileNumber,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _controller,
-              keyboardType: TextInputType.phone,
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'[\d ]')),
-                LengthLimitingTextInputFormatter(12), // 05x xxx xxxx = 12 chars
-              ],
-              decoration: InputDecoration(
-                hintText: '05x xxx xxxx',
-                hintStyle: TextStyle(
-                  color: Colors.grey[400],
-                  fontSize: 20,
-                ),
-                filled: true,
-                fillColor: Colors.white,
-                contentPadding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 16.0),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16.0),
-                  borderSide: BorderSide(color: Colors.grey[300]!),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16.0),
-                  borderSide: BorderSide(color: Colors.grey[300]!),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16.0),
-                  borderSide: BorderSide(color: purpleColor, width: 1.5),
-                ),
-                errorText: _controller.text.isNotEmpty && !_isValid
-                    ? widget.locale.invalidPhoneNumber
-                    : null,
-                errorBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16.0),
-                  borderSide: const BorderSide(color: Colors.red),
-                ),
-                errorStyle: const TextStyle(color: Colors.red),
-              ),
-              style: const TextStyle(fontSize: 20),
-            ),
-            const SizedBox(height: 32),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                style: ButtonStyle(
-                    minimumSize:
-                        const WidgetStatePropertyAll<Size>(Size.fromHeight(55)),
-                    backgroundColor: WidgetStatePropertyAll<Color>(
-                      _isValid ? purpleColor : lightPurpleColor,
-                    )),
-                onPressed: _isValid
-                    ? () {
-                        _payWithSTC();
-                      }
-                    : null,
-                child: _isSubmitting
-                    ? const CircularProgressIndicator(
-                  color: Colors.white,
-                  strokeWidth: 2,
-                ) : Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Spacer(),
-                    Text(
-                      '${widget.locale.pay} ',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                      textDirection: widget.textDirection,
-                    ),
-                    SizedBox(
-                        width: 16,
-                        child: Image.asset(
-                          'assets/images/saudiriyal.png',
-                          color: Colors.white, // Tint color
-                          package: 'moyasar',
-                        )),
-                    const SizedBox(width: 4),
-                    Text(
-                      getAmount(widget.config.amount),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                      textDirection: widget.textDirection,
-                    ),
-                    Spacer(),
-                  ],
-                ),
-              ),
-            ),
-            Spacer(),
-          ],
-        ),
-      ),
-    );
+    return null;
   }
 
   String getAmount(int amount) {
@@ -380,16 +248,146 @@ class _STCPaymentScreenState extends State<STCPaymentScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => OtpScreen(transactionUrl: transactionUrl, onPaymentResult: widget.onPaymentResult,),
-        ),
+            builder: (context) => Scaffold(
+              appBar: AppBar(),
+              body: OtpComponent(
+                transactionUrl: transactionUrl,
+                onPaymentResult: widget.onPaymentResult,
+              ),
+            )),
       );
     }
   }
 
   void closeKeyboard() => FocusManager.instance.primaryFocus?.unfocus();
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: _formKey,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Spacer(),
+            SizedBox(height: 24),
+            Text(
+              widget.locale.mobileNumber,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _controller,
+              keyboardType: TextInputType.phone,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              validator: _validatePhoneNumber,
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'[\d ]')),
+                LengthLimitingTextInputFormatter(12), // 05x xxx xxxx = 12 chars
+              ],
+              decoration: InputDecoration(
+                hintText: '05x xxx xxxx',
+                hintStyle: TextStyle(
+                  color: Colors.grey[400],
+                  fontSize: 20,
+                ),
+                filled: true,
+                fillColor: Colors.white,
+                contentPadding: const EdgeInsets.symmetric(
+                    vertical: 20.0, horizontal: 16.0),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16.0),
+                  borderSide: BorderSide(color: Colors.grey[300]!),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16.0),
+                  borderSide: BorderSide(color: Colors.grey[300]!),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16.0),
+                  borderSide: BorderSide(color: purpleColor, width: 1.5),
+                ),
+                errorBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16.0),
+                  borderSide: const BorderSide(color: Colors.red),
+                ),
+                errorStyle: const TextStyle(color: Colors.red),
+                errorText: _controller.text.isNotEmpty && !_isValid
+                    ? widget.locale.invalidPhoneNumber
+                    : null,
+              ),
+              style: const TextStyle(fontSize: 20),
+            ),
+            const SizedBox(height: 32),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                style: ButtonStyle(
+                    minimumSize:
+                        const WidgetStatePropertyAll<Size>(Size.fromHeight(55)),
+                    backgroundColor: WidgetStatePropertyAll<Color>(
+                      _isValid ? purpleColor : lightPurpleColor,
+                    )),
+                onPressed: _isValid
+                    ? () {
+                        if (_formKey.currentState!.validate()) {
+                          _payWithSTC();
+                        }
+                      }
+                    : null,
+                child: _isSubmitting
+                    ? const CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2,
+                      )
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Spacer(),
+                          Text(
+                            '${widget.locale.pay} ',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                            textDirection: widget.textDirection,
+                          ),
+                          SizedBox(
+                              width: 16,
+                              child: Image.asset(
+                                'assets/images/saudiriyal.png',
+                                color: Colors.white, // Tint color
+                                package: 'moyasar',
+                              )),
+                          const SizedBox(width: 4),
+                          Text(
+                            getAmount(widget.config.amount),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                            textDirection: widget.textDirection,
+                          ),
+                          Spacer(),
+                        ],
+                      ),
+              ),
+            ),
+            SizedBox(height: 24),
+            Spacer(),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 Color purpleColor = Color(0xFF470793);
 Color lightPurpleColor = Color(0xFFE3D3F6);
-
-

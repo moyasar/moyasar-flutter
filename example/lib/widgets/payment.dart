@@ -16,13 +16,16 @@ class PaymentMethods extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        if (Platform.isIOS) Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          child: ApplePay(
-            config: paymentConfig,
-            onPaymentResult: onPaymentResult,
-          ),
-        ) else const SizedBox.shrink(),
+        if (Platform.isIOS)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: ApplePay(
+              config: paymentConfig,
+              onPaymentResult: onPaymentResult,
+            ),
+          )
+        else
+          const SizedBox.shrink(),
         CreditCard(
           config: paymentConfig,
           onPaymentResult: onPaymentResult,
@@ -34,10 +37,12 @@ class PaymentMethods extends StatelessWidget {
           child: SizedBox(
             child: ElevatedButton(
                 style: ButtonStyle(
-                  minimumSize: const WidgetStatePropertyAll<Size>(Size.fromHeight(55)),
-                  backgroundColor: const WidgetStatePropertyAll<Color>( Colors.white,
+                  minimumSize:
+                      const WidgetStatePropertyAll<Size>(Size.fromHeight(55)),
+                  backgroundColor: const WidgetStatePropertyAll<Color>(
+                    Colors.white,
                   ),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.0),
                     ),
@@ -47,25 +52,27 @@ class PaymentMethods extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => STCPaymentScreen(config: paymentConfig, onPaymentResult: (result) {
-                        if (result is PaymentResponse) {
-                          showToast(context, result.status.name);
-                          switch (result.status) {
-                            case PaymentStatus.paid:
-                            // handle success.
-                              break;
-                            case PaymentStatus.failed:
-                            // handle failure.
-                              break;
-                            case PaymentStatus.authorized:
-                            // handle authorized.
-                              break;
-                            default:
-                          }
-                          return;
-                        }
-                      }),
-                    ),
+                        builder: (context) => Scaffold(
+                            body: STCPaymentComponent(
+                                config: paymentConfig,
+                                onPaymentResult: (result) {
+                                  if (result is PaymentResponse) {
+                                    showToast(context, result.status.name);
+                                    switch (result.status) {
+                                      case PaymentStatus.paid:
+                                        // handle success.
+                                        break;
+                                      case PaymentStatus.failed:
+                                        // handle failure.
+                                        break;
+                                      case PaymentStatus.authorized:
+                                        // handle authorized.
+                                        break;
+                                      default:
+                                    }
+                                    return;
+                                  }
+                                }))),
                   );
                 },
                 child: const Text(
@@ -75,12 +82,9 @@ class PaymentMethods extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),
-                )
-
-            ),
+                )),
           ),
         )
-
       ],
     );
   }
