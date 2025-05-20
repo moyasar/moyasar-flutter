@@ -261,43 +261,45 @@ class _STCPaymentFormState extends State<STCPaymentComponent> {
 
   void closeKeyboard() => FocusManager.instance.primaryFocus?.unfocus();
 
-  @override
+
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Padding(
+    return Scaffold(
+      appBar: AppBar(),
+      body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
             Spacer(),
-            SizedBox(height: 24),
+
+            // ↓ Show error in this label if invalid, otherwise show the normal title
             Text(
-              widget.locale.mobileNumber,
-              style: const TextStyle(
+              _controller.text.isNotEmpty && !_isValid
+                  ? widget.locale.invalidPhoneNumber
+                  : widget.locale.mobileNumber,
+              style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
+                color: _controller.text.isNotEmpty && !_isValid
+                    ? Colors.red    // error color
+                    : Colors.black, // normal color
               ),
+              textDirection: widget.textDirection,
             ),
-            const SizedBox(height: 16),
-            TextFormField(
+
+            const SizedBox(height: 12),
+
+            // TextField without the old errorText under it
+            TextField(
               controller: _controller,
               keyboardType: TextInputType.phone,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              validator: _validatePhoneNumber,
               inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp(r'[\d ]')),
                 LengthLimitingTextInputFormatter(12), // 05x xxx xxxx = 12 chars
               ],
               decoration: InputDecoration(
-                // ↓ Make the field more compact:
-                isDense: true,
-                contentPadding: const EdgeInsets.symmetric(
-                  vertical: 12.0,
-                  horizontal: 16.0,
-                ),
                 hintText: '05x xxx xxxx',
                 hintStyle: TextStyle(
                   color: Colors.grey[400],
@@ -305,6 +307,10 @@ class _STCPaymentFormState extends State<STCPaymentComponent> {
                 ),
                 filled: true,
                 fillColor: Colors.white,
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 12.0,
+                  horizontal: 16.0,
+                ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16.0),
                   borderSide: BorderSide(color: Colors.grey[300]!),
@@ -317,33 +323,34 @@ class _STCPaymentFormState extends State<STCPaymentComponent> {
                   borderRadius: BorderRadius.circular(16.0),
                   borderSide: BorderSide(color: purpleColor, width: 1.5),
                 ),
-                errorBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16.0),
-                  borderSide: const BorderSide(color: Colors.red),
-                ),
-                errorStyle: const TextStyle(color: Colors.red),
-                errorText: _controller.text.isNotEmpty && !_isValid
-                    ? widget.locale.invalidPhoneNumber
-                    : null,
+                // ▼ Removed the old errorText here
+                // errorText: _controller.text.isNotEmpty && !_isValid
+                //     ? widget.locale.invalidPhoneNumber
+                //     : null,
               ),
               style: const TextStyle(fontSize: 20),
+              onChanged: (_) {
+                // ensure label updates when user types
+                setState(() {});
+              },
             ),
+
             const SizedBox(height: 32),
+
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 style: ButtonStyle(
-                  minimumSize:
-                  const WidgetStatePropertyAll<Size>(Size.fromHeight(55)),
+                  minimumSize: const WidgetStatePropertyAll<Size>(
+                    Size.fromHeight(55),
+                  ),
                   backgroundColor: WidgetStatePropertyAll<Color>(
                     _isValid ? purpleColor : lightPurpleColor,
                   ),
                 ),
                 onPressed: _isValid
                     ? () {
-                  if (_formKey.currentState!.validate()) {
-                    _payWithSTC();
-                  }
+                  _payWithSTC();
                 }
                     : null,
                 child: _isSubmitting
@@ -354,7 +361,7 @@ class _STCPaymentFormState extends State<STCPaymentComponent> {
                     : Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Spacer(),
+                    const Spacer(),
                     Text(
                       '${widget.locale.pay} ',
                       style: const TextStyle(
@@ -382,12 +389,13 @@ class _STCPaymentFormState extends State<STCPaymentComponent> {
                       ),
                       textDirection: widget.textDirection,
                     ),
-                    Spacer(),
+                    const Spacer(),
                   ],
                 ),
               ),
             ),
-            SizedBox(height: 24),
+
+            const SizedBox(height: 24),
             Spacer(),
           ],
         ),
