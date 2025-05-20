@@ -58,14 +58,30 @@ class _CoffeeShopState extends State<CoffeeShop> {
     }
 
     // handle failures.
-    if (result is ApiError) {}
-    if (result is AuthError) {}
-    if (result is ValidationError) {}
-    if (result is PaymentCanceledError) {}
-    if (result is UnprocessableTokenError) {}
-    if (result is TimeoutError) {}
-    if (result is NetworkError) {}
-    if (result is UnspecifiedError) {}
+    if (result is ApiError) {
+      showToast(context, result.message);
+    }
+    if (result is AuthError) {
+      showToast(context, result.message);
+    }
+    if (result is ValidationError) {
+      showToast(context, result.message);
+    }
+    if (result is PaymentCanceledError) {
+      showToast(context, result.message);
+    }
+    if (result is UnprocessableTokenError) {
+      showToast(context, result.message);
+    }
+    if (result is TimeoutError) {
+      showToast(context, result.message);
+    }
+    if (result is NetworkError) {
+      showToast(context, result.message);
+    }
+    if (result is UnspecifiedError) {
+      showToast(context, result.message);
+    }
   }
 
   @override
