@@ -70,8 +70,6 @@ class _OtpComponentState extends State<OtpComponent> {
       Navigator.pop(context);
     }
   }
-
-  @override
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -79,93 +77,93 @@ class _OtpComponentState extends State<OtpComponent> {
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Row(
-              children: [
-                Text(
-                  widget.locale.oneTimePassword,
-                  style: const TextStyle(fontSize: 16),
-                ),
-                const Spacer(),
-              ],
-            ),
-            const SizedBox(height: 30),
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.1),
-                    spreadRadius: 1,
-                    blurRadius: 5,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
+            Text(
+              _otpController.text.isNotEmpty && !_isFormValid
+                  ? widget.locale.otpValidation
+                  : widget.locale.oneTimePassword,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: _otpController.text.isNotEmpty && !_isFormValid
+                    ? Colors.red
+                    : Colors.black,
               ),
-              child: TextFormField(
-                controller: _otpController,
-                keyboardType: TextInputType.number,
-                maxLength: 6,
-                textAlign: TextAlign.start,
-                style: const TextStyle(
-                  fontSize: 24,
-                  letterSpacing: 10,
+              textDirection: widget.textDirection,
+            ),
+
+            const SizedBox(height: 12),
+
+            TextFormField(
+              controller: _otpController,
+              keyboardType: TextInputType.number,
+              maxLength: 10, // allow 4–10 digits
+              textAlign: TextAlign.start,
+              style: const TextStyle(
+                fontSize: 20,
+                letterSpacing: 10,
+              ),
+              buildCounter:
+                  (context, { required currentLength, required isFocused, maxLength }) => null,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return widget.locale.pleaseEnterOtp;
+                }
+                if (value.length < 4 || value.length > 10) {
+                  return widget.locale.otpValidation;
+                }
+                return null;
+              },
+              decoration: InputDecoration(
+                hintText: 'XXXXXX',
+                hintStyle: const TextStyle(
+                  color: Colors.grey,
+                  letterSpacing: 8,
+                  fontSize: 20,
                 ),
-                buildCounter:
-                    (context, {required currentLength, required isFocused, maxLength}) =>
-                null,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return widget.locale.pleaseEnterOtp;
-                  }
-                  if (value.length != 6) {
-                    return widget.locale.otpValidation;
-                  }
-                  return null;
-                },
-                decoration: InputDecoration(
-                  hintText: 'XXXXXX',
-                  hintStyle: TextStyle(
-                    color: Colors.grey.shade400,
-                    letterSpacing: 8,
-                    fontSize: 16,
-                  ),
+                isDense: true,
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 12.0,
+                ),
+                filled: true,
+                fillColor: Colors.white,
 
-                  // ↓ Make this field more compact:
-                  isDense: true, // ← reduces default vertical space
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 8, // ← shrink this from 15 to around 8
-                  ),
-
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
-                  ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16.0),
+                  borderSide: BorderSide(color: Colors.grey[300]!),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16.0),
+                  borderSide: BorderSide(color: Colors.grey[300]!),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16.0),
+                  borderSide: BorderSide(color: purpleColor, width: 1.5),
                 ),
               ),
+
+              onChanged: (value) {
+                setState(() {
+                  _isFormValid = value.isNotEmpty && value.length >= 4 && value.length <= 10;
+                });
+              },
             ),
+
             const SizedBox(height: 30),
+
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {
+                onPressed: _isFormValid
+                    ? () {
                   if (_formKey.currentState!.validate()) {
                     _sendOtp();
                   }
-                },
+                }
+                    : null,
                 style: ButtonStyle(
                   minimumSize:
                   const WidgetStatePropertyAll<Size>(Size.fromHeight(55)),
@@ -182,8 +180,7 @@ class _OtpComponentState extends State<OtpComponent> {
                   padding: const EdgeInsets.symmetric(vertical: 15),
                   child: Text(
                     widget.locale.confirm,
-                    style:
-                    const TextStyle(fontSize: 18, color: Colors.white),
+                    style: const TextStyle(fontSize: 18, color: Colors.white),
                   ),
                 ),
               ),
@@ -193,7 +190,6 @@ class _OtpComponentState extends State<OtpComponent> {
       ),
     );
   }
-
 }
 
 Color purpleColor = Color(0xFF470793);
