@@ -37,7 +37,9 @@ class _CoffeeShopState extends State<CoffeeShop> {
       applePay: ApplePayConfig(
           merchantId: 'merchant.mysr.fghurayri',
           label: 'Blue Coffee Beans',
-          manual: false));
+          manual: false)
+     // givenID: "UUID" // The ID of the payment to be created. (it's generated from your side uuid (v4 is recommended) to apply Idempotency or you can keep it null)
+      );
 
   void onPaymentResult(result) {
     if (result is PaymentResponse) {

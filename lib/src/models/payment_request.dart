@@ -10,7 +10,7 @@ class PaymentRequest {
   String? description;
   Map<String, dynamic>? metadata;
   late PaymentRequestSource source;
-
+  String? givenID;
   String callbackUrl = PaymentConfig.callbackUrl;
 
   PaymentRequest(
@@ -20,6 +20,7 @@ class PaymentRequest {
     description = config.description;
     metadata = config.metadata;
     source = paymentRequestSource;
+    givenID = config.givenID;
   }
 
   Map<String, dynamic> toJson() => {
@@ -29,5 +30,6 @@ class PaymentRequest {
         'description': description,
         'metadata': metadata,
         'callback_url': callbackUrl,
+    if (givenID != null) 'given_id': givenID,
       };
 }

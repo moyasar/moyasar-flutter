@@ -55,24 +55,7 @@ class PaymentMethods extends StatelessWidget {
                         builder: (context) => Scaffold(
                             body: STCPaymentComponent(
                                 config: paymentConfig,
-                                onPaymentResult: (result) {
-                                  if (result is PaymentResponse) {
-                                    showToast(context, result.status.name);
-                                    switch (result.status) {
-                                      case PaymentStatus.paid:
-                                        // handle success.
-                                        break;
-                                      case PaymentStatus.failed:
-                                        // handle failure.
-                                        break;
-                                      case PaymentStatus.authorized:
-                                        // handle authorized.
-                                        break;
-                                      default:
-                                    }
-                                    return;
-                                  }
-                                }))),
+                                onPaymentResult: onPaymentResult))),
                   );
                 },
                 child: const Text(
