@@ -58,7 +58,7 @@ class Localization {
     this.oneTimePassword = 'One-Time Password',
     this.confirm = 'Confirm',
     this.pleaseEnterOtp = 'Please enter the OTP',
-    this.otpValidation = 'OTP must be 6 digits',
+    this.otpValidation = 'OTP must be 4 digits',
   });
 
   const Localization.ar({
@@ -85,6 +85,6 @@ class Localization {
     this.oneTimePassword = 'رمز التحقق',
     this.confirm = 'تأكيد',
     this.pleaseEnterOtp = 'يرجى إدخال رمز التحقق',
-    this.otpValidation = 'يجب أن يتكون رمز التحقق من 6 أرقام',
+    this.otpValidation = 'يجب أن يتكون رمز التحقق من 4 أرقام',
   });
 }
