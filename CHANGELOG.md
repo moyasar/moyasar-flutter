@@ -3,10 +3,9 @@
 
 New Features 🚀
 - [STC Payment] Added support for STC payment.
-
 - [UI] UI enhancements: new UI.
-
 - [Moyasar] Added Saudi Riyal currency symbol.
+- [Moyasar] Adding given_id 
 
 ## 2.0.16
 
