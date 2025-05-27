@@ -35,7 +35,7 @@ class _CoffeeShopState extends State<CoffeeShop> {
       metadata: {'size': '250g', 'code': 255},
       creditCard: CreditCardConfig(saveCard: false, manual: false),
       applePay: ApplePayConfig(
-          merchantId: 'merchant.mysr.fghurayri',
+          merchantId: 'merchant.com.mysr.apple',
           label: 'Blue Coffee Beans',
           manual: false));
 
