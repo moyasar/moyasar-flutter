@@ -1,3 +1,12 @@
+
+## 2.0.17 
+
+New Features 🚀
+- [STC Payment] Added support for STC payment.
+- [UI] UI enhancements: new UI.
+- [Moyasar] Added Saudi Riyal currency symbol.
+- [Moyasar] Adding given_id 
+
 ## 2.0.16
 
 - [Moyasar] Add toJson() method to the response models. (Thank you @AliAlhajji)

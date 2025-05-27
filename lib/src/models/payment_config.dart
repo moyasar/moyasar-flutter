@@ -15,7 +15,7 @@ class PaymentConfig {
   /// In other words, 10 SAR = 10 * 100 Halalas.
   late int amount;
 
-  /// Must be in ISO 4217 3-letter currency code format.
+  /// Must be in ISO 3166-1 alpha-3 country code format.
   /// The default value is "SAR".
   String currency;
 
@@ -37,6 +37,9 @@ class PaymentConfig {
   /// The config required to extend the Credit Card payment feature.
   CreditCardConfig? creditCard;
 
+  /// given_id It is going be the ID of the created payment.
+  String? givenID;
+
   PaymentConfig(
       {required this.publishableApiKey,
       required this.amount,
@@ -45,7 +48,8 @@ class PaymentConfig {
       this.metadata,
       this.supportedNetworks = const ["amex", "visa", "mada", "masterCard"],
       this.applePay,
-      this.creditCard})
+      this.creditCard,
+      this.givenID})
       : assert(publishableApiKey.isNotEmpty,
             'Please fill `publishableApiKey` argument with your key.'),
         assert(amount > 0, 'Please add a positive amount.'),
