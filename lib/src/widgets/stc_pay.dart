@@ -249,18 +249,17 @@ class _STCPaymentFormState extends State<STCPaymentComponent> {
         context,
         MaterialPageRoute(
             builder: (context) => Scaffold(
-              appBar: AppBar(),
-              body: OtpComponent(
-                transactionUrl: transactionUrl,
-                onPaymentResult: widget.onPaymentResult,
-              ),
-            )),
+                  appBar: AppBar(),
+                  body: OtpComponent(
+                    transactionUrl: transactionUrl,
+                    onPaymentResult: widget.onPaymentResult,
+                  ),
+                )),
       );
     }
   }
 
   void closeKeyboard() => FocusManager.instance.primaryFocus?.unfocus();
-
 
   @override
   Widget build(BuildContext context) {
@@ -283,7 +282,7 @@ class _STCPaymentFormState extends State<STCPaymentComponent> {
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
                 color: _controller.text.isNotEmpty && !_isValid
-                    ? Colors.red    // error color
+                    ? Colors.red // error color
                     : Colors.black, // normal color
               ),
               textDirection: widget.textDirection,
@@ -350,48 +349,48 @@ class _STCPaymentFormState extends State<STCPaymentComponent> {
                 ),
                 onPressed: _isValid
                     ? () {
-                  _payWithSTC();
-                }
+                        _payWithSTC();
+                      }
                     : null,
                 child: _isSubmitting
                     ? const CircularProgressIndicator(
-                  color: Colors.white,
-                  strokeWidth: 2,
-                )
+                        color: Colors.white,
+                        strokeWidth: 2,
+                      )
                     : Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Spacer(),
-                    Text(
-                      '${widget.locale.pay} ',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Spacer(),
+                          Text(
+                            '${widget.locale.pay} ',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                            textDirection: widget.textDirection,
+                          ),
+                          SizedBox(
+                            width: 16,
+                            child: Image.asset(
+                              'assets/images/saudiriyal.png',
+                              color: Colors.white,
+                              package: 'moyasar',
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            getAmount(widget.config.amount),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                            textDirection: widget.textDirection,
+                          ),
+                          const Spacer(),
+                        ],
                       ),
-                      textDirection: widget.textDirection,
-                    ),
-                    SizedBox(
-                      width: 16,
-                      child: Image.asset(
-                        'assets/images/saudiriyal.png',
-                        color: Colors.white,
-                        package: 'moyasar',
-                      ),
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      getAmount(widget.config.amount),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                      textDirection: widget.textDirection,
-                    ),
-                    const Spacer(),
-                  ],
-                ),
               ),
             ),
 

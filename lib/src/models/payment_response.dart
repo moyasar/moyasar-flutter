@@ -94,7 +94,7 @@ class PaymentResponse {
         data['source'] = (source as CardPaymentResponseSource).toJson();
       } else if (source is ApplePayPaymentResponseSource) {
         data['source'] = (source as ApplePayPaymentResponseSource).toJson();
-      }  else if (source is StcResponseSource) {
+      } else if (source is StcResponseSource) {
         data['source'] = (source as StcResponseSource).toJson();
       } else {
         data['source'] = source;

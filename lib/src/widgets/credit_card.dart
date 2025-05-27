@@ -6,16 +6,15 @@ import 'package:moyasar/src/utils/input_formatters.dart';
 import 'package:moyasar/src/widgets/network_icons.dart';
 import 'package:moyasar/src/widgets/three_d_s_webview.dart';
 
-
 /// The widget that shows the Credit Card form and manages the 3DS step.
 class CreditCard extends StatefulWidget {
   CreditCard(
       {super.key,
-        required this.config,
-        required this.onPaymentResult,
-        this.locale = const Localization.en()})
+      required this.config,
+      required this.onPaymentResult,
+      this.locale = const Localization.en()})
       : textDirection =
-  locale.languageCode == 'ar' ? TextDirection.rtl : TextDirection.ltr;
+            locale.languageCode == 'ar' ? TextDirection.rtl : TextDirection.ltr;
 
   final Function onPaymentResult;
   final PaymentConfig config;
@@ -149,7 +148,8 @@ class _CreditCardState extends State<CreditCard> {
   void _validateCardNumber(String? value) {
     setState(() {
       _cardNumberError = CardUtils.validateCardNum(value, widget.locale);
-      _cardNumberFieldFilled = value != null && value.replaceAll(' ', '').length >= 13;
+      _cardNumberFieldFilled =
+          value != null && value.replaceAll(' ', '').length >= 13;
     });
   }
 
@@ -183,7 +183,9 @@ class _CreditCardState extends State<CreditCard> {
                 fontSize: 16,
                 color: _nameError != null ? Colors.red : Colors.black,
               )),
-          SizedBox(height: 8,),
+          SizedBox(
+            height: 8,
+          ),
           Container(
             decoration: BoxDecoration(
               color: Colors.white,
@@ -210,13 +212,25 @@ class _CreditCardState extends State<CreditCard> {
               ],
             ),
           ),
-          SizedBox(height: 30,),
-          Text(_cardNumberError ?? _expiryError ?? _cvcError ?? widget.locale.cardInformation,
+          SizedBox(
+            height: 30,
+          ),
+          Text(
+              _cardNumberError ??
+                  _expiryError ??
+                  _cvcError ??
+                  widget.locale.cardInformation,
               style: TextStyle(
                 fontSize: 16,
-                color: (_cardNumberError != null || _expiryError != null || _cvcError != null) ? Colors.red : Colors.black,
+                color: (_cardNumberError != null ||
+                        _expiryError != null ||
+                        _cvcError != null)
+                    ? Colors.red
+                    : Colors.black,
               )),
-          SizedBox(height: 8,),
+          SizedBox(
+            height: 8,
+          ),
           Container(
             decoration: BoxDecoration(
               color: Colors.white,
@@ -245,7 +259,8 @@ class _CreditCardState extends State<CreditCard> {
                     LengthLimitingTextInputFormatter(16),
                     CardNumberInputFormatter(),
                   ],
-                  onSaved: (value) => _cardData.number = CardUtils.getCleanedNumber(value!),
+                  onSaved: (value) =>
+                      _cardData.number = CardUtils.getCleanedNumber(value!),
                 ),
                 const Divider(height: 2),
                 Row(
@@ -267,10 +282,12 @@ class _CreditCardState extends State<CreditCard> {
                             ],
                             onChanged: _validateExpiry,
                             onSaved: (value) {
-                              List<String> expireDate =
-                              CardUtils.getExpiryDate(value!.replaceAll('\u200E', ''));
-                              _cardData.month = expireDate.first.replaceAll('\u200E', '');
-                              _cardData.year = expireDate[1].replaceAll('\u200E', '');
+                              List<String> expireDate = CardUtils.getExpiryDate(
+                                  value!.replaceAll('\u200E', ''));
+                              _cardData.month =
+                                  expireDate.first.replaceAll('\u200E', '');
+                              _cardData.year =
+                                  expireDate[1].replaceAll('\u200E', '');
                             },
                           ),
                         ],
@@ -309,13 +326,16 @@ class _CreditCardState extends State<CreditCard> {
               ],
             ),
           ),
-          SizedBox(height: 8,),
+          SizedBox(
+            height: 8,
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: SizedBox(
               child: ElevatedButton(
                 style: ButtonStyle(
-                  minimumSize: const WidgetStatePropertyAll<Size>(Size.fromHeight(55)),
+                  minimumSize:
+                      const WidgetStatePropertyAll<Size>(Size.fromHeight(55)),
                   backgroundColor: WidgetStatePropertyAll<Color>(
                     _isButtonEnabled ? blueColor : lightBlueColor,
                   ),
@@ -328,42 +348,42 @@ class _CreditCardState extends State<CreditCard> {
                 onPressed: _isButtonEnabled ? _saveForm : null,
                 child: _isSubmitting
                     ? const CircularProgressIndicator(
-                  color: Colors.white,
-                  strokeWidth: 2,
-                )
+                        color: Colors.white,
+                        strokeWidth: 2,
+                      )
                     : Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Spacer(),
-                    Text(
-                      '${widget.locale.pay} ',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Spacer(),
+                          Text(
+                            '${widget.locale.pay} ',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                            textDirection: widget.textDirection,
+                          ),
+                          SizedBox(
+                              width: 16,
+                              child: Image.asset(
+                                'assets/images/saudiriyal.png',
+                                color: Colors.white, // Tint color
+                                package: 'moyasar',
+                              )),
+                          const SizedBox(width: 4),
+                          Text(
+                            getAmount(widget.config.amount),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                            textDirection: widget.textDirection,
+                          ),
+                          Spacer(),
+                        ],
                       ),
-                      textDirection: widget.textDirection,
-                    ),
-                    SizedBox(
-                      width: 16,
-                      child: Image.asset('assets/images/saudiriyal.png',
-                          color: Colors.white, // Tint color
-                          package: 'moyasar',
-                        )
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      getAmount(widget.config.amount),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                      textDirection: widget.textDirection,
-                    ),
-                    Spacer(),
-                  ],
-                ),
               ),
             ),
           ),
@@ -416,16 +436,15 @@ class CardFormField extends StatelessWidget {
   final List<TextInputFormatter>? inputFormatters;
   final InputDecoration? inputDecoration;
 
-  const CardFormField({
-    super.key,
-    required this.onSaved,
-    this.validator,
-    this.onChanged,
-    this.inputDecoration,
-    this.keyboardType = TextInputType.number,
-    this.textInputAction = TextInputAction.next,
-    this.inputFormatters
-  });
+  const CardFormField(
+      {super.key,
+      required this.onSaved,
+      this.validator,
+      this.onChanged,
+      this.inputDecoration,
+      this.keyboardType = TextInputType.number,
+      this.textInputAction = TextInputAction.next,
+      this.inputFormatters});
 
   @override
   Widget build(BuildContext context) {
@@ -456,8 +475,8 @@ String getAmount(int amount) {
 InputDecoration buildInputDecoration(
     {required String hintText,
     required TextDirection hintTextDirection,
-      bool addNetworkIcons = false,
-      bool hideBorder = false}) {
+    bool addNetworkIcons = false,
+    bool hideBorder = false}) {
   return InputDecoration(
       suffixIcon: addNetworkIcons ? const NetworkIcons() : null,
       hintText: hintText,

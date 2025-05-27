@@ -70,6 +70,7 @@ class _OtpComponentState extends State<OtpComponent> {
       Navigator.pop(context);
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -93,9 +94,7 @@ class _OtpComponentState extends State<OtpComponent> {
               ),
               textDirection: widget.textDirection,
             ),
-
             const SizedBox(height: 12),
-
             TextFormField(
               controller: _otpController,
               keyboardType: TextInputType.number,
@@ -105,8 +104,11 @@ class _OtpComponentState extends State<OtpComponent> {
                 fontSize: 20,
                 letterSpacing: 10,
               ),
-              buildCounter:
-                  (context, { required currentLength, required isFocused, maxLength }) => null,
+              buildCounter: (context,
+                      {required currentLength,
+                      required isFocused,
+                      maxLength}) =>
+                  null,
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return widget.locale.pleaseEnterOtp;
@@ -130,7 +132,6 @@ class _OtpComponentState extends State<OtpComponent> {
                 ),
                 filled: true,
                 fillColor: Colors.white,
-
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16.0),
                   borderSide: BorderSide(color: Colors.grey[300]!),
@@ -147,42 +148,43 @@ class _OtpComponentState extends State<OtpComponent> {
 
               onChanged: (value) {
                 setState(() {
-                  _isFormValid = value.isNotEmpty && value.length >= 4 && value.length <= 10;
+                  _isFormValid = value.isNotEmpty &&
+                      value.length >= 4 &&
+                      value.length <= 10;
                 });
               },
             ),
-
             const SizedBox(height: 30),
-
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: _isFormValid
                     ? () {
-                  if (_formKey.currentState!.validate()) {
-                    _sendOtp();
-                  }
-                }
+                        if (_formKey.currentState!.validate()) {
+                          _sendOtp();
+                        }
+                      }
                     : null,
                 style: ButtonStyle(
                   minimumSize:
-                  const WidgetStatePropertyAll<Size>(Size.fromHeight(55)),
+                      const WidgetStatePropertyAll<Size>(Size.fromHeight(55)),
                   backgroundColor: WidgetStatePropertyAll<Color>(
                     _isFormValid ? purpleColor : lightPurpleColor,
                   ),
                 ),
                 child: _isSubmitting
                     ? const CircularProgressIndicator(
-                  color: Colors.white,
-                  strokeWidth: 2,
-                )
+                        color: Colors.white,
+                        strokeWidth: 2,
+                      )
                     : Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 15),
-                  child: Text(
-                    widget.locale.confirm,
-                    style: const TextStyle(fontSize: 18, color: Colors.white),
-                  ),
-                ),
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                        child: Text(
+                          widget.locale.confirm,
+                          style: const TextStyle(
+                              fontSize: 18, color: Colors.white),
+                        ),
+                      ),
               ),
             ),
           ],

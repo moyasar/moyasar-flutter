@@ -30,6 +30,6 @@ class PaymentRequest {
         'description': description,
         'metadata': metadata,
         'callback_url': callbackUrl,
-    if (givenID != null) 'given_id': givenID,
+        if (givenID != null) 'given_id': givenID,
       };
 }

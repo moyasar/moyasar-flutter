@@ -18,9 +18,9 @@ class StcRequestSource implements PaymentRequestSource {
 
   @override
   Map<String, dynamic> toJson() => {
-    'type': type.name,
-    'mobile': mobile,
-    'cashier': cashier,
-    'branch': branch,
-  };
+        'type': type.name,
+        'mobile': mobile,
+        'cashier': cashier,
+        'branch': branch,
+      };
 }

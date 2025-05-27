@@ -1,7 +1,6 @@
 import 'package:moyasar/src/models/payment_type.dart';
 import 'package:moyasar/src/models/sources/payment_response_source.dart';
 
-
 class StcResponseSource implements PaymentResponseSource {
   @override
   PaymentType type = PaymentType.creditcard;
@@ -11,14 +10,13 @@ class StcResponseSource implements PaymentResponseSource {
   final String? message;
   final String? branch;
 
-  StcResponseSource({
-    required this.type,
-    required this.mobile,
-    required this.referenceNumber,
-    required this.transactionUrl,
-    this.message,
-    this.branch
-  });
+  StcResponseSource(
+      {required this.type,
+      required this.mobile,
+      required this.referenceNumber,
+      required this.transactionUrl,
+      this.message,
+      this.branch});
 
   factory StcResponseSource.fromJson(Map<String, dynamic> json) {
     return StcResponseSource(
