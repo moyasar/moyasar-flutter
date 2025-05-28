@@ -6,7 +6,6 @@ import 'package:moyasar/moyasar.dart';
 import 'package:moyasar/src/models/sources/stc/stc_request_source.dart';
 
 import '../models/sources/stc/stc_response_source.dart';
-import 'otp.dart';
 
 class STCPaymentComponent extends StatefulWidget {
   STCPaymentComponent(
@@ -28,9 +27,7 @@ class STCPaymentComponent extends StatefulWidget {
 
 class _STCPaymentFormState extends State<STCPaymentComponent> {
   final TextEditingController _controller = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
   bool _isValid = false;
-  bool _has05Prefix = false;
   bool _isSubmitting = false;
 
   @override
@@ -69,7 +66,6 @@ class _STCPaymentFormState extends State<STCPaymentComponent> {
       }
 
       setState(() {
-        _has05Prefix = false;
         _isValid = false;
       });
       return;
@@ -88,7 +84,6 @@ class _STCPaymentFormState extends State<STCPaymentComponent> {
       }
 
       setState(() {
-        _has05Prefix = false;
         _isValid = false;
       });
       return;
@@ -115,12 +110,10 @@ class _STCPaymentFormState extends State<STCPaymentComponent> {
         _controller.addListener(_handleTextChanges);
 
         setState(() {
-          _has05Prefix = false;
           _isValid = false;
         });
       } else {
         setState(() {
-          _has05Prefix = true;
           _isValid = false;
         });
       }
@@ -204,18 +197,8 @@ class _STCPaymentFormState extends State<STCPaymentComponent> {
 
     // Update state
     setState(() {
-      _has05Prefix = hasPrefix;
       _isValid = processedDigits.length == 10;
     });
-  }
-
-  String? _validatePhoneNumber(String? value) {
-    // We'll use this for form validation, but the real-time validation
-    // is handled by _handleTextChanges
-    if (!_isValid && value != null && value.isNotEmpty) {
-      return widget.locale.invalidPhoneNumber;
-    }
-    return null;
   }
 
   String getAmount(int amount) {

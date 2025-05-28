@@ -12,13 +12,13 @@ class OtpComponent extends StatefulWidget {
       : textDirection =
             locale.languageCode == 'ar' ? TextDirection.rtl : TextDirection.ltr;
 
-  @override
-  _OtpComponentState createState() => _OtpComponentState();
-
   final String transactionUrl;
   final Function onPaymentResult;
   final Localization locale;
   final TextDirection textDirection;
+
+  @override
+  State<OtpComponent> createState() => _OtpComponentState();
 }
 
 class _OtpComponentState extends State<OtpComponent> {

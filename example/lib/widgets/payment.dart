@@ -3,8 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:moyasar/moyasar.dart';
 
-import '../main.dart';
-
 class PaymentMethods extends StatelessWidget {
   final PaymentConfig paymentConfig;
   final Function onPaymentResult;
