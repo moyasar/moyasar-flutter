@@ -1,6 +1,6 @@
 # Moyasar Flutter SDK
 
-Easily accept payments through Apple Pay or Credit Card (with managed 3DS step) in your Flutter app with Moyasar.
+Easily accept payments through Apple Pay, STC Pay, or Credit Card (with managed 3DS step) in your Flutter app with Moyasar.
 
 ![Moyasar Flutter SDK Demo](https://i.imgur.com/nis9yCm.gif)
 
@@ -8,8 +8,9 @@ Easily accept payments through Apple Pay or Credit Card (with managed 3DS step) 
 
 Use this plugin to support:
 
-- **Apple Pay**: Quickly and safely accept Apple Pay payments.
-- **Credit Card**: Easily accept many card companies while not worrying about managing the required 3DS step.
+- **Apple Pay**
+- **STC Pay**
+- **Credit Card**
 
 ## Getting started
 
@@ -163,11 +164,11 @@ class PaymentMethods extends StatelessWidget {
 
 ### Credit Cards
 
-Moyasar provides a sandbox environment for testing credit card payments without charging any real money. This allows you to test your integration and ensure that everything is working correctly before going live with actual payments. Learn more about our testing cards [here](https://docs.moyasar.com/testing-cards)
+Moyasar provides a sandbox environment for testing credit card payments without charging any real money. This allows you to test your integration and ensure that everything is working correctly before going live with actual payments. Learn more about our testing cards [here](https://docs.moyasar.com/guides/card-payments/test-cards)
 
 ### Apple Pay
 
-Testing using a simulator will not work! Learn more about Apple Pay testing [here](https://docs.moyasar.com/apple-pay-testing).
+Please use a real device to perform Apple Pay testing and not a simulator. Learn more on how to test different scenarios in the sandbox [here.](https://docs.moyasar.com/guides/apple-pay/test-cards)
 
 ## Migration Guide
 

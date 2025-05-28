@@ -1,11 +1,17 @@
+## 2.0.18
+
+- [Flutter] Upgrade to latest versions of Flutter tooling; Flutter to `3.32.0`, Dart to `3.8.0`, DevTools to `2.45.1`.
+- [Pub.dev] Improve the plugin's score by addressing all the warnings.
+- [Docs] Update the README to add STC Pay and fix broken links.
 
 ## 2.0.17 
 
 New Features 🚀
-- [STC Payment] Added support for STC payment.
-- [UI] UI enhancements: new UI.
-- [Moyasar] Added Saudi Riyal currency symbol.
-- [Moyasar] Adding given_id 
+
+- [STC Pay] Add support for STC Pay payment method.
+- [Credit Card] Update the UI to follow Moyasar design guidelines.
+- [Moyasar] Add Saudi Riyal currency symbol.
+- [Moyasar] Add given_id to enable setting a custom UUID for the created payment.
 
 ## 2.0.16
 
