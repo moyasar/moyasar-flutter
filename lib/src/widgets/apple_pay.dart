@@ -64,8 +64,8 @@ class _ApplePayState extends State<ApplePay> {
       return;
     }
 
-    final source =
-        ApplePayPaymentRequestSource(token, widget.config.applePay!.manual);
+    final source = ApplePayPaymentRequestSource(token,
+        widget.config.applePay!.manual, widget.config.applePay!.saveCard);
     final paymentRequest = PaymentRequest(widget.config, source);
 
     final result = await Moyasar.pay(

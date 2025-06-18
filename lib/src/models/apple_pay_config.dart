@@ -9,6 +9,9 @@ class ApplePayConfig {
   /// An option to enable the manual auth and capture.
   bool manual;
 
+  /// An option to save (tokenize) the card for later charging.
+  bool saveCard;
+
   /// Payment capabilities that the merchant supports.
   List<String> merchantCapabilities;
 
@@ -21,6 +24,7 @@ class ApplePayConfig {
       {required this.merchantId,
       required this.label,
       required this.manual,
+      required this.saveCard,
       this.merchantCapabilities = const ["3DS", "debit", "credit"],
       this.supportedCountries = const ["SA"]})
       : assert(merchantCapabilities.contains("3DS"),
