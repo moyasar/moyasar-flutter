@@ -1,6 +1,6 @@
 ## 2.0.19
 
-- [Apple Pay] Add an option to tokenize (save) the credit card upon successful payment.
+- [Apple Pay] Add an option to tokenize (save) the card upon successful payment.
  
 ## 2.0.18
 
