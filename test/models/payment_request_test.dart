@@ -53,7 +53,7 @@ void main() {
         metadata: metadata);
 
     ApplePayPaymentRequestSource apprs =
-        ApplePayPaymentRequestSource("toktoken", false);
+        ApplePayPaymentRequestSource("toktoken", false, false);
 
     PaymentRequest pr = PaymentRequest(config, apprs);
 
@@ -67,6 +67,7 @@ void main() {
         (pr.source as ApplePayPaymentRequestSource).type, PaymentType.applepay);
     expect((pr.source as ApplePayPaymentRequestSource).token, "toktoken");
     expect((pr.source as ApplePayPaymentRequestSource).manual, 'false');
+    expect((pr.source as ApplePayPaymentRequestSource).saveCard, 'false');
   });
 
   test('should create a valid manual payment request with Apple Pay.', () {
@@ -79,7 +80,7 @@ void main() {
         metadata: metadata);
 
     ApplePayPaymentRequestSource apprs =
-        ApplePayPaymentRequestSource("toktoken", true);
+        ApplePayPaymentRequestSource("toktoken", true, false);
 
     PaymentRequest pr = PaymentRequest(config, apprs);
 
@@ -93,5 +94,33 @@ void main() {
         (pr.source as ApplePayPaymentRequestSource).type, PaymentType.applepay);
     expect((pr.source as ApplePayPaymentRequestSource).token, "toktoken");
     expect((pr.source as ApplePayPaymentRequestSource).manual, 'true');
+    expect((pr.source as ApplePayPaymentRequestSource).saveCard, 'false');
+  });
+
+  test('should create a payment request with Apple Pay with save card.', () {
+    Map<String, dynamic> metadata = {"size": "xl", "code": 255};
+
+    PaymentConfig config = PaymentConfig(
+        publishableApiKey: "api_key",
+        amount: 123,
+        description: "Coffee!",
+        metadata: metadata);
+
+    ApplePayPaymentRequestSource apprs =
+        ApplePayPaymentRequestSource("toktoken", true, true);
+
+    PaymentRequest pr = PaymentRequest(config, apprs);
+
+    expect(pr.amount, 123);
+    expect(pr.callbackUrl, "https://example.com/thanks");
+    expect(pr.currency, "SAR");
+    expect(pr.description, "Coffee!");
+    expect(pr.metadata, metadata);
+
+    expect(
+        (pr.source as ApplePayPaymentRequestSource).type, PaymentType.applepay);
+    expect((pr.source as ApplePayPaymentRequestSource).token, "toktoken");
+    expect((pr.source as ApplePayPaymentRequestSource).manual, 'true');
+    expect((pr.source as ApplePayPaymentRequestSource).saveCard, 'true');
   });
 }
