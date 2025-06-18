@@ -31,6 +31,7 @@ void main() {
             label: "Blue Coffee",
             merchantId: "merchant.mysr.fghurayri",
             manual: false,
+            saveCard: false,
             merchantCapabilities: ["3DS"]));
 
     expect(paymentConfig.publishableApiKey, "api_key");

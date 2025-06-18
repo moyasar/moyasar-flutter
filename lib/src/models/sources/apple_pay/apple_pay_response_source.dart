@@ -12,12 +12,14 @@ class ApplePayPaymentResponseSource implements PaymentResponseSource {
 
   final String gatewayId;
   String? referenceNumber;
+  String? token;
   String? message;
 
   ApplePayPaymentResponseSource({
     required this.number,
     required this.gatewayId,
     this.referenceNumber,
+    this.token,
     this.message,
   });
 
@@ -25,6 +27,7 @@ class ApplePayPaymentResponseSource implements PaymentResponseSource {
       : number = json['number'],
         gatewayId = json['gateway_id'],
         referenceNumber = json['reference_number'],
+        token = json['token'],
         message = json['message'];
 
   Map<String, dynamic> toJson() {
@@ -33,6 +36,7 @@ class ApplePayPaymentResponseSource implements PaymentResponseSource {
       'number': number,
       'gateway_id': gatewayId,
       'reference_number': referenceNumber,
+      'token': token,
       'message': message,
     };
   }

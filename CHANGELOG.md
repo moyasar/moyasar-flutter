@@ -1,3 +1,7 @@
+## 2.0.19
+
+- [Apple Pay] Add an option to tokenize (save) the card upon successful payment.
+ 
 ## 2.0.18
 
 - [Flutter] Upgrade to latest versions of Flutter tooling; Flutter to `3.32.0`, Dart to `3.8.0`, DevTools to `2.45.1`.
