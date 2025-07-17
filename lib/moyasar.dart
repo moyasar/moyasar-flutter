@@ -16,12 +16,17 @@ export 'src/models/payment_response.dart' show PaymentResponse, PaymentStatus;
 export 'src/widgets/stc_pay.dart' show STCPaymentComponent;
 export 'src/widgets/otp.dart' show OtpComponent;
 
+export 'src/models/sources/payment_request_source.dart'
+    show PaymentRequestSource;
+
 export 'src/models/sources/card/card_request_source.dart'
     show CardPaymentRequestSource;
 export 'src/models/sources/apple_pay/apple_pay_request_source.dart'
     show ApplePayPaymentRequestSource;
 export 'src/models/sources/card/card_response_source.dart'
     show CardPaymentResponseSource;
+export 'src/models/sources/token/card_token_request_source.dart'
+    show CardTokenPaymentRequestSource;
 export 'src/models/sources/apple_pay/apple_pay_response_source.dart'
     show ApplePayPaymentResponseSource;
 export 'src/models/sources/card/card_company.dart' show CardCompany;
