@@ -93,10 +93,12 @@ class PaymentResponse {
       data['metadata'] = metadata;
     }
     if (source != null) {
-      if (source is CardPaymentResponseSource ||
-          source is CardTokenPaymentRequestSource) {
+      if (source is CardPaymentResponseSource) {
         data['source'] = (source as CardPaymentResponseSource).toJson();
-      } else if (source is ApplePayPaymentResponseSource) {
+      } else if (source is CardTokenPaymentResponseSource) {
+        data['source'] = (source as CardTokenPaymentResponseSource).toJson();
+      } 
+      else if (source is ApplePayPaymentResponseSource) {
         data['source'] = (source as ApplePayPaymentResponseSource).toJson();
       } else if (source is StcResponseSource) {
         data['source'] = (source as StcResponseSource).toJson();

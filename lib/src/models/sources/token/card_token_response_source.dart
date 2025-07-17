@@ -50,4 +50,16 @@ class CardTokenPaymentResponseSource implements PaymentResponseSource {
       message: json['message'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'company': company.name,
+      'name': name,
+      'number': number,
+      'gateway_id': gatewayId,
+      'reference_number': referenceNumber,
+      'token': token,
+      'message': message,
+    };
+  }
 }
