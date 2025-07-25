@@ -5,6 +5,7 @@ import 'package:moyasar/src/utils/card_utils.dart';
 import 'package:moyasar/src/utils/input_formatters.dart';
 import 'package:moyasar/src/widgets/network_icons.dart';
 import 'package:moyasar/src/widgets/three_d_s_webview.dart';
+import 'package:moyasar/theme/moyasar_theme.dart';
 
 /// The widget that shows the Credit Card form and manages the 3DS step.
 class CreditCard extends StatefulWidget {
@@ -26,6 +27,7 @@ class CreditCard extends StatefulWidget {
 }
 
 class _CreditCardState extends State<CreditCard> {
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final _cardData = CardFormModel();
@@ -172,6 +174,8 @@ class _CreditCardState extends State<CreditCard> {
 
   @override
   Widget build(BuildContext context) {
+  final theme = MoyasarTheme.of(context)?.data ?? Theme.of(context);
+
     return Form(
       autovalidateMode: _autoValidateMode,
       key: _formKey,
