@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:coffee_flutter/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:moyasar/moyasar.dart';
 
@@ -37,9 +38,8 @@ class PaymentMethods extends StatelessWidget {
                 style: ButtonStyle(
                   minimumSize:
                       const WidgetStatePropertyAll<Size>(Size.fromHeight(55)),
-                  backgroundColor: const WidgetStatePropertyAll<Color>(
-                    Colors.white,
-                  ),
+                  backgroundColor:
+                      WidgetStatePropertyAll<Color>(kLightPrimaryColor),
                   shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.0),
@@ -56,10 +56,10 @@ class PaymentMethods extends StatelessWidget {
                                 onPaymentResult: onPaymentResult))),
                   );
                 },
-                child: const Text(
+                child: Text(
                   'Pay with STC Demo',
                   style: TextStyle(
-                    color: Colors.blue,
+                    color: kBackgroundColor,
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),
