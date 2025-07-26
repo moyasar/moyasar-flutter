@@ -5,6 +5,7 @@ import 'package:moyasar/src/utils/card_utils.dart';
 import 'package:moyasar/src/utils/input_formatters.dart';
 import 'package:moyasar/src/widgets/network_icons.dart';
 import 'package:moyasar/src/widgets/three_d_s_webview.dart';
+import 'package:moyasar/theme/moyasar_theme.dart';
 
 /// The widget that shows the Credit Card form and manages the 3DS step.
 class CreditCard extends StatefulWidget {
@@ -172,223 +173,224 @@ class _CreditCardState extends State<CreditCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      autovalidateMode: _autoValidateMode,
-      key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(_nameError ?? widget.locale.nameOnCard,
-              style: TextStyle(
-                fontSize: 16,
-                color: _nameError != null ? Colors.red : Colors.black,
-              )),
-          SizedBox(
-            height: 8,
-          ),
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black26,
-                  blurRadius: 4,
-                  offset: Offset(0, 2),
-                ),
-              ],
+    final theme = MoyasarTheme.of(context)?.data ?? Theme.of(context);
+
+    return Container(
+      padding: EdgeInsets.all(2.0),
+      child: Form(
+        autovalidateMode: _autoValidateMode,
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(_nameError ?? widget.locale.nameOnCard,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: _nameError != null
+                      ? Colors.red
+                      : theme.textTheme.bodyLarge?.color,
+                )),
+            SizedBox(
+              height: 8,
             ),
-            padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-            child: CardFormField(
-              inputDecoration: buildInputDecoration(
-                  hintText: widget.locale.nameOnCard,
-                  hideBorder: true,
-                  hintTextDirection: widget.textDirection),
-              keyboardType: TextInputType.text,
-              onChanged: _validateName,
-              onSaved: (value) => _cardData.name = value ?? '',
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp('[a-zA-Z. ]')),
-              ],
-            ),
-          ),
-          SizedBox(
-            height: 30,
-          ),
-          Text(
-              _cardNumberError ??
-                  _expiryError ??
-                  _cvcError ??
-                  widget.locale.cardInformation,
-              style: TextStyle(
-                fontSize: 16,
-                color: (_cardNumberError != null ||
-                        _expiryError != null ||
-                        _cvcError != null)
-                    ? Colors.red
-                    : Colors.black,
-              )),
-          SizedBox(
-            height: 8,
-          ),
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black26,
-                  blurRadius: 4,
-                  offset: Offset(0, 2),
-                ),
-              ],
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CardFormField(
-                  inputDecoration: buildInputDecoration(
-                      hintText: widget.locale.cardNumber,
-                      hintTextDirection: widget.textDirection,
-                      hideBorder: true,
-                      addNetworkIcons: true),
-                  onChanged: _validateCardNumber,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly,
-                    LengthLimitingTextInputFormatter(16),
-                    CardNumberInputFormatter(),
-                  ],
-                  onSaved: (value) =>
-                      _cardData.number = CardUtils.getCleanedNumber(value!),
-                ),
-                const Divider(height: 2),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CardFormField(
-                            inputDecoration: buildInputDecoration(
-                              hintText: '${widget.locale.expiry} (MM / YY)',
-                              hintTextDirection: widget.textDirection,
-                              hideBorder: true,
-                            ),
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly,
-                              LengthLimitingTextInputFormatter(4),
-                              CardMonthInputFormatter(),
-                            ],
-                            onChanged: _validateExpiry,
-                            onSaved: (value) {
-                              List<String> expireDate = CardUtils.getExpiryDate(
-                                  value!.replaceAll('\u200E', ''));
-                              _cardData.month =
-                                  expireDate.first.replaceAll('\u200E', '');
-                              _cardData.year =
-                                  expireDate[1].replaceAll('\u200E', '');
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 48,
-                      child: VerticalDivider(
-                        color: Colors.grey,
-                        thickness: 1,
-                        width: 2,
-                      ),
-                    ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CardFormField(
-                            inputDecoration: buildInputDecoration(
-                              hintText: widget.locale.cvc,
-                              hintTextDirection: widget.textDirection,
-                              hideBorder: true,
-                            ),
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly,
-                              LengthLimitingTextInputFormatter(4),
-                            ],
-                            onChanged: _validateCVC,
-                            onSaved: (value) => _cardData.cvc = value ?? '',
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          SizedBox(
-            height: 8,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: SizedBox(
-              child: ElevatedButton(
-                style: ButtonStyle(
-                  minimumSize:
-                      const WidgetStatePropertyAll<Size>(Size.fromHeight(55)),
-                  backgroundColor: WidgetStatePropertyAll<Color>(
-                    _isButtonEnabled ? blueColor : lightBlueColor,
-                  ),
-                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12.0),
-                    ),
-                  ),
-                ),
-                onPressed: _isButtonEnabled ? _saveForm : null,
-                child: _isSubmitting
-                    ? const CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeWidth: 2,
-                      )
-                    : Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Spacer(),
-                          Text(
-                            '${widget.locale.pay} ',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                            textDirection: widget.textDirection,
-                          ),
-                          SizedBox(
-                              width: 16,
-                              child: Image.asset(
-                                'assets/images/saudiriyal.png',
-                                color: Colors.white, // Tint color
-                                package: 'moyasar',
-                              )),
-                          const SizedBox(width: 4),
-                          Text(
-                            getAmount(widget.config.amount),
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                            textDirection: widget.textDirection,
-                          ),
-                          Spacer(),
-                        ],
-                      ),
+            Container(
+              decoration: BoxDecoration(
+                color: theme.colorScheme.onPrimary,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+              child: CardFormField(
+                inputDecoration: buildInputDecoration(
+                    theme: theme,
+                    hintText: widget.locale.nameOnCard,
+                    hideBorder: true,
+                    hintTextDirection: widget.textDirection),
+                keyboardType: TextInputType.text,
+                onChanged: _validateName,
+                onSaved: (value) => _cardData.name = value ?? '',
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp('[a-zA-Z. ]')),
+                ],
               ),
             ),
-          ),
-          SaveCardNotice(tokenizeCard: _tokenizeCard, locale: widget.locale),
-        ],
+            SizedBox(
+              height: 30,
+            ),
+            Text(
+                _cardNumberError ??
+                    _expiryError ??
+                    _cvcError ??
+                    widget.locale.cardInformation,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: (_cardNumberError != null ||
+                          _expiryError != null ||
+                          _cvcError != null)
+                      ? Colors.red
+                      : theme.textTheme.bodyLarge?.color,
+                )),
+            SizedBox(
+              height: 8,
+            ),
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CardFormField(
+                    inputDecoration: buildInputDecoration(
+                        theme: theme,
+                        hintText: widget.locale.cardNumber,
+                        hintTextDirection: widget.textDirection,
+                        hideBorder: true,
+                        addNetworkIcons: true),
+                    onChanged: _validateCardNumber,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      LengthLimitingTextInputFormatter(16),
+                      CardNumberInputFormatter(),
+                    ],
+                    onSaved: (value) =>
+                        _cardData.number = CardUtils.getCleanedNumber(value!),
+                  ),
+                  // const Divider(height: 2),
+                  SizedBox(
+                    height: 8,
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            CardFormField(
+                              inputDecoration: buildInputDecoration(
+                                theme: theme,
+                                hintText: '${widget.locale.expiry} (MM / YY)',
+                                hintTextDirection: widget.textDirection,
+                                hideBorder: true,
+                              ),
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                                LengthLimitingTextInputFormatter(4),
+                                CardMonthInputFormatter(),
+                              ],
+                              onChanged: _validateExpiry,
+                              onSaved: (value) {
+                                List<String> expireDate =
+                                    CardUtils.getExpiryDate(
+                                        value!.replaceAll('\u200E', ''));
+                                _cardData.month =
+                                    expireDate.first.replaceAll('\u200E', '');
+                                _cardData.year =
+                                    expireDate[1].replaceAll('\u200E', '');
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        width: 2,
+                      ),
+                      SizedBox(
+                        height: 48,
+                        child: VerticalDivider(
+                          color: theme.dividerColor,
+                          thickness: 1,
+                          width: 2,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 2,
+                      ),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            CardFormField(
+                              inputDecoration: buildInputDecoration(
+                                theme: theme,
+                                hintText: widget.locale.cvc,
+                                hintTextDirection: widget.textDirection,
+                                hideBorder: true,
+                              ),
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                                LengthLimitingTextInputFormatter(4),
+                              ],
+                              onChanged: _validateCVC,
+                              onSaved: (value) => _cardData.cvc = value ?? '',
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 8,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: SizedBox(
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                    minimumSize:
+                        const WidgetStatePropertyAll<Size>(Size.fromHeight(55)),
+                    backgroundColor: WidgetStatePropertyAll<Color>(
+                      _isButtonEnabled
+                          ? theme.colorScheme.onPrimary
+                          : theme.colorScheme.onPrimary
+                        ..withOpacity(0.5),
+                    ),
+                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                    ),
+                  ),
+                  onPressed: _isButtonEnabled ? _saveForm : null,
+                  child: _isSubmitting
+                      ? const CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Spacer(),
+                            Text(
+                              '${widget.locale.pay} ',
+                              style: theme.textTheme.labelLarge,
+                              textDirection: widget.textDirection,
+                            ),
+                            SizedBox(
+                                width: 16,
+                                child: Image.asset(
+                                  'assets/images/saudiriyal.png',
+                                  color: theme.colorScheme.secondary,
+                                  package: 'moyasar',
+                                )),
+                            const SizedBox(width: 4),
+                            Text(
+                              getAmount(widget.config.amount),
+                              style: theme.textTheme.labelLarge,
+                              textDirection: widget.textDirection,
+                            ),
+                            Spacer(),
+                          ],
+                        ),
+                ),
+              ),
+            ),
+            SaveCardNotice(tokenizeCard: _tokenizeCard, locale: widget.locale),
+          ],
+        ),
       ),
     );
   }
@@ -403,6 +405,7 @@ class SaveCardNotice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = MoyasarTheme.of(context)?.data ?? Theme.of(context);
     return tokenizeCard
         ? Padding(
             padding: const EdgeInsets.all(8.0),
@@ -412,14 +415,14 @@ class SaveCardNotice extends StatelessWidget {
               children: [
                 Icon(
                   Icons.info,
-                  color: blueColor,
+                  color: getLightBlueColor(theme),
                 ),
                 const Padding(
                   padding: EdgeInsets.only(right: 5),
                 ),
                 Text(
                   locale.saveCardNotice,
-                  style: TextStyle(color: blueColor),
+                  style: TextStyle(color: getBlueColor(theme)),
                 ),
               ],
             ))
@@ -475,12 +478,15 @@ String getAmount(int amount) {
 InputDecoration buildInputDecoration(
     {required String hintText,
     required TextDirection hintTextDirection,
+    required ThemeData theme,
     bool addNetworkIcons = false,
     bool hideBorder = false}) {
   return InputDecoration(
       suffixIcon: addNetworkIcons ? const NetworkIcons() : null,
       hintText: hintText,
-      border: hideBorder ? InputBorder.none : defaultEnabledBorder,
+      hintStyle: TextStyle(color: Colors.grey),
+      border: getEnabledBorder(theme),
+      focusedBorder: getFocusedBorder(theme),
       hintTextDirection: hintTextDirection,
       contentPadding: const EdgeInsets.all(8.0));
 }
@@ -489,17 +495,27 @@ void closeKeyboard() => FocusManager.instance.primaryFocus?.unfocus();
 
 BorderRadius defaultBorderRadius = const BorderRadius.all(Radius.circular(8));
 
-OutlineInputBorder defaultEnabledBorder = OutlineInputBorder(
-    borderSide: BorderSide(color: Colors.grey[400]!),
-    borderRadius: defaultBorderRadius);
+OutlineInputBorder getEnabledBorder(ThemeData theme) {
+  return OutlineInputBorder(
+    borderSide: BorderSide(color: theme.dividerColor),
+    borderRadius: defaultBorderRadius,
+  );
+}
 
-OutlineInputBorder defaultFocusedBorder = OutlineInputBorder(
-    borderSide: BorderSide(color: Colors.grey[600]!),
-    borderRadius: defaultBorderRadius);
+OutlineInputBorder getFocusedBorder(ThemeData theme) {
+  return OutlineInputBorder(
+    borderSide: BorderSide(color: theme.colorScheme.primary),
+    borderRadius: defaultBorderRadius,
+  );
+}
 
-OutlineInputBorder defaultErrorBorder = OutlineInputBorder(
-    borderSide: const BorderSide(color: Colors.red),
-    borderRadius: defaultBorderRadius);
+OutlineInputBorder getErrorBorder(ThemeData theme) {
+  return OutlineInputBorder(
+    borderSide: BorderSide(color: theme.colorScheme.error),
+    borderRadius: defaultBorderRadius,
+  );
+}
 
-Color blueColor = Colors.blue[700]!;
-Color lightBlueColor = Colors.blue[100]!;
+Color getBlueColor(ThemeData theme) => theme.colorScheme.primary;
+Color getLightBlueColor(ThemeData theme) =>
+    theme.colorScheme.primary.withOpacity(0.2);

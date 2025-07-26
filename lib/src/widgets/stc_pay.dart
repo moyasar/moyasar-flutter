@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:moyasar/moyasar.dart';
 import 'package:moyasar/src/models/sources/stc/stc_request_source.dart';
+import 'package:moyasar/theme/moyasar_theme.dart';
 
 import '../models/sources/stc/stc_response_source.dart';
 
@@ -246,6 +247,8 @@ class _STCPaymentFormState extends State<STCPaymentComponent> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = MoyasarTheme.of(context)?.data ?? Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(),
       body: Padding(
@@ -262,12 +265,12 @@ class _STCPaymentFormState extends State<STCPaymentComponent> {
                   ? widget.locale.invalidPhoneNumber
                   : widget.locale.mobileNumber,
               style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: _controller.text.isNotEmpty && !_isValid
-                    ? Colors.red // error color
-                    : Colors.black, // normal color
-              ),
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: _controller.text.isNotEmpty && !_isValid
+                      ? Colors.red // error color
+                      : theme.textTheme.bodyLarge?.color // normal color
+                  ),
               textDirection: widget.textDirection,
             ),
 
@@ -323,11 +326,15 @@ class _STCPaymentFormState extends State<STCPaymentComponent> {
               width: double.infinity,
               child: ElevatedButton(
                 style: ButtonStyle(
+                  elevation: WidgetStatePropertyAll(4.0),
                   minimumSize: const WidgetStatePropertyAll<Size>(
                     Size.fromHeight(55),
                   ),
                   backgroundColor: WidgetStatePropertyAll<Color>(
-                    _isValid ? purpleColor : lightPurpleColor,
+                    _isValid
+                        ? theme.colorScheme.onPrimary
+                        : theme.colorScheme.onPrimary
+                      ..withOpacity(0.5),
                   ),
                 ),
                 onPressed: _isValid

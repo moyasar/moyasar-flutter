@@ -1,6 +1,8 @@
+import 'package:coffee_flutter/theme/app_theme.dart';
 import 'package:coffee_flutter/widgets/payment.dart';
 import 'package:flutter/material.dart';
 import 'package:moyasar/moyasar.dart';
+import 'package:moyasar/theme/moyasar_theme.dart';
 
 import 'widgets/coffee.dart';
 
@@ -13,9 +15,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: ThemeMode.dark,
       debugShowCheckedModeBanner: false,
-      home: CoffeeShop(),
+      home: const CoffeeShop(),
     );
   }
 }
@@ -88,7 +93,6 @@ class _CoffeeShopState extends State<CoffeeShop> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white,
         resizeToAvoidBottomInset: true,
         body: Center(
           child: SizedBox(
@@ -96,9 +100,12 @@ class _CoffeeShopState extends State<CoffeeShop> {
             child: ListView(
               children: [
                 const CoffeeImage(),
-                PaymentMethods(
-                  paymentConfig: paymentConfig,
-                  onPaymentResult: onPaymentResult,
+                MoyasarTheme(
+                  data: AppTheme.darkTheme,
+                  child: PaymentMethods(
+                    paymentConfig: paymentConfig,
+                    onPaymentResult: onPaymentResult,
+                  ),
                 ),
               ],
             ),
