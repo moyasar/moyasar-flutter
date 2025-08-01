@@ -158,27 +158,34 @@ class _CreditCardState extends State<CreditCard> {
       _cardNumberFieldFilled =
           value != null && value.replaceAll(' ', '').length >= 13;
       
-      // Network detection logic
+      // Network detection logic using Swift-compatible logic
       if (value != null && value.isNotEmpty) {
         final cleaned = value.replaceAll(RegExp(r'\D'), '');
-        final detected = detectNetwork(cleaned);
+        
+        // Use the new getCardNetwork function that matches Swift logic
+        final detected = getCardNetwork(value, widget.config.supportedNetworks);
         
         // Only update detected network if we have a valid detection
         if (detected != CardNetwork.unknown) {
           _detectedNetwork = detected;
+          _unsupportedNetwork = false; // Network is supported since getCardNetwork only returns supported networks
         } else if (cleaned.isEmpty) {
           // Reset only if the field is completely empty
           _detectedNetwork = null;
-        }
-        
-        // Update unsupported network flag
-        _unsupportedNetwork = false;
-        if (_detectedNetwork != null) {
-          final supported = widget.config.supportedNetworks.map((e) => e.name).toSet();
-          final detectedName = _detectedNetwork!.name;
-          if (!supported.contains(detectedName)) {
-            _unsupportedNetwork = true;
-            _cardNumberError = 'Unsupported network';
+          _unsupportedNetwork = false;
+        } else {
+          // Check if the number matches any network but it's not in supported networks
+          final legacyDetected = detectNetwork(cleaned);
+          if (legacyDetected != CardNetwork.unknown) {
+            final supported = widget.config.supportedNetworks.map((e) => e.name).toSet();
+            final detectedName = legacyDetected.name;
+            if (!supported.contains(detectedName)) {
+              _unsupportedNetwork = true;
+              _cardNumberError = 'Unsupported network';
+            }
+          } else {
+            _detectedNetwork = null;
+            _unsupportedNetwork = false;
           }
         }
       } else {

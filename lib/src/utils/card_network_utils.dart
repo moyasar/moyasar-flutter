@@ -1,3 +1,6 @@
+import 'dart:math';
+import 'package:moyasar/src/models/payment_config.dart';
+
 class MadaUtil {
   static final instance = MadaUtil();
   final List<String> madaRanges = [
@@ -14,17 +17,79 @@ class MadaUtil {
 
 enum CardNetwork { amex, visa, mada, masterCard, unknown }
 
+/// Check if a string contains only numeric characters
+bool isNumeric(String str) {
+  return str.isNotEmpty && !RegExp(r'\D').hasMatch(str);
+}
+
+/// Luhn algorithm validation for card numbers
+bool isValidLuhnNumber(String number) {
+  final cleanNumber = number.replaceAll(' ', '');
+  if (!isNumeric(cleanNumber)) {
+    return false;
+  }
+  
+  final doubleSum = [0, 2, 4, 6, 8, 1, 3, 5, 7, 9];
+  var sum = 0;
+  
+  for (int i = cleanNumber.length - 1; i >= 0; i--) {
+    final digit = int.parse(cleanNumber[i]);
+    final index = cleanNumber.length - 1 - i;
+    sum += index % 2 == 0 ? digit : doubleSum[digit];
+  }
+  
+  return sum % 10 == 0;
+}
+
+/// Get card network based on number and supported networks (matches Swift logic)
+CardNetwork getCardNetwork(String number, List<PaymentNetwork> supportedNetworks) {
+  final clean = number.replaceAll(' ', '');
+  
+  // Convert PaymentNetwork to CardNetwork for comparison
+  final supportedCardNetworks = supportedNetworks.map((network) {
+    switch (network) {
+      case PaymentNetwork.amex:
+        return CardNetwork.amex;
+      case PaymentNetwork.visa:
+        return CardNetwork.visa;
+      case PaymentNetwork.mada:
+        return CardNetwork.mada;
+      case PaymentNetwork.masterCard:
+        return CardNetwork.masterCard;
+    }
+  }).toList();
+  
+  // Regex patterns matching Swift implementation
+  final amexRangeRegex = RegExp(r'^3[47]');
+  final visaRangeRegex = RegExp(r'^4');
+  final masterCardRangeRegex = RegExp(r'^(?:5[1-5][0-9]{2}|222[1-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720)');
+  
+  // Check if the number matches known card types and if it's in supported networks
+  if (amexRangeRegex.hasMatch(clean) && supportedCardNetworks.contains(CardNetwork.amex)) {
+    return CardNetwork.amex;
+  } else if (MadaUtil.instance.inMadaRange(clean) && supportedCardNetworks.contains(CardNetwork.mada)) {
+    return CardNetwork.mada;
+  } else if (visaRangeRegex.hasMatch(clean) && supportedCardNetworks.contains(CardNetwork.visa)) {
+    return CardNetwork.visa;
+  } else if (masterCardRangeRegex.hasMatch(clean) && supportedCardNetworks.contains(CardNetwork.masterCard)) {
+    return CardNetwork.masterCard;
+  } else {
+    return CardNetwork.unknown;
+  }
+}
+
+/// Legacy function for backward compatibility
 CardNetwork detectNetwork(String number) {
-  final cleaned = number.replaceAll(RegExp(r'\D'), '');
-  if (cleaned.isEmpty) return CardNetwork.unknown;
+  final clean = number.replaceAll(RegExp(r'\D'), '');
+  if (clean.isEmpty) return CardNetwork.unknown;
   
   // Check Mada first to avoid conflicts with Visa/MasterCard
-  if (MadaUtil.instance.inMadaRange(cleaned)) return CardNetwork.mada;
+  if (MadaUtil.instance.inMadaRange(clean)) return CardNetwork.mada;
   
   // Then check other networks
-  if (cleaned.startsWith('34') || cleaned.startsWith('37')) return CardNetwork.amex;
-  if (cleaned.startsWith('4')) return CardNetwork.visa;
-  if (cleaned.startsWith('5')) return CardNetwork.masterCard;
+  if (clean.startsWith('34') || clean.startsWith('37')) return CardNetwork.amex;
+  if (clean.startsWith('4')) return CardNetwork.visa;
+  if (clean.startsWith('5')) return CardNetwork.masterCard;
   
   return CardNetwork.unknown;
 }
