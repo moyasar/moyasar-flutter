@@ -231,7 +231,7 @@ class _CreditCardState extends State<CreditCard> {
           Container(
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(6),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black26,
@@ -276,7 +276,7 @@ class _CreditCardState extends State<CreditCard> {
           Container(
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(6),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black26,
@@ -386,7 +386,7 @@ class _CreditCardState extends State<CreditCard> {
                   ),
                   shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12.0),
+                      borderRadius: BorderRadius.circular(6),
                     ),
                   ),
                 ),
@@ -554,8 +554,9 @@ InputDecoration buildInputDecoration(
     suffixIcon: suffixIcon,
     hintText: hintText,
     border: hideBorder ? InputBorder.none : defaultEnabledBorder,
+    isDense: true,
+    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
     hintTextDirection: hintTextDirection,
-    contentPadding: const EdgeInsets.all(8.0),
   );
 }
 
