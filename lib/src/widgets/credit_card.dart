@@ -181,7 +181,7 @@ class _CreditCardState extends State<CreditCard> {
             final detectedName = legacyDetected.name;
             if (!supported.contains(detectedName)) {
               _unsupportedNetwork = true;
-              _cardNumberError = 'Unsupported network';
+              _cardNumberError = widget.locale.unsupportedNetwork;
             }
           } else {
             _detectedNetwork = null;
