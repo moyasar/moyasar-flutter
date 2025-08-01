@@ -12,7 +12,7 @@ void main() {
     expect(paymentConfig.description, "Coffee");
     expect(paymentConfig.metadata, null);
     expect(paymentConfig.supportedNetworks,
-        ["amex", "visa", "mada", "masterCard"]);
+        [PaymentNetwork.amex, PaymentNetwork.visa, PaymentNetwork.mada, PaymentNetwork.masterCard]);
     expect(PaymentConfig.callbackUrl, "https://example.com/thanks");
   });
 
@@ -25,7 +25,7 @@ void main() {
         currency: "USD",
         description: "Coffee!",
         metadata: meta,
-        supportedNetworks: ["mada"],
+        supportedNetworks: [PaymentNetwork.mada],
         creditCard: CreditCardConfig(saveCard: false, manual: false),
         applePay: ApplePayConfig(
             label: "Blue Coffee",
