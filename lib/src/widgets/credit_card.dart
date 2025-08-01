@@ -3,8 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:moyasar/moyasar.dart';
 import 'package:moyasar/src/utils/card_utils.dart';
 import 'package:moyasar/src/utils/input_formatters.dart';
+import 'package:moyasar/src/utils/card_network_utils.dart';
 import 'package:moyasar/src/widgets/network_icons.dart';
 import 'package:moyasar/src/widgets/three_d_s_webview.dart';
+import 'package:moyasar/src/models/payment_config.dart';
 
 /// The widget that shows the Credit Card form and manages the 3DS step.
 class CreditCard extends StatefulWidget {
@@ -35,6 +37,11 @@ class _CreditCardState extends State<CreditCard> {
   bool _isSubmitting = false;
   bool _tokenizeCard = false;
   bool _manualPayment = false;
+
+  // Network detection state
+  CardNetwork? _detectedNetwork;
+  bool _unsupportedNetwork = false;
+  String _cardNumber = '';
 
   // Error state for each field
   String? _nameError;
@@ -150,6 +157,34 @@ class _CreditCardState extends State<CreditCard> {
       _cardNumberError = CardUtils.validateCardNum(value, widget.locale);
       _cardNumberFieldFilled =
           value != null && value.replaceAll(' ', '').length >= 13;
+      
+      // Network detection logic
+      if (value != null && value.isNotEmpty) {
+        final cleaned = value.replaceAll(RegExp(r'\D'), '');
+        final detected = detectNetwork(cleaned);
+        
+        // Only update detected network if we have a valid detection
+        if (detected != CardNetwork.unknown) {
+          _detectedNetwork = detected;
+        } else if (cleaned.isEmpty) {
+          // Reset only if the field is completely empty
+          _detectedNetwork = null;
+        }
+        
+        // Update unsupported network flag
+        _unsupportedNetwork = false;
+        if (_detectedNetwork != null) {
+          final supported = widget.config.supportedNetworks.map((e) => e.name).toSet();
+          final detectedName = _detectedNetwork!.name;
+          if (!supported.contains(detectedName)) {
+            _unsupportedNetwork = true;
+            _cardNumberError = 'Unsupported network';
+          }
+        }
+      } else {
+        _detectedNetwork = null;
+        _unsupportedNetwork = false;
+      }
     });
   }
 
@@ -252,7 +287,10 @@ class _CreditCardState extends State<CreditCard> {
                       hintText: widget.locale.cardNumber,
                       hintTextDirection: widget.textDirection,
                       hideBorder: true,
-                      addNetworkIcons: true),
+                      addNetworkIcons: true,
+                      config: widget.config,
+                      detectedNetwork: _detectedNetwork,
+                      unsupportedNetwork: _unsupportedNetwork),
                   onChanged: _validateCardNumber,
                   inputFormatters: [
                     FilteringTextInputFormatter.digitsOnly,
@@ -476,13 +514,42 @@ InputDecoration buildInputDecoration(
     {required String hintText,
     required TextDirection hintTextDirection,
     bool addNetworkIcons = false,
-    bool hideBorder = false}) {
+    bool hideBorder = false,
+    PaymentConfig? config,
+    CardNetwork? detectedNetwork,
+    bool unsupportedNetwork = false}) {
+  Widget? suffixIcon;
+  if (addNetworkIcons && config != null) {
+    if (detectedNetwork != null) {
+      final supported = config.supportedNetworks.map((e) => e.name).toSet();
+      final detectedName = detectedNetwork.name;
+      if (supported.contains(detectedName)) {
+        // Show only the detected network icon when it's supported
+        suffixIcon = NetworkIcons(
+          config: PaymentConfig(
+            publishableApiKey: config.publishableApiKey,
+            amount: config.amount,
+            currency: config.currency,
+            description: config.description,
+            supportedNetworks: [PaymentNetwork.values.firstWhere((e) => e.name == detectedName)],
+          ),
+        );
+      } else {
+        // Show all configured networks when detected network is not supported
+        suffixIcon = NetworkIcons(config: config);
+      }
+    } else {
+      // Show all configured networks when no network is detected or there are errors
+      suffixIcon = NetworkIcons(config: config);
+    }
+  }
   return InputDecoration(
-      suffixIcon: addNetworkIcons ? const NetworkIcons() : null,
-      hintText: hintText,
-      border: hideBorder ? InputBorder.none : defaultEnabledBorder,
-      hintTextDirection: hintTextDirection,
-      contentPadding: const EdgeInsets.all(8.0));
+    suffixIcon: suffixIcon,
+    hintText: hintText,
+    border: hideBorder ? InputBorder.none : defaultEnabledBorder,
+    hintTextDirection: hintTextDirection,
+    contentPadding: const EdgeInsets.all(8.0),
+  );
 }
 
 void closeKeyboard() => FocusManager.instance.primaryFocus?.unfocus();
