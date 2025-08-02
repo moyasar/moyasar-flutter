@@ -1,23 +1,73 @@
 import 'package:flutter/material.dart';
+import 'package:moyasar/src/models/payment_config.dart';
 
 /// The widget that shows the Credit Cards icons.
+
 class NetworkIcons extends StatelessWidget {
-  const NetworkIcons({super.key});
+  final PaymentConfig config;
+  final TextDirection textDirection;
+
+  const NetworkIcons({
+    super.key,
+    required this.config,
+    required this.textDirection
+  });
+
+  /// Maps PaymentNetwork enum to their corresponding image assets
+  static final Map<PaymentNetwork, String> _networkImages = {
+    PaymentNetwork.visa: 'assets/images/visa.png',
+    PaymentNetwork.mada: 'assets/images/mada.png',
+    PaymentNetwork.masterCard: 'assets/images/mastercard.png',
+    PaymentNetwork.amex: 'assets/images/amex.png',
+  };
+
+  /// Maps custom network names to their corresponding image assets
+  /// Add your custom network images here
+  static const Map<String, String> _customNetworkImages = {
+    // Example: 'custom_network': 'assets/images/custom_network.png',
+  };
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        NetworkIcon(name: 'assets/images/visa.png'),
-        NetworkIcon(name: 'assets/images/mada.png'),
-        NetworkIcon(name: 'assets/images/mastercard.png'),
-        NetworkIcon(name: 'assets/images/amex.png'),
-        SizedBox(
-          width: 10,
+    // Get enum-based network images
+    final supportedNetworkImages = config.supportedNetworks
+        .where((network) => _networkImages.containsKey(network))
+        .map((network) => _networkImages[network]!)
+        .toList();
+
+    // Add custom network images if provided
+    final customNetworkImages = config.customNetworks
+        ?.where((network) => _customNetworkImages.containsKey(network))
+        .map((network) => _customNetworkImages[network]!)
+        .toList() ?? [];
+
+    final allNetworkImages = [...supportedNetworkImages, ...customNetworkImages];
+
+    if (allNetworkImages.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    final isRTL = textDirection == TextDirection.rtl;
+
+    return Container(
+      width: 120,
+      child: Directionality(
+        textDirection: textDirection,
+        child: Row(
+          mainAxisAlignment: isRTL ? MainAxisAlignment.start : MainAxisAlignment.end,
+          mainAxisSize: MainAxisSize.min,
+          textDirection: textDirection,
+          children: [
+            ...allNetworkImages.take(3).map((imagePath) =>
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 1.0),
+                  child: NetworkIcon(name: imagePath),
+                )
+            ),
+            const SizedBox(width: 5),
+          ],
         ),
-      ],
+      ),
     );
   }
 }
@@ -34,6 +84,7 @@ class NetworkIcon extends StatelessWidget {
       height: 20,
       width: 35,
       package: 'moyasar',
+      fit: BoxFit.contain, // 🆕 إضافة fit
     );
   }
 }
