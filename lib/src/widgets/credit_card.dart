@@ -332,8 +332,8 @@ class _CreditCardState extends State<CreditCard> {
                             ),
                             inputFormatters: [
                               FilteringTextInputFormatter.digitsOnly,
-                              LengthLimitingTextInputFormatter(16),
-                              CardNumberInputFormatter(),
+                              LengthLimitingTextInputFormatter(4),
+                              CardMonthInputFormatter(),
                             ],
                             onChanged: _validateExpiry,
                             onSaved: (value) {
