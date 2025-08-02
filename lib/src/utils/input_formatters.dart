@@ -49,7 +49,7 @@ String getFormattedCardNumber(String number) {
       int nonZeroIndex = i + 1;
       if ((nonZeroIndex == 4 || nonZeroIndex == 11) &&
           nonZeroIndex != number.length) {
-        buffer.write('  ');
+        buffer.write(' ');
       }
     }
   } else {
@@ -57,7 +57,7 @@ String getFormattedCardNumber(String number) {
       buffer.write(number[i]);
       int nonZeroIndex = i + 1;
       if (nonZeroIndex % 4 == 0 && nonZeroIndex != number.length) {
-        buffer.write('  ');
+        buffer.write(' ');
       }
     }
   }
