@@ -157,35 +157,33 @@ class _CreditCardState extends State<CreditCard> {
       _cardNumberFieldFilled =
           value != null && value.replaceAll(' ', '').length >= 13;
 
-      // Network detection logic using Swift-compatible logic
       if (value != null && value.isNotEmpty) {
         final cleaned = value.replaceAll(RegExp(r'\D'), '');
 
-        // Use the new getCardNetwork function that matches Swift logic
-        final detected = getCardNetwork(value, widget.config.supportedNetworks);
+        if (cleaned.length >= 4) {
+          // 🔧 استخدام detectNetwork للكشف عن النوع
+          final detected = detectNetwork(cleaned);
 
-        // Only update detected network if we have a valid detection
-        if (detected != CardNetwork.unknown) {
-          _detectedNetwork = detected;
-          _unsupportedNetwork = false; // Network is supported since getCardNetwork only returns supported networks
-        } else if (cleaned.isEmpty) {
-          // Reset only if the field is completely empty
-          _detectedNetwork = null;
-          _unsupportedNetwork = false;
-        } else {
-          // Check if the number matches any network but it's not in supported networks
-          final legacyDetected = detectNetwork(cleaned);
-          if (legacyDetected != CardNetwork.unknown) {
+          if (detected != CardNetwork.unknown) {
+            _detectedNetwork = detected;
+
+            // تحقق من الدعم
             final supported = widget.config.supportedNetworks.map((e) => e.name).toSet();
-            final detectedName = legacyDetected.name;
+            final detectedName = detected.name;
+
             if (!supported.contains(detectedName)) {
               _unsupportedNetwork = true;
               _cardNumberError = widget.locale.unsupportedNetwork;
+            } else {
+              _unsupportedNetwork = false;
             }
           } else {
             _detectedNetwork = null;
             _unsupportedNetwork = false;
           }
+        } else {
+          _detectedNetwork = null;
+          _unsupportedNetwork = false;
         }
       } else {
         _detectedNetwork = null;
