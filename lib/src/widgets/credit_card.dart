@@ -161,13 +161,11 @@ class _CreditCardState extends State<CreditCard> {
         final cleaned = value.replaceAll(RegExp(r'\D'), '');
 
         if (cleaned.length >= 4) {
-          // 🔧 استخدام detectNetwork للكشف عن النوع
           final detected = detectNetwork(cleaned);
 
           if (detected != CardNetwork.unknown) {
             _detectedNetwork = detected;
 
-            // تحقق من الدعم
             final supported = widget.config.supportedNetworks.map((e) => e.name).toSet();
             final detectedName = detected.name;
 

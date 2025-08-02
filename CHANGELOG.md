@@ -1,3 +1,13 @@
+## 2.1.0
+
+Credit Card Enhancements 🚀
+
+- [Credit Card] Validate the card number against the provided supported network
+- [Credit Card] RealTime Network Detection to show the card network corresponding to card number
+- [Moyasar] Fixing RTL Text Direction
+
+_This release includes contributions by **Mahmoud Abdulwahab**_
+
 ## 2.0.19
 
 - [Apple Pay] Add an option to tokenize (save) the card upon successful payment.

@@ -60,5 +60,5 @@ String getFormattedCardNumber(String number) {
       }
     }
   }
-  return "\u200E$buffer"; // 🔧 إضافة LTR mark في البداية
+  return "\u200E$buffer";
 }
