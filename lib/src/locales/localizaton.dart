@@ -70,7 +70,7 @@ class Localization {
     this.cardNumberRequired = 'رقم البطاقة مطلوب',
     this.invalidCardNumber = 'رقم البطاقة غير صحيح',
     this.unsupportedNetwork = 'شبكة غير مدعومة',
-    this.expiry = 'تاريخ الانتهاء',
+    this.expiry = 'الإنتهاء',
     this.expiryRequired = 'تاريخ الإنتهاء مطلوب',
     this.invalidExpiry = 'تاريخ الإنتهاء غير صحيح',
     this.expiredCard = 'بطاقة منتهية',
