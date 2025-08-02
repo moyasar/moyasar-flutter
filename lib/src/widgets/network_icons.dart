@@ -2,10 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:moyasar/src/models/payment_config.dart';
 
 /// The widget that shows the Credit Cards icons.
+
 class NetworkIcons extends StatelessWidget {
   final PaymentConfig config;
+  final TextDirection textDirection;
 
-  const NetworkIcons({super.key, required this.config});
+  const NetworkIcons({
+    super.key,
+    required this.config,
+    required this.textDirection
+  });
 
   /// Maps PaymentNetwork enum to their corresponding image assets
   static final Map<PaymentNetwork, String> _networkImages = {
@@ -41,15 +47,27 @@ class NetworkIcons extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        ...allNetworkImages.map((imagePath) => NetworkIcon(name: imagePath)),
-        const SizedBox(
-          width: 10,
+    final isRTL = textDirection == TextDirection.rtl;
+
+    return Container(
+      width: 120,
+      child: Directionality(
+        textDirection: textDirection,
+        child: Row(
+          mainAxisAlignment: isRTL ? MainAxisAlignment.start : MainAxisAlignment.end,
+          mainAxisSize: MainAxisSize.min,
+          textDirection: textDirection,
+          children: [
+            ...allNetworkImages.take(3).map((imagePath) =>
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 1.0),
+                  child: NetworkIcon(name: imagePath),
+                )
+            ),
+            const SizedBox(width: 5),
+          ],
         ),
-      ],
+      ),
     );
   }
 }
@@ -66,6 +84,7 @@ class NetworkIcon extends StatelessWidget {
       height: 20,
       width: 35,
       package: 'moyasar',
+      fit: BoxFit.contain, // 🆕 إضافة fit
     );
   }
 }
