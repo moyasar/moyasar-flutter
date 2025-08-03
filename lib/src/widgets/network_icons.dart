@@ -35,22 +35,15 @@ class NetworkIcons extends StatelessWidget {
         .map((network) => _networkImages[network]!)
         .toList();
 
-    // Add custom network images if provided
-    final customNetworkImages = config.customNetworks
-        ?.where((network) => _customNetworkImages.containsKey(network))
-        .map((network) => _customNetworkImages[network]!)
-        .toList() ?? [];
+    final allNetworkImages = [...supportedNetworkImages];
 
-    final allNetworkImages = [...supportedNetworkImages, ...customNetworkImages];
-
-    if (allNetworkImages.isEmpty) {
+    if (supportedNetworkImages.isEmpty) {
       return const SizedBox.shrink();
     }
 
     final isRTL = textDirection == TextDirection.rtl;
 
     return Container(
-      width: 120,
       child: Directionality(
         textDirection: textDirection,
         child: Row(
@@ -58,9 +51,9 @@ class NetworkIcons extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           textDirection: textDirection,
           children: [
-            ...allNetworkImages.take(3).map((imagePath) =>
+            ...allNetworkImages.map((imagePath) =>
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 1.0),
+                  padding: EdgeInsets.symmetric(horizontal: 2.0),
                   child: NetworkIcon(name: imagePath),
                 )
             ),
@@ -81,8 +74,8 @@ class NetworkIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return Image.asset(
       name,
-      height: 20,
-      width: 35,
+      height: 18,
+      width: 26,
       package: 'moyasar',
       fit: BoxFit.contain, // 🆕 إضافة fit
     );

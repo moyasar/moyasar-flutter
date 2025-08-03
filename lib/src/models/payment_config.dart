@@ -52,10 +52,6 @@ class PaymentConfig {
   /// Supported Networks: [PaymentNetwork.amex, PaymentNetwork.visa, PaymentNetwork.mada, PaymentNetwork.masterCard]
   List<PaymentNetwork> supportedNetworks;
 
-  /// Custom networks that are not in the PaymentNetwork enum.
-  /// You can add custom network names here, but you'll need to provide corresponding image assets.
-  List<String>? customNetworks;
-
   /// The config required to setup Apple Pay.
   ApplePayConfig? applePay;
 
@@ -72,12 +68,10 @@ class PaymentConfig {
       required this.description,
       this.metadata,
       List<PaymentNetwork>? supportedNetworks,
-      this.customNetworks,
       this.applePay,
       this.creditCard,
       this.givenID})
       : supportedNetworks = (supportedNetworks ?? const [
-          PaymentNetwork.amex,
           PaymentNetwork.visa,
           PaymentNetwork.mada,
           PaymentNetwork.masterCard

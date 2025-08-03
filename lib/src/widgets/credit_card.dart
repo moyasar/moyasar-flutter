@@ -388,7 +388,7 @@ class _CreditCardState extends State<CreditCard> {
               child: ElevatedButton(
                 style: ButtonStyle(
                   minimumSize:
-                  const WidgetStatePropertyAll<Size>(Size.fromHeight(55)),
+                  const WidgetStatePropertyAll<Size>(Size.fromHeight(52)),
                   backgroundColor: WidgetStatePropertyAll<Color>(
                     _isButtonEnabled ? blueColor : lightBlueColor,
                   ),
