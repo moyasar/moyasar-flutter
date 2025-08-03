@@ -21,12 +21,6 @@ class NetworkIcons extends StatelessWidget {
     PaymentNetwork.amex: 'assets/images/amex.png',
   };
 
-  /// Maps custom network names to their corresponding image assets
-  /// Add your custom network images here
-  static const Map<String, String> _customNetworkImages = {
-    // Example: 'custom_network': 'assets/images/custom_network.png',
-  };
-
   @override
   Widget build(BuildContext context) {
     // Get enum-based network images
@@ -43,23 +37,21 @@ class NetworkIcons extends StatelessWidget {
 
     final isRTL = textDirection == TextDirection.rtl;
 
-    return Container(
-      child: Directionality(
+    return Directionality(
+      textDirection: textDirection,
+      child: Row(
+        mainAxisAlignment: isRTL ? MainAxisAlignment.start : MainAxisAlignment.end,
+        mainAxisSize: MainAxisSize.min,
         textDirection: textDirection,
-        child: Row(
-          mainAxisAlignment: isRTL ? MainAxisAlignment.start : MainAxisAlignment.end,
-          mainAxisSize: MainAxisSize.min,
-          textDirection: textDirection,
-          children: [
-            ...allNetworkImages.map((imagePath) =>
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 2.0),
-                  child: NetworkIcon(name: imagePath),
-                )
-            ),
-            const SizedBox(width: 5),
-          ],
-        ),
+        children: [
+          ...allNetworkImages.map((imagePath) =>
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 2.0),
+                child: NetworkIcon(name: imagePath),
+              )
+          ),
+          const SizedBox(width: 5),
+        ],
       ),
     );
   }

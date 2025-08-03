@@ -40,7 +40,6 @@ class _CreditCardState extends State<CreditCard> {
   // Network detection state
   CardNetwork? _detectedNetwork;
   bool _unsupportedNetwork = false;
-  final String _cardNumber = '';
 
   // Error state for each field
   String? _nameError;
