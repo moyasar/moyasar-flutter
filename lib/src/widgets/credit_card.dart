@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:moyasar/moyasar.dart';
 import 'package:moyasar/src/utils/card_utils.dart';
 import 'package:moyasar/src/utils/input_formatters.dart';
+import 'package:moyasar/src/utils/card_network_utils.dart';
 import 'package:moyasar/src/widgets/network_icons.dart';
 import 'package:moyasar/src/widgets/three_d_s_webview.dart';
 
@@ -10,11 +11,11 @@ import 'package:moyasar/src/widgets/three_d_s_webview.dart';
 class CreditCard extends StatefulWidget {
   CreditCard(
       {super.key,
-      required this.config,
-      required this.onPaymentResult,
-      this.locale = const Localization.en()})
+        required this.config,
+        required this.onPaymentResult,
+        this.locale = const Localization.en()})
       : textDirection =
-            locale.languageCode == 'ar' ? TextDirection.rtl : TextDirection.ltr;
+  locale.languageCode == 'ar' ? TextDirection.rtl : TextDirection.ltr;
 
   final Function onPaymentResult;
   final PaymentConfig config;
@@ -35,6 +36,11 @@ class _CreditCardState extends State<CreditCard> {
   bool _isSubmitting = false;
   bool _tokenizeCard = false;
   bool _manualPayment = false;
+
+  // Network detection state
+  CardNetwork? _detectedNetwork;
+  bool _unsupportedNetwork = false;
+  final String _cardNumber = '';
 
   // Error state for each field
   String? _nameError;
@@ -150,6 +156,37 @@ class _CreditCardState extends State<CreditCard> {
       _cardNumberError = CardUtils.validateCardNum(value, widget.locale);
       _cardNumberFieldFilled =
           value != null && value.replaceAll(' ', '').length >= 13;
+
+      if (value != null && value.isNotEmpty) {
+        final cleaned = value.replaceAll(RegExp(r'\D'), '');
+
+        if (cleaned.length >= 4) {
+          final detected = detectNetwork(cleaned);
+
+          if (detected != CardNetwork.unknown) {
+            _detectedNetwork = detected;
+
+            final supported = widget.config.supportedNetworks.map((e) => e.name).toSet();
+            final detectedName = detected.name;
+
+            if (!supported.contains(detectedName)) {
+              _unsupportedNetwork = true;
+              _cardNumberError = widget.locale.unsupportedNetwork;
+            } else {
+              _unsupportedNetwork = false;
+            }
+          } else {
+            _detectedNetwork = null;
+            _unsupportedNetwork = false;
+          }
+        } else {
+          _detectedNetwork = null;
+          _unsupportedNetwork = false;
+        }
+      } else {
+        _detectedNetwork = null;
+        _unsupportedNetwork = false;
+      }
     });
   }
 
@@ -176,9 +213,12 @@ class _CreditCardState extends State<CreditCard> {
       autovalidateMode: _autoValidateMode,
       key: _formKey,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(_nameError ?? widget.locale.nameOnCard,
+              textAlign: widget.textDirection == TextDirection.rtl
+                  ? TextAlign.right
+                  : TextAlign.left,
               style: TextStyle(
                 fontSize: 16,
                 color: _nameError != null ? Colors.red : Colors.black,
@@ -189,7 +229,7 @@ class _CreditCardState extends State<CreditCard> {
           Container(
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(6),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black26,
@@ -220,11 +260,14 @@ class _CreditCardState extends State<CreditCard> {
                   _expiryError ??
                   _cvcError ??
                   widget.locale.cardInformation,
+              textAlign: widget.textDirection == TextDirection.rtl
+                  ? TextAlign.right
+                  : TextAlign.left,
               style: TextStyle(
                 fontSize: 16,
                 color: (_cardNumberError != null ||
-                        _expiryError != null ||
-                        _cvcError != null)
+                    _expiryError != null ||
+                    _cvcError != null)
                     ? Colors.red
                     : Colors.black,
               )),
@@ -234,7 +277,7 @@ class _CreditCardState extends State<CreditCard> {
           Container(
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(6),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black26,
@@ -245,14 +288,19 @@ class _CreditCardState extends State<CreditCard> {
             ),
             padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: widget.textDirection == TextDirection.rtl
+                  ? CrossAxisAlignment.end
+                  : CrossAxisAlignment.start,
               children: [
                 CardFormField(
                   inputDecoration: buildInputDecoration(
                       hintText: widget.locale.cardNumber,
                       hintTextDirection: widget.textDirection,
                       hideBorder: true,
-                      addNetworkIcons: true),
+                      addNetworkIcons: true,
+                      config: widget.config,
+                      detectedNetwork: _detectedNetwork,
+                      unsupportedNetwork: _unsupportedNetwork),
                   onChanged: _validateCardNumber,
                   inputFormatters: [
                     FilteringTextInputFormatter.digitsOnly,
@@ -260,14 +308,17 @@ class _CreditCardState extends State<CreditCard> {
                     CardNumberInputFormatter(),
                   ],
                   onSaved: (value) =>
-                      _cardData.number = CardUtils.getCleanedNumber(value!),
+                  _cardData.number = CardUtils.getCleanedNumber(value!),
                 ),
                 const Divider(height: 2),
                 Row(
+                  textDirection: widget.textDirection,
                   children: [
                     Expanded(
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: widget.textDirection == TextDirection.rtl
+                            ? CrossAxisAlignment.end
+                            : CrossAxisAlignment.start,
                         children: [
                           CardFormField(
                             inputDecoration: buildInputDecoration(
@@ -303,7 +354,9 @@ class _CreditCardState extends State<CreditCard> {
                     ),
                     Expanded(
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: widget.textDirection == TextDirection.rtl
+                            ? CrossAxisAlignment.end
+                            : CrossAxisAlignment.start,
                         children: [
                           CardFormField(
                             inputDecoration: buildInputDecoration(
@@ -335,59 +388,67 @@ class _CreditCardState extends State<CreditCard> {
               child: ElevatedButton(
                 style: ButtonStyle(
                   minimumSize:
-                      const WidgetStatePropertyAll<Size>(Size.fromHeight(55)),
+                  const WidgetStatePropertyAll<Size>(Size.fromHeight(52)),
                   backgroundColor: WidgetStatePropertyAll<Color>(
                     _isButtonEnabled ? blueColor : lightBlueColor,
                   ),
                   shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12.0),
+                      borderRadius: BorderRadius.circular(6),
                     ),
                   ),
                 ),
                 onPressed: _isButtonEnabled ? _saveForm : null,
                 child: _isSubmitting
                     ? const CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeWidth: 2,
-                      )
-                    : Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Spacer(),
-                          Text(
-                            '${widget.locale.pay} ',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                            textDirection: widget.textDirection,
-                          ),
-                          SizedBox(
-                              width: 16,
-                              child: Image.asset(
-                                'assets/images/saudiriyal.png',
-                                color: Colors.white, // Tint color
-                                package: 'moyasar',
-                              )),
-                          const SizedBox(width: 4),
-                          Text(
-                            getAmount(widget.config.amount),
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                            textDirection: widget.textDirection,
-                          ),
-                          Spacer(),
-                        ],
+                  color: Colors.white,
+                  strokeWidth: 2,
+                )
+                    : Directionality(
+                  textDirection: widget.textDirection,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    textDirection: widget.textDirection,
+                    children: [
+                      Spacer(),
+                      Text(
+                        '${widget.locale.pay} ',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                        textDirection: widget.textDirection,
                       ),
+                      SizedBox(
+                          width: 16,
+                          child: Image.asset(
+                            'assets/images/saudiriyal.png',
+                            color: Colors.white,
+                            package: 'moyasar',
+                          )),
+                      const SizedBox(width: 4),
+                      Text(
+                        getAmount(widget.config.amount),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                        textDirection: widget.textDirection,
+                      ),
+                      Spacer(),
+                    ],
+                  ),
+                ),
               ),
             ),
           ),
-          SaveCardNotice(tokenizeCard: _tokenizeCard, locale: widget.locale),
+          SaveCardNotice(
+            tokenizeCard: _tokenizeCard,
+            locale: widget.locale,
+            textDirection: widget.textDirection,
+          ),
         ],
       ),
     );
@@ -395,34 +456,47 @@ class _CreditCardState extends State<CreditCard> {
 }
 
 class SaveCardNotice extends StatelessWidget {
-  const SaveCardNotice(
-      {super.key, required this.tokenizeCard, required this.locale});
+  const SaveCardNotice({
+    super.key,
+    required this.tokenizeCard,
+    required this.locale,
+    required this.textDirection,
+  });
 
   final bool tokenizeCard;
   final Localization locale;
+  final TextDirection textDirection;
 
   @override
   Widget build(BuildContext context) {
+    final isRTL = textDirection == TextDirection.rtl;
+
     return tokenizeCard
         ? Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.info,
-                  color: blueColor,
-                ),
-                const Padding(
-                  padding: EdgeInsets.only(right: 5),
-                ),
-                Text(
+        padding: const EdgeInsets.all(8.0),
+        child: Directionality(
+          textDirection: textDirection,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            textDirection: textDirection,
+            children: [
+              Icon(
+                Icons.info,
+                color: blueColor,
+              ),
+              SizedBox(width: 5),
+              Flexible(
+                child: Text(
                   locale.saveCardNotice,
                   style: TextStyle(color: blueColor),
+                  textDirection: textDirection,
+                  textAlign: isRTL ? TextAlign.right : TextAlign.left,
                 ),
-              ],
-            ))
+              ),
+            ],
+          ),
+        ))
         : const SizedBox.shrink();
   }
 }
@@ -438,26 +512,31 @@ class CardFormField extends StatelessWidget {
 
   const CardFormField(
       {super.key,
-      required this.onSaved,
-      this.validator,
-      this.onChanged,
-      this.inputDecoration,
-      this.keyboardType = TextInputType.number,
-      this.textInputAction = TextInputAction.next,
-      this.inputFormatters});
+        required this.onSaved,
+        this.validator,
+        this.onChanged,
+        this.inputDecoration,
+        this.keyboardType = TextInputType.number,
+        this.textInputAction = TextInputAction.next,
+        this.inputFormatters});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 0),
       child: TextFormField(
-          keyboardType: keyboardType,
-          textInputAction: textInputAction,
-          decoration: inputDecoration,
-          validator: validator,
-          onSaved: onSaved,
-          onChanged: onChanged,
-          inputFormatters: inputFormatters),
+        keyboardType: keyboardType,
+        textInputAction: textInputAction,
+        decoration: inputDecoration,
+        validator: validator,
+        onSaved: onSaved,
+        onChanged: onChanged,
+        inputFormatters: inputFormatters,
+        textDirection: inputDecoration?.hintTextDirection,
+        textAlign: inputDecoration?.hintTextDirection == TextDirection.rtl
+            ? TextAlign.right
+            : TextAlign.left,
+      ),
     );
   }
 }
@@ -474,15 +553,56 @@ String getAmount(int amount) {
 
 InputDecoration buildInputDecoration(
     {required String hintText,
-    required TextDirection hintTextDirection,
-    bool addNetworkIcons = false,
-    bool hideBorder = false}) {
+      required TextDirection hintTextDirection,
+      bool addNetworkIcons = false,
+      bool hideBorder = false,
+      PaymentConfig? config,
+      CardNetwork? detectedNetwork,
+      bool unsupportedNetwork = false}) {
+  Widget? iconWidget;
+  if (addNetworkIcons && config != null) {
+    if (detectedNetwork != null) {
+      final supported = config.supportedNetworks.map((e) => e.name).toSet();
+      final detectedName = detectedNetwork.name;
+      if (supported.contains(detectedName)) {
+        // Show only the detected network icon when it's supported
+        iconWidget = NetworkIcons(
+          config: PaymentConfig(
+            publishableApiKey: config.publishableApiKey,
+            amount: config.amount,
+            currency: config.currency,
+            description: config.description,
+            supportedNetworks: [PaymentNetwork.values.firstWhere((e) => e.name == detectedName)],
+          ),
+          textDirection: hintTextDirection,
+        );
+      } else {
+        // Show all configured networks when detected network is not supported
+        iconWidget = NetworkIcons(
+          config: config,
+          textDirection: hintTextDirection,
+        );
+      }
+    } else {
+      // Show all configured networks when no network is detected or there are errors
+      iconWidget = NetworkIcons(
+        config: config,
+        textDirection: hintTextDirection,
+      );
+    }
+  }
+
+  final isRTL = hintTextDirection == TextDirection.rtl;
+
   return InputDecoration(
-      suffixIcon: addNetworkIcons ? const NetworkIcons() : null,
-      hintText: hintText,
-      border: hideBorder ? InputBorder.none : defaultEnabledBorder,
-      hintTextDirection: hintTextDirection,
-      contentPadding: const EdgeInsets.all(8.0));
+    suffixIcon: isRTL ? null : iconWidget,
+    prefixIcon: isRTL ? iconWidget : null,
+    hintText: hintText,
+    border: hideBorder ? InputBorder.none : defaultEnabledBorder,
+    isDense: true,
+    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+    hintTextDirection: hintTextDirection,
+  );
 }
 
 void closeKeyboard() => FocusManager.instance.primaryFocus?.unfocus();

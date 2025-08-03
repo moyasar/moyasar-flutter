@@ -17,7 +17,13 @@ class CardUtils {
 
     String cardNumber = getCleanedNumber(input);
 
-    if (input.length < 8 || !isValidLuhn(cardNumber)) {
+    // Check if cleaned number has proper length (13-19 digits for most cards)
+    if (cardNumber.length < 13 || cardNumber.length > 19) {
+      return locale.invalidCardNumber;
+    }
+
+    // Check if it's a valid Luhn number
+    if (!isValidLuhn(cardNumber)) {
       return locale.invalidCardNumber;
     }
 

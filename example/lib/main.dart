@@ -33,6 +33,7 @@ class _CoffeeShopState extends State<CoffeeShop> {
       amount: 100, // SAR 1
       description: 'order #1324',
       metadata: {'size': '250g', 'code': 255},
+     // supportedNetworks: [PaymentNetwork.mada, PaymentNetwork.visa ],
       creditCard: CreditCardConfig(saveCard: false, manual: false),
       applePay: ApplePayConfig(
           merchantId: 'merchant.com.mysr.apple',

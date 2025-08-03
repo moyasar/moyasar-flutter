@@ -7,7 +7,7 @@ export 'src/widgets/credit_card.dart' show CreditCard;
 export 'src/widgets/apple_pay.dart' show ApplePay;
 
 export 'src/models/card_form_model.dart' show CardFormModel;
-export 'src/models/payment_config.dart' show PaymentConfig;
+export 'src/models/payment_config.dart' show PaymentConfig, PaymentNetwork;
 export 'src/models/apple_pay_config.dart' show ApplePayConfig;
 export 'src/models/credit_card_config.dart' show CreditCardConfig;
 export 'src/models/payment_request.dart' show PaymentRequest;

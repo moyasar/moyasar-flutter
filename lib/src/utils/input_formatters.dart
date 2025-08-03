@@ -40,26 +40,25 @@ String getFormattedExpiryDate(String date) {
 
 String getFormattedCardNumber(String number) {
   final company = CardUtils.getCardCompanyFromNumber(number);
-
   var buffer = StringBuffer();
 
   if (company == CardCompany.amex) {
     for (int i = 0; i < number.length; i++) {
-      buffer.write(number[i]);
+      buffer.write("\u200E${number[i]}");
       int nonZeroIndex = i + 1;
       if ((nonZeroIndex == 4 || nonZeroIndex == 11) &&
           nonZeroIndex != number.length) {
-        buffer.write('  ');
+        buffer.write(' ');
       }
     }
   } else {
     for (int i = 0; i < number.length; i++) {
-      buffer.write(number[i]);
+      buffer.write("\u200E${number[i]}");
       int nonZeroIndex = i + 1;
       if (nonZeroIndex % 4 == 0 && nonZeroIndex != number.length) {
-        buffer.write('  ');
+        buffer.write(' ');
       }
     }
   }
-  return buffer.toString();
+  return "\u200E$buffer";
 }

@@ -1,23 +1,66 @@
 import 'package:flutter/material.dart';
+import 'package:moyasar/src/models/payment_config.dart';
 
 /// The widget that shows the Credit Cards icons.
+
 class NetworkIcons extends StatelessWidget {
-  const NetworkIcons({super.key});
+  final PaymentConfig config;
+  final TextDirection textDirection;
+
+  const NetworkIcons({
+    super.key,
+    required this.config,
+    required this.textDirection
+  });
+
+  /// Maps PaymentNetwork enum to their corresponding image assets
+  static final Map<PaymentNetwork, String> _networkImages = {
+    PaymentNetwork.visa: 'assets/images/visa.png',
+    PaymentNetwork.mada: 'assets/images/mada.png',
+    PaymentNetwork.masterCard: 'assets/images/mastercard.png',
+    PaymentNetwork.amex: 'assets/images/amex.png',
+  };
+
+  /// Maps custom network names to their corresponding image assets
+  /// Add your custom network images here
+  static const Map<String, String> _customNetworkImages = {
+    // Example: 'custom_network': 'assets/images/custom_network.png',
+  };
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        NetworkIcon(name: 'assets/images/visa.png'),
-        NetworkIcon(name: 'assets/images/mada.png'),
-        NetworkIcon(name: 'assets/images/mastercard.png'),
-        NetworkIcon(name: 'assets/images/amex.png'),
-        SizedBox(
-          width: 10,
+    // Get enum-based network images
+    final supportedNetworkImages = config.supportedNetworks
+        .where((network) => _networkImages.containsKey(network))
+        .map((network) => _networkImages[network]!)
+        .toList();
+
+    final allNetworkImages = [...supportedNetworkImages];
+
+    if (supportedNetworkImages.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    final isRTL = textDirection == TextDirection.rtl;
+
+    return Container(
+      child: Directionality(
+        textDirection: textDirection,
+        child: Row(
+          mainAxisAlignment: isRTL ? MainAxisAlignment.start : MainAxisAlignment.end,
+          mainAxisSize: MainAxisSize.min,
+          textDirection: textDirection,
+          children: [
+            ...allNetworkImages.map((imagePath) =>
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 2.0),
+                  child: NetworkIcon(name: imagePath),
+                )
+            ),
+            const SizedBox(width: 5),
+          ],
         ),
-      ],
+      ),
     );
   }
 }
@@ -31,9 +74,10 @@ class NetworkIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return Image.asset(
       name,
-      height: 20,
-      width: 35,
+      height: 18,
+      width: 26,
       package: 'moyasar',
+      fit: BoxFit.contain, // 🆕 إضافة fit
     );
   }
 }
