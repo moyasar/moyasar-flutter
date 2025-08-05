@@ -123,4 +123,58 @@ void main() {
     expect((pr.source as ApplePayPaymentRequestSource).manual, 'true');
     expect((pr.source as ApplePayPaymentRequestSource).saveCard, 'true');
   });
+
+  group('CardTokenPaymentRequestSource', () {
+    test('includes all fields when provided', () {
+      final source = CardTokenPaymentRequestSource(
+        token: 'token_123456789',
+        cvc: '123',
+        statementDescriptor: 'Test Payment',
+        threeDS: true,
+        manual: true,
+      );
+
+      expect(source.toJson(), {
+        'type': 'token',
+        'token': 'token_123456789',
+        'cvc': '123',
+        'statement_descriptor': 'Test Payment',
+        '3ds': true,
+        'manual': true,
+      });
+    });
+
+    test('includes only required fields when optional ones are omitted', () {
+      final source = CardTokenPaymentRequestSource(token: 'token_abc');
+
+      expect(source.toJson(), {
+        'type': 'token',
+        'token': 'token_abc',
+      });
+    });
+
+    test('throws if token does not start with "token_"', () {
+      expect(
+        () => CardTokenPaymentRequestSource(token: 'invalid_token'),
+        throwsA(isA<AssertionError>()),
+      );
+    });
+
+    test('throws if CVC is invalid (less than 3 digits)', () {
+      expect(
+        () => CardTokenPaymentRequestSource(token: 'token_abc', cvc: '12'),
+        throwsA(isA<AssertionError>()),
+      );
+    });
+
+    test('throws if statement descriptor exceeds 255 characters', () {
+      final longDesc = 'A' * 256;
+
+      expect(
+        () => CardTokenPaymentRequestSource(
+            token: 'token_abc', statementDescriptor: longDesc),
+        throwsA(isA<AssertionError>()),
+      );
+    });
+  });
 }
