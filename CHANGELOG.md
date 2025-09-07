@@ -1,3 +1,10 @@
+## 2.1.1
+
+Bug Fixes 🐛
+
+- [Apple Pay] Fix PaymentNetwork serialization issue that caused "Invalid argument: Instance of 'PaymentNetwork'" error
+- [Apple Pay] Convert PaymentNetwork enum instances to string values when communicating with iOS native code
+
 ## 2.1.0
 
 Credit Card Enhancements 🚀
