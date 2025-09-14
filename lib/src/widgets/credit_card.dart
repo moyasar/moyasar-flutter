@@ -449,7 +449,7 @@ class _CreditCardState extends State<CreditCard> {
           ),
           const SizedBox(height: 20.0),
           Image.asset(
-            'assets/images/logo.png',
+            'assets/images/moyasarlogo.png',
             package: 'moyasar',
             height: 40, // You can adjust the height as needed
           ),
