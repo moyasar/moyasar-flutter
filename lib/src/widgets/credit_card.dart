@@ -220,6 +220,7 @@ class _CreditCardState extends State<CreditCard> {
                   : TextAlign.left,
               style: TextStyle(
                 fontFamily: 'Aeonik',
+                fontWeight: FontWeight.w500, // Medium weight
                 fontSize: 16,
                 color: _nameError != null ? Colors.red : Colors.black,
               )),
@@ -265,6 +266,7 @@ class _CreditCardState extends State<CreditCard> {
                   : TextAlign.left,
               style: TextStyle(
                 fontFamily: 'Aeonik',
+                fontWeight: FontWeight.w500, // Medium weight
                 fontSize: 16,
                 color: (_cardNumberError != null ||
                     _expiryError != null ||
@@ -451,7 +453,7 @@ class _CreditCardState extends State<CreditCard> {
           Image.asset(
             'assets/images/moyasarlogo.png',
             package: 'moyasar',
-            // height: 40, // You can adjust the height as needed
+            height: 20, // You can adjust the height as needed
           ),
           SaveCardNotice(
             tokenizeCard: _tokenizeCard,
@@ -498,7 +500,7 @@ class SaveCardNotice extends StatelessWidget {
               Flexible(
                 child: Text(
                   locale.saveCardNotice,
-                  style: TextStyle(fontFamily: 'Aeonik', color: blueColor),
+                  style: TextStyle(fontFamily: 'Aeonik', color: blueColor, fontWeight: FontWeight.w500),
                   textDirection: textDirection,
                   textAlign: isRTL ? TextAlign.right : TextAlign.left,
                 ),
@@ -608,7 +610,7 @@ InputDecoration buildInputDecoration(
     suffixIcon: isRTL ? null : iconWidget,
     prefixIcon: isRTL ? iconWidget : null,
     hintText: hintText,
-    hintStyle: const TextStyle(fontFamily: 'Aeonik'), // Font for hint text
+    hintStyle: const TextStyle(fontFamily: 'Aeonik', color: Color(0xFF9E9E9E)), // Font for hint text
     border: hideBorder ? InputBorder.none : defaultEnabledBorder,
     isDense: true,
     contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
