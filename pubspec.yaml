@@ -28,3 +28,10 @@ flutter:
         pluginClass: SwiftPlugin
   assets:
     - assets/images/
+    - assets/fonts/
+  fonts:
+    - family: Aeonik
+      fonts:
+        - asset: assets/fonts/Aeonik-Regular.ttf
+        - asset: assets/fonts/Aeonik-Medium.ttf
+          weight: 500
