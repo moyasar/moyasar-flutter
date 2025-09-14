@@ -447,11 +447,11 @@ class _CreditCardState extends State<CreditCard> {
               ),
             ),
           ),
-          const SizedBox(height: 20.0),
+          const SizedBox(height: 16.0),
           Image.asset(
             'assets/images/moyasarlogo.png',
             package: 'moyasar',
-            height: 40, // You can adjust the height as needed
+            // height: 40, // You can adjust the height as needed
           ),
           SaveCardNotice(
             tokenizeCard: _tokenizeCard,
