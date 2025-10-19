@@ -1,3 +1,9 @@
+## 2.1.2
+
+UI Enhancements 🐛
+
+- [UI] UI Enhancements for Credit Card Widget
+
 ## 2.1.1
 
 Bug Fixes 🐛

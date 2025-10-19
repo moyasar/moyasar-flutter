@@ -219,6 +219,8 @@ class _CreditCardState extends State<CreditCard> {
                   ? TextAlign.right
                   : TextAlign.left,
               style: TextStyle(
+                fontFamily: 'Aeonik',
+                fontWeight: FontWeight.w500, // Medium weight
                 fontSize: 16,
                 color: _nameError != null ? Colors.red : Colors.black,
               )),
@@ -263,6 +265,8 @@ class _CreditCardState extends State<CreditCard> {
                   ? TextAlign.right
                   : TextAlign.left,
               style: TextStyle(
+                fontFamily: 'Aeonik',
+                fontWeight: FontWeight.w500, // Medium weight
                 fontSize: 16,
                 color: (_cardNumberError != null ||
                     _expiryError != null ||
@@ -413,8 +417,9 @@ class _CreditCardState extends State<CreditCard> {
                       Text(
                         '${widget.locale.pay} ',
                         style: const TextStyle(
+                          fontFamily: 'Aeonik',
                           color: Colors.white,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w500, // Medium weight
                           fontSize: 16,
                         ),
                         textDirection: widget.textDirection,
@@ -430,8 +435,9 @@ class _CreditCardState extends State<CreditCard> {
                       Text(
                         getAmount(widget.config.amount),
                         style: const TextStyle(
+                          fontFamily: 'Aeonik',
                           color: Colors.white,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w500, // Medium weight
                           fontSize: 16,
                         ),
                         textDirection: widget.textDirection,
@@ -442,6 +448,12 @@ class _CreditCardState extends State<CreditCard> {
                 ),
               ),
             ),
+          ),
+          const SizedBox(height: 16.0),
+          Image.asset(
+            'assets/images/moyasarlogo.png',
+            package: 'moyasar',
+            height: 20, // You can adjust the height as needed
           ),
           SaveCardNotice(
             tokenizeCard: _tokenizeCard,
@@ -488,7 +500,7 @@ class SaveCardNotice extends StatelessWidget {
               Flexible(
                 child: Text(
                   locale.saveCardNotice,
-                  style: TextStyle(color: blueColor),
+                  style: TextStyle(fontFamily: 'Aeonik', color: blueColor, fontWeight: FontWeight.w500),
                   textDirection: textDirection,
                   textAlign: isRTL ? TextAlign.right : TextAlign.left,
                 ),
@@ -524,6 +536,7 @@ class CardFormField extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 0),
       child: TextFormField(
+        style: const TextStyle(fontFamily: 'Aeonik'), // Font for input text
         keyboardType: keyboardType,
         textInputAction: textInputAction,
         decoration: inputDecoration,
@@ -597,6 +610,7 @@ InputDecoration buildInputDecoration(
     suffixIcon: isRTL ? null : iconWidget,
     prefixIcon: isRTL ? iconWidget : null,
     hintText: hintText,
+    hintStyle: const TextStyle(fontFamily: 'Aeonik', color: Color(0xFF9E9E9E)), // Font for hint text
     border: hideBorder ? InputBorder.none : defaultEnabledBorder,
     isDense: true,
     contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
@@ -620,5 +634,5 @@ OutlineInputBorder defaultErrorBorder = OutlineInputBorder(
     borderSide: const BorderSide(color: Colors.red),
     borderRadius: defaultBorderRadius);
 
-Color blueColor = Colors.blue[700]!;
-Color lightBlueColor = Colors.blue[100]!;
+Color blueColor = const Color(0xFF768DFF); // Updated color
+Color lightBlueColor = const Color(0xFF768DFF).withOpacity(0.3); // Adjusted light blue color too
