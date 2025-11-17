@@ -1,3 +1,26 @@
+## 2.1.2
+
+UI Enhancements 🐛
+
+- [UI] UI Enhancements for Credit Card Widget
+
+## 2.1.1
+
+Bug Fixes 🐛
+
+- [Apple Pay] Fix PaymentNetwork serialization issue that caused "Invalid argument: Instance of 'PaymentNetwork'" error
+- [Apple Pay] Convert PaymentNetwork enum instances to string values when communicating with iOS native code
+
+## 2.1.0
+
+Credit Card Enhancements 🚀
+
+- [Credit Card] Validate the card number against the provided supported network
+- [Credit Card] RealTime Network Detection to show the card network corresponding to card number
+- [Moyasar] Fixing RTL Text Direction
+
+_This release includes contributions by **Mahmoud Abdulwahab**_
+
 ## 2.0.19
 
 - [Apple Pay] Add an option to tokenize (save) the card upon successful payment.

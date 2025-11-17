@@ -34,7 +34,7 @@ class _ApplePayState extends State<ApplePay> {
   @override
   void initState() {
     widget.channel.invokeMethod<bool>("isApplePayAvailable", {
-      "supportedNetworks": widget.config.supportedNetworks
+      "supportedNetworks": widget.config.supportedNetworks.map((e) => e.toJson()).toList()
     }).then((isApplePayAvailableCheckFlag) {
       if (isApplePayAvailableCheckFlag != null &&
           !isApplePayAvailableCheckFlag) {
@@ -83,7 +83,7 @@ class _ApplePayState extends State<ApplePay> {
           "displayName": "${widget.config.applePay?.label}",
           "merchantCapabilities": ${jsonEncode(widget.config.applePay?.merchantCapabilities)},
           "supportedCountries": ${jsonEncode(widget.config.applePay?.supportedCountries)},
-          "supportedNetworks": ${jsonEncode(widget.config.supportedNetworks)},
+          "supportedNetworks": ${jsonEncode(widget.config.supportedNetworks.map((e) => e.toJson()).toList())},
           "countryCode": "SA",
           "currencyCode": "SAR"
         }
@@ -96,7 +96,7 @@ class _ApplePayState extends State<ApplePay> {
       "paymentLabel": "${widget.config.applePay?.label}",
       "merchantCapabilities": widget.config.applePay?.merchantCapabilities,
       "supportedCountries": widget.config.applePay?.supportedCountries,
-      "supportedNetworks": widget.config.supportedNetworks,
+      "supportedNetworks": widget.config.supportedNetworks.map((e) => e.toJson()).toList(),
       "countryCode": "SA",
       "currencyCode": "SAR",
       "paymentAmount": (widget.config.amount / 100).toStringAsFixed(2)

@@ -1,6 +1,27 @@
 import 'package:moyasar/src/models/apple_pay_config.dart';
 import 'package:moyasar/src/models/credit_card_config.dart';
 
+/// Supported Networks: [PaymentNetwork.amex, PaymentNetwork.visa, PaymentNetwork.mada, PaymentNetwork.masterCard]
+enum PaymentNetwork {
+  amex,
+  visa,
+  mada,
+  masterCard;
+
+  String toJson() {
+    switch (this) {
+      case PaymentNetwork.amex:
+        return 'amex';
+      case PaymentNetwork.visa:
+        return 'visa';
+      case PaymentNetwork.mada:
+        return 'mada';
+      case PaymentNetwork.masterCard:
+        return 'masterCard';
+    }
+  }
+}
+
 /// Used by Moyasar API along with any of the supported sources.
 class PaymentConfig {
   /// Used internally to manage the 3DS step.
@@ -28,8 +49,8 @@ class PaymentConfig {
   Map<String, dynamic>? metadata;
 
   /// Optional configuration used to set accepted card networks.
-  /// Supported Networks: ["amex", "visa", "mada", "masterCard"]
-  List<String> supportedNetworks;
+  /// Supported Networks: [PaymentNetwork.amex, PaymentNetwork.visa, PaymentNetwork.mada, PaymentNetwork.masterCard]
+  List<PaymentNetwork> supportedNetworks;
 
   /// The config required to setup Apple Pay.
   ApplePayConfig? applePay;
@@ -46,14 +67,24 @@ class PaymentConfig {
       this.currency = 'SAR',
       required this.description,
       this.metadata,
-      this.supportedNetworks = const ["amex", "visa", "mada", "masterCard"],
+      List<PaymentNetwork>? supportedNetworks,
       this.applePay,
       this.creditCard,
       this.givenID})
-      : assert(publishableApiKey.isNotEmpty,
+      : supportedNetworks = (supportedNetworks ?? const [
+          PaymentNetwork.visa,
+          PaymentNetwork.mada,
+          PaymentNetwork.masterCard
+        ]).toSet().toList(),
+        assert(publishableApiKey.isNotEmpty,
             'Please fill `publishableApiKey` argument with your key.'),
         assert(amount > 0, 'Please add a positive amount.'),
         assert(description.isNotEmpty, 'Please add a description.'),
-        assert(supportedNetworks.isNotEmpty,
+        assert((supportedNetworks ?? const [
+          PaymentNetwork.amex,
+          PaymentNetwork.visa,
+          PaymentNetwork.mada,
+          PaymentNetwork.masterCard
+        ]).toSet().isNotEmpty,
             'At least 1 network must be supported.');
 }
