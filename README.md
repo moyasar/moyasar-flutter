@@ -123,6 +123,7 @@ class PaymentMethods extends StatelessWidget {
   }
 
   // Callback once the user fills & submit their CC information using the custom form widget
+  
   void onSubmitCcForm() async {
     final source = CardPaymentRequestSource(
         creditCardData: CardFormModel(
@@ -141,6 +142,39 @@ class PaymentMethods extends StatelessWidget {
 
     onPaymentResult(result);
   }
+  
+ // Callback once the user fills & submit their mobile number for STC and OTP information using the custom form widget
+
+ # Mobile Number
+ 
+  final source = StcRequestSource( mobile: phoneController.text );
+  final paymentConfig = PaymentConfig(
+                        publishableApiKey: widget.config.publishableApiKey,
+                        amount: widget.config.amount,
+                        description: widget.config.description,
+                      );
+                      
+ final paymentRequest = PaymentRequest(
+                        paymentConfig,
+                        source,
+                      );
+                      
+ final result = await Moyasar.pay(
+                        apiKey: widget.config.publishableApiKey,
+                        paymentRequest: paymentRequest,
+                      );
+  onPaymentResult(result);
+
+ # OTP
+ 
+  final otpRequest = OtpRequestSource( otpValue: otpController.text);
+  final result = await Moyasar.verifyOTP(
+                        transactionURL: transactionUrl!,
+                        otpRequest: otpRequest,
+                      );
+                      
+  onPaymentResult(result);
+
 
   // Unified payment result processor
   void onPaymentResult(result) {

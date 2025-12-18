@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:coffee_flutter/widgets/stc_ui_customization.dart';
 import 'package:flutter/material.dart';
 import 'package:moyasar/moyasar.dart';
 
@@ -65,7 +66,12 @@ class PaymentMethods extends StatelessWidget {
                   ),
                 )),
           ),
-        )
+        ),
+        const SizedBox(height: 10),
+        STCPay(
+          config: paymentConfig,
+          onPaymentResult: onPaymentResult,
+        ),
       ],
     );
   }
