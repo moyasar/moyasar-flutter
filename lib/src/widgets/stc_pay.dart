@@ -3,9 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:moyasar/moyasar.dart';
-import 'package:moyasar/src/models/sources/stc/stc_request_source.dart';
 
-import '../models/sources/stc/stc_response_source.dart';
 
 class STCPaymentComponent extends StatefulWidget {
   STCPaymentComponent(

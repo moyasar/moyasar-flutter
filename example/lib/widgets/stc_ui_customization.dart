@@ -7,10 +7,10 @@ class STCPay extends StatefulWidget {
   final Function onPaymentResult;
 
   const STCPay({
-    Key? key,
+    super.key,
     required this.config,
     required this.onPaymentResult,
-  }) : super(key: key);
+  });
 
   @override
   State<STCPay> createState() => _STCPayState();

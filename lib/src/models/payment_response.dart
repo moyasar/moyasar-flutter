@@ -1,6 +1,5 @@
 import 'package:moyasar/moyasar.dart';
 import 'package:moyasar/src/models/payment_type.dart';
-import 'package:moyasar/src/models/sources/stc/stc_response_source.dart';
 
 /// Moyasar API response for processing a payment.
 class PaymentResponse {
