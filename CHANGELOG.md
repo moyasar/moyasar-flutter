@@ -1,3 +1,9 @@
+## 2.1.3
+
+STC UI Customization 🐛
+
+- [UI] Updating STC Demo for ui customization and readMe file
+
 ## 2.1.2
 
 UI Enhancements 🐛
