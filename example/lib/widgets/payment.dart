@@ -65,8 +65,180 @@ class PaymentMethods extends StatelessWidget {
                   ),
                 )),
           ),
-        )
+        ),
+        const SizedBox(height: 10),
+        STCPay(
+          config: paymentConfig,
+          onPaymentResult: onPaymentResult,
+        ),
       ],
+    );
+  }
+}
+
+
+// Add this widget in your payment.dart file or a new file
+
+class STCPay extends StatelessWidget {
+  final PaymentConfig config;
+  final Function onPaymentResult;
+
+  const STCPay({
+    Key? key,
+    required this.config,
+    required this.onPaymentResult,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () => _handlePayment(context),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: const Color(0xFF5D2D87), // STC Pay purple color
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
+      child: const Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.phone_android, color: Colors.white),
+          SizedBox(width: 12),
+          Text(
+            'Pay with STC Pay',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _handlePayment(BuildContext context) async {
+    final phoneController = TextEditingController();
+    final otpController = TextEditingController();
+    String? transactionUrl;
+    bool isLoading = false;
+    String? error;
+
+    await showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) {
+          return AlertDialog(
+            title: const Text('Pay with STC Pay'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (transactionUrl == null) ...[
+                  TextField(
+                    controller: phoneController,
+                    keyboardType: TextInputType.phone,
+                    decoration: const InputDecoration(
+                      labelText: 'STC Pay Number',
+                      hintText: '05XXXXXXXX',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ] else ...[
+                  const Text('Enter the OTP sent to your phone'),
+                  const SizedBox(height: 16),
+                  TextField(
+                    controller: otpController,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      labelText: 'OTP',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ],
+
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: isLoading
+                    ? null
+                    : () => Navigator.pop(context),
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: isLoading
+                    ? null
+                    : () async {
+                  setState(() => isLoading = true);
+                  error = null;
+
+                  try {
+                    if (transactionUrl == null) {
+                      // Initiate payment
+                      final source = StcRequestSource(
+                        mobile: phoneController.text
+                      );
+                      final paymentConfig = PaymentConfig(
+                        publishableApiKey: config.publishableApiKey,
+                        amount: config.amount,
+                        description: config.description,
+                      );
+                      final paymentRequest = PaymentRequest(
+                        paymentConfig,
+                        source,
+                      );
+                      final result = await Moyasar.pay(
+                        apiKey: config.publishableApiKey,
+                        paymentRequest: paymentRequest,
+                      );
+
+                      if (result is PaymentResponse &&
+                          result.status == PaymentStatus.initiated) {
+                        final stcResponse = result.source as StcResponseSource;
+                        setState(() {
+                          transactionUrl = stcResponse.transactionUrl;
+                        });
+                      } else {
+                        throw Exception('Failed to initiate payment');
+                      }
+                    } else {
+                      // Verify OTP
+                      final otpRequest = OtpRequestSource(
+                        otpValue: otpController.text,
+                      );
+                      final result = await Moyasar.verifyOTP(
+                        transactionURL: transactionUrl!,
+                        otpRequest: otpRequest,
+                      );
+                      if (mounted) {
+                        onPaymentResult(result);
+                        Navigator.pop(context);
+                      }
+                    }
+                  } catch (e) {
+                    setState(() => error = e.toString());
+                  } finally {
+                    if (mounted) {
+                      setState(() => isLoading = false);
+                    }
+                  }
+                },
+                child: isLoading
+                    ? const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                    strokeWidth: 2,
+                  ),
+                )
+                    : Text(transactionUrl == null ? 'Pay' : 'Verify OTP'),
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 }
