@@ -79,7 +79,7 @@ class PaymentMethods extends StatelessWidget {
 
 // Add this widget in your payment.dart file or a new file
 
-class STCPay extends StatelessWidget {
+class STCPay extends StatefulWidget {
   final PaymentConfig config;
   final Function onPaymentResult;
 
@@ -88,6 +88,22 @@ class STCPay extends StatelessWidget {
     required this.config,
     required this.onPaymentResult,
   }) : super(key: key);
+
+  @override
+  State<STCPay> createState() => _STCPayState();
+}
+
+class _STCPayState extends State<STCPay> {
+  bool isLoading = false;
+  String? error;
+  String? transactionUrl;
+  final otpController = TextEditingController();
+
+  @override
+  void dispose() {
+    otpController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -118,12 +134,12 @@ class STCPay extends StatelessWidget {
     );
   }
 
+  final phoneController = TextEditingController();
+
   Future<void> _handlePayment(BuildContext context) async {
-    final phoneController = TextEditingController();
-    final otpController = TextEditingController();
-    String? transactionUrl;
-    bool isLoading = false;
-    String? error;
+    final localTransactionUrl = transactionUrl; // Create a local copy of the state variable
+    final localIsLoading = isLoading;
+    final localError = error;
 
     await showDialog(
       context: context,
@@ -170,26 +186,28 @@ class STCPay extends StatelessWidget {
                 onPressed: isLoading
                     ? null
                     : () async {
-                  setState(() => isLoading = true);
-                  error = null;
+                  setState(() {
+                    isLoading = true;
+                    error = null;
+                  });
 
                   try {
-                    if (transactionUrl == null) {
+                    if (localTransactionUrl == null) {
                       // Initiate payment
                       final source = StcRequestSource(
                         mobile: phoneController.text
                       );
                       final paymentConfig = PaymentConfig(
-                        publishableApiKey: config.publishableApiKey,
-                        amount: config.amount,
-                        description: config.description,
+                        publishableApiKey: widget.config.publishableApiKey,
+                        amount: widget.config.amount,
+                        description: widget.config.description,
                       );
                       final paymentRequest = PaymentRequest(
                         paymentConfig,
                         source,
                       );
                       final result = await Moyasar.pay(
-                        apiKey: config.publishableApiKey,
+                        apiKey: widget.config.publishableApiKey,
                         paymentRequest: paymentRequest,
                       );
 
@@ -208,11 +226,11 @@ class STCPay extends StatelessWidget {
                         otpValue: otpController.text,
                       );
                       final result = await Moyasar.verifyOTP(
-                        transactionURL: transactionUrl!,
+                        transactionURL: localTransactionUrl!,
                         otpRequest: otpRequest,
                       );
                       if (mounted) {
-                        onPaymentResult(result);
+                        widget.onPaymentResult(result);
                         Navigator.pop(context);
                       }
                     }
@@ -233,7 +251,7 @@ class STCPay extends StatelessWidget {
                     strokeWidth: 2,
                   ),
                 )
-                    : Text(transactionUrl == null ? 'Pay' : 'Verify OTP'),
+                    : Text(localTransactionUrl == null ? 'Pay' : 'Verify OTP'),
               ),
             ],
           );

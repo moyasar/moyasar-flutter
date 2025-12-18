@@ -26,8 +26,9 @@ export 'src/models/sources/apple_pay/apple_pay_response_source.dart'
     show ApplePayPaymentResponseSource;
 export 'src/models/sources/card/card_company.dart' show CardCompany;
 
-export 'src/models/sources/otp/otp_request_source.dart' show OTPRequestSource;
-export 'src/models/sources/stc/stc_request_source.dart' show STCRequestSource;
+export 'src/models/sources/otp/otp_request_source.dart' show OtpRequestSource;
+export 'src/models/sources/stc/stc_request_source.dart' show StcRequestSource;
+export 'src/models/sources/stc/stc_response_source.dart' show StcResponseSource;
 
 export 'src/locales/localizaton.dart' show Localization;
 
