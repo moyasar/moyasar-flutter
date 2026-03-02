@@ -16,7 +16,7 @@ dependencies:
   pay: ^3.2.1
   samsung_pay_sdk_flutter:
     path: third_party/SamsungPaySDKFlutterPlugin/Libs/samsungpaysdkflutter_v1.01.00
-  webview_flutter: 4.8.0
+  webview_flutter: 4.13.0
 
 dev_dependencies:
   flutter_test:
