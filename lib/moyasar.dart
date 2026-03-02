@@ -16,7 +16,7 @@ export 'src/models/credit_card_config.dart' show CreditCardConfig;
 export 'src/models/payment_request.dart' show PaymentRequest;
 export 'src/models/payment_response.dart' show PaymentResponse, PaymentStatus;
 
-export 'src/widgets/stc_pay.dart' show STCPaymentComponent;
+export 'src/widgets/stc_pay.dart' show STCPay, STCPaymentComponent;
 export 'src/widgets/otp.dart' show OtpComponent;
 
 export 'src/models/sources/card/card_request_source.dart'
