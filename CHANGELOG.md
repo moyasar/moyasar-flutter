@@ -1,13 +1,17 @@
-## 2.3.0
+## 3.0.0
 
-Samsung Pay Support 🚀
+Samsung Pay support and STC Pay widget rename.
 
-- [Samsung Pay] Add Samsung Pay support for Android (Samsung devices only)
+### Added
+- [Samsung Pay] Samsung Pay support for Android (Samsung devices only)
 - [Samsung Pay] Uses samsung_pay_sdk_flutter for native integration
-- [Samsung Pay] Add SamsungPayConfig with serviceId, merchantName, orderNumber, manual
-- [PaymentConfig] Add samsungPay config and merchantCountryCode for Samsung Pay
-- [Example] Add product flavors: default_ (Apple Pay) and spay (Samsung Pay demo)
-- [Example] Add CONFIGURATION_GUIDE.md for bundle ID setup
+- [Samsung Pay] SamsungPayConfig with serviceId, merchantName, orderNumber, manual
+- [PaymentConfig] samsungPay config and merchantCountryCode for Samsung Pay
+- [Example] Product flavors: default_ (Apple Pay) and spay (Samsung Pay demo)
+- [Example] CONFIGURATION_GUIDE.md for bundle ID setup
+
+### Changed
+- [STC Pay] Widget renamed from `STCPaymentComponent` to `STCPay`. `STCPaymentComponent` is deprecated and will be removed in the next major version; use `STCPay` for new code.
 
 ## 2.2.0
 
