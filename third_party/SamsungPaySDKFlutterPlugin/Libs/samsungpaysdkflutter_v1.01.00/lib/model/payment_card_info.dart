@@ -16,14 +16,14 @@ class PaymentCardInfo {
 
 
   /// Constructor to create PaymentCardInfo.<br>
-  PaymentCardInfo(){}
+  PaymentCardInfo();
 
   ///@nodoc
   factory PaymentCardInfo.fromJson(Map<String, dynamic> json){
     late Brand brandFromJson;
-    if(json["brand"].toString() == Brand.VISA.name)
+    if(json["brand"].toString() == Brand.VISA.name) {
       brandFromJson = Brand.VISA;
-    else if(json["brand"].toString() == Brand.MASTERCARD.name)
+    } else if(json["brand"].toString() == Brand.MASTERCARD.name)
       brandFromJson= Brand.MASTERCARD;
     else if(json["brand"].toString() == Brand.AMERICANEXPRESS.name)
       brandFromJson = Brand.AMERICANEXPRESS;

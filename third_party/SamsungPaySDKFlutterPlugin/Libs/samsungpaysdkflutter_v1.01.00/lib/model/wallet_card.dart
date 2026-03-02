@@ -1,6 +1,4 @@
 
-import 'dart:convert';
-import '../spay_core.dart';
 
 
 /// This class provides card information related to the card management operations.

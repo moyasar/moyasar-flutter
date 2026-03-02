@@ -50,9 +50,9 @@ class SpinnerControl extends SheetControl{
   SpinnerControl._builder(String controlId, List<SheetItem>? itemList, String? selectedItemId)  : super(controltype: Controltype.SPINNER)
   {
     setControlId(controlId);
-    itemList!.forEach((element) {
+    for (var element in itemList!) {
       items?.add(element);
-    });
+    }
     setSelectedItemId(selectedItemId!);
   }
 
@@ -161,7 +161,7 @@ class SpinnerControl extends SheetControl{
       throw ArgumentError("addItem : same ID is used.");
     } else if (itemText.isEmpty) {
       throw ArgumentError("addItem : You must set value.");
-    } else if (location! < 0 || location > (items?.length)!-1) {
+    } else if (location < 0 || location > (items?.length)!-1) {
       throw ArgumentError("addItem : location is abnormal.");
     }
     SheetItem sheetItem = SheetItem(id: id,sValue: itemText);
@@ -250,6 +250,7 @@ class SpinnerControl extends SheetControl{
   }
 
   ///@nodoc
+  @override
   Map<String, dynamic> toJson(){
     Map<String, dynamic> data = super.toJson();
     data.addAll({

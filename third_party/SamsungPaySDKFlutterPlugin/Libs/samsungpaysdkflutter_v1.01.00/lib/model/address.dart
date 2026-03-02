@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 /// Address object managed by UserInfoCollection returned when calling API
 ///

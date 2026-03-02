@@ -81,6 +81,7 @@ class PlainTextControl extends SheetControl{
   );
 
   ///@nodoc
+  @override
   Map<String, dynamic> toJson(){
     Map<String, dynamic> data = super.toJson();
     data.addAll({

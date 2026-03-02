@@ -49,7 +49,7 @@ class AddressControl extends SheetControl{
     if ((sheetItemType == SheetItemType.BILLING_ADDRESS.name) || (sheetItemType == SheetItemType.SHIPPING_ADDRESS.name) || (sheetItemType == SheetItemType.ZIP_ONLY_ADDRESS.name)){
       sheetItem = SheetItem(sheetItemType: sheetItemType);
     } else {
-      throw ArgumentError("AddressControl : sheetItemType must be either BILLING_ADDRESS or " + "SHIPPING_ADDRESS or" + "ZIP_ONLY_ADDRESS.");
+      throw ArgumentError("AddressControl : sheetItemType must be either BILLING_ADDRESS or " "SHIPPING_ADDRESS or" + "ZIP_ONLY_ADDRESS.");
     }
   }
 
@@ -207,29 +207,36 @@ class AddressControl extends SheetControl{
     addressControl.sheetItem = SheetItem.fromJson(json["sheetItem"]);
     addressControl.address = Address.fromJson(json["address"]);
     addressControl.sheetUpdatedListener = sheetUpdatedListener;
-    if(SheetItem.fromJson(json["sheetItem"]).sheetItemType.toString() == SheetItemType.SHIPPING_ADDRESS.name)
+    if(SheetItem.fromJson(json["sheetItem"]).sheetItemType.toString() == SheetItemType.SHIPPING_ADDRESS.name) {
       addressControl.setDisplayOption(json["displayOption"] as int);
+    }
     addressControl.setErrorCode(json["errorCode"] as int);
     return addressControl;
   }
 
   ///@nodoc
+  @override
   Map<String, dynamic> toJson(){
     Map<String, dynamic> addressControl= {};
     addressControl["controltype"] = controltype.name;
     addressControl["controlId"] = controlId;
-    if(sheetItem != null)
+    if(sheetItem != null) {
       addressControl["sheetItem"] = sheetItem?.toJson();
-    if(address != null)
+    }
+    if(address != null) {
       addressControl["address"] = address?.toJson();
-    if(displayOption != null)
+    }
+    if(displayOption != null) {
       addressControl["displayOption"] = displayOption;
-    if(errorCode != null)
+    }
+    if(errorCode != null) {
       addressControl["errorCode"] = errorCode;
-    if(sheetUpdatedListener != null)
+    }
+    if(sheetUpdatedListener != null) {
       addressControl["sheetUpdatedListener"] = true;
-    else
+    } else {
       addressControl["sheetUpdatedListener"] = false;
+    }
     return addressControl;
   }
 }

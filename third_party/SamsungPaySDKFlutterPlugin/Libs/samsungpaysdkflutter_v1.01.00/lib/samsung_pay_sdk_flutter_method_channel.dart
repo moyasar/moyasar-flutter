@@ -22,7 +22,7 @@ class MethodChannelSamsungPaySdkFlutter extends SamsungPaySdkFlutterPlatform {
   late GetCardListener? getCardListener;
   late CardInfoListener? cardInfoListener;
   late CustomSheetTransactionInfoListener? customSheetTransactionInfoListener;
-  SheetUpdatedListener? sheetUpdatedListener = null;
+  SheetUpdatedListener? sheetUpdatedListener;
 
 
   MethodChannelSamsungPaySdkFlutter(){

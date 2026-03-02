@@ -197,8 +197,8 @@ class CustomSheetPaymentInfo {
 
   ///@nodoc
   void _nullCheckExtraPaymentInfo(){
-    if (this.extraPaymentInfo == null) {
-      this.extraPaymentInfo = {};
+    if (extraPaymentInfo == null) {
+      extraPaymentInfo = {};
     }
   }
 
@@ -290,15 +290,13 @@ class CustomSheetPaymentInfo {
   ///
 
   String? getPaymentCurrencyCode() {
-    if (customSheet != null) {
-      for (SheetControl sheet in customSheet.getSheetControls()!) {
-        if (sheet.controltype == Controltype.AMOUNTBOX) {
-          AmountBoxControl amountBoxControl = sheet as AmountBoxControl;
-          return amountBoxControl.currencyCode;
-        }
+    for (SheetControl sheet in customSheet.getSheetControls()!) {
+      if (sheet.controltype == Controltype.AMOUNTBOX) {
+        AmountBoxControl amountBoxControl = sheet as AmountBoxControl;
+        return amountBoxControl.currencyCode;
       }
     }
-    return "";
+      return "";
   }
 
   /// API to return the shipping/delivery address which was used in the current transaction.<br>
@@ -410,12 +408,15 @@ class CustomSheetPaymentInfo {
     if(allowedCardBrand != null){
       customSheetPaymentInfoJson["allowedCardBrand"] = allowedCardBrand?.map((x) => x.name).toList();
     }
-    if(isCardHolderNameRequired!= null)
+    if(isCardHolderNameRequired!= null) {
       customSheetPaymentInfoJson["isCardHolderNameRequired"] = isCardHolderNameRequired;
-    if(isRecurring != null)
+    }
+    if(isRecurring != null) {
       customSheetPaymentInfoJson["isRecurring"] = isRecurring;
-    if(merchantCountryCode!= null)
+    }
+    if(merchantCountryCode!= null) {
       customSheetPaymentInfoJson["merchantCountryCode"] = merchantCountryCode;
+    }
     customSheetPaymentInfoJson["customSheet"] = customSheet.toJson();
     if(extraPaymentInfo != null){
       customSheetPaymentInfoJson["extraPaymentInfo"] = extraPaymentInfo;

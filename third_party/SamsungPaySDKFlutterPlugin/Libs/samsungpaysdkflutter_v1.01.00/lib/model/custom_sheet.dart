@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:samsung_pay_sdk_flutter/model/address_control.dart';
 import 'package:samsung_pay_sdk_flutter/model/plain_text_control.dart';
