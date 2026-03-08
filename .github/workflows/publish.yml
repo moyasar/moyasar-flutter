@@ -1,0 +1,33 @@
+# Publish Moyasar Flutter SDK to pub.dev
+# Trigger: push a version tag (e.g. v3.0.0) — see PUBLISH.md for steps
+# Publish runs only if the tag points to a commit that is on main (prevents publishing from unmerged PRs).
+
+name: Publish to pub.dev
+
+on:
+  push:
+    tags:
+      - 'v*'   # e.g. v2.1.3, v3.0.0
+
+jobs:
+  # Fail unless the tagged commit exists on main — no publishing from feature branches or unmerged PRs.
+  tag-on-main:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Ensure tag is on main
+        run: |
+          if ! git branch -r --contains "$GITHUB_SHA" | grep -q 'origin/main'; then
+            echo "::error::Tag $GITHUB_REF does not point to a commit on main. Merge to main first, then tag from main."
+            exit 1
+          fi
+          echo "Tag is on main, proceeding to publish."
+
+  publish:
+    needs: tag-on-main
+    permissions:
+      id-token: write   # Required for pub.dev OIDC authentication
+      contents: read
+    uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1
