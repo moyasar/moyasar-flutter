@@ -1,4 +1,4 @@
-import 'package:samsung_pay_sdk_flutter/model/wallet_card.dart';
+import 'package:moyasar/src/samsung_pay_sdk/model/wallet_card.dart';
 
 ///
 /// This class allows to define Samsung Pay SDK information, common error codes, and constants.
