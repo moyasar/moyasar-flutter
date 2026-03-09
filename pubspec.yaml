@@ -14,11 +14,7 @@ dependencies:
     sdk: flutter
   http: ^1.4.0
   pay: ^3.2.1
-  samsung_pay_sdk_flutter:
-    git:
-      url: https://github.com/moyasar/moyasar-flutter.git
-      path: third_party/SamsungPaySDKFlutterPlugin/Libs/samsungpaysdkflutter_v1.01.00
-      ref: main
+  plugin_platform_interface: ^2.0.2
   webview_flutter: ^4.13.0
 
 dev_dependencies:
@@ -29,6 +25,9 @@ dev_dependencies:
 flutter:
   plugin:
     platforms:
+      android:
+        package: com.samsung.flutter.sdk.samsungpay.v2.samsung_pay_sdk_flutter
+        pluginClass: SamsungPaySdkFlutterPlugin
       ios:
         pluginClass: SwiftPlugin
   assets:
