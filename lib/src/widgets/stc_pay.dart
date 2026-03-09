@@ -28,14 +28,10 @@ class STCPay extends StatefulWidget {
 class STCPaymentComponent extends STCPay {
   STCPaymentComponent({
     super.key,
-    required PaymentConfig config,
-    required Function onPaymentResult,
+    required super.config,
+    required super.onPaymentResult,
     Localization? locale,
-  }) : super(
-          config: config,
-          onPaymentResult: onPaymentResult,
-          locale: locale ?? const Localization.en(),
-        );
+  }) : super(locale: locale ?? const Localization.en());
 }
 
 class _STCPayState extends State<STCPay> {

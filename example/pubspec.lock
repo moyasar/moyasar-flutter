@@ -338,9 +338,11 @@ packages:
   samsung_pay_sdk_flutter:
     dependency: transitive
     description:
-      path: "../third_party/SamsungPaySDKFlutterPlugin/Libs/samsungpaysdkflutter_v1.01.00"
-      relative: true
-    source: path
+      path: "third_party/SamsungPaySDKFlutterPlugin/Libs/samsungpaysdkflutter_v1.01.00"
+      ref: main
+      resolved-ref: "22d62b64fa005940b6d35563d582f54426583768"
+      url: "https://github.com/moyasar/moyasar-flutter.git"
+    source: git
     version: "1.01.00"
   sky_engine:
     dependency: transitive
@@ -439,10 +441,10 @@ packages:
     dependency: transitive
     description:
       name: webview_flutter
-      sha256: c3e4fe614b1c814950ad07186007eff2f2e5dd2935eba7b9a9a1af8e5885f1ba
+      sha256: a3da219916aba44947d3a5478b1927876a09781174b5a2b67fa5be0555154bf9
       url: "https://pub.dev"
     source: hosted
-    version: "4.13.0"
+    version: "4.13.1"
   webview_flutter_android:
     dependency: transitive
     description:
