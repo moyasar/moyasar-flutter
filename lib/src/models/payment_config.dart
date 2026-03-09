@@ -1,6 +1,7 @@
 import 'package:moyasar/src/models/apple_pay_config.dart';
 import 'package:moyasar/src/models/credit_card_config.dart';
 import 'package:moyasar/src/models/payment_split.dart';
+import 'package:moyasar/src/models/samsung_pay_config.dart';
 
 /// Supported Networks: [PaymentNetwork.amex, PaymentNetwork.visa, PaymentNetwork.mada, PaymentNetwork.masterCard]
 enum PaymentNetwork {
@@ -56,6 +57,12 @@ class PaymentConfig {
   /// The config required to setup Apple Pay.
   ApplePayConfig? applePay;
 
+  /// The config required to setup Samsung Pay (Android only).
+  SamsungPayConfig? samsungPay;
+
+  /// Merchant country code for Samsung Pay (e.g. "SA", "US"). Default "SA".
+  String merchantCountryCode;
+
   /// The config required to extend the Credit Card payment feature.
   CreditCardConfig? creditCard;
 
@@ -80,6 +87,8 @@ class PaymentConfig {
       this.metadata,
       List<PaymentNetwork>? supportedNetworks,
       this.applePay,
+      this.samsungPay,
+      this.merchantCountryCode = 'SA',
       this.creditCard,
       this.givenID,
       this.splits,

@@ -1,4 +1,10 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <!-- Samsung Pay: Required for Android 11+ to detect Samsung Pay app -->
+    <queries>
+        <package android:name="com.samsung.android.spay" />
+        <package android:name="com.samsung.android.samsungpay.gear" />
+    </queries>
    <application
         android:label="coffee_flutter"
         android:name="${applicationName}"
@@ -24,6 +30,12 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <!-- Samsung Pay SDK: Must be 2.19 - samsung_pay_sdk_flutter uses SDK 2.19.00 -->
+        <meta-data
+            android:name="spay_sdk_api_level"
+            android:value="2.19"
+            tools:node="merge" />
+      
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

@@ -1,0 +1,14 @@
+Samsung Pay SDK Flutter Plugin - Release Notes
+
+Version: 1.01.00
+Release Date: September 30, 2024
+
+Overview:
+This release introduces the Samsung Pay SDK Flutter Plugin to provide a bridge between the Samsung Pay SDK and Flutter, ensuring that developers can utilize all the features of the Samsung Pay SDK within a Flutter-based environment.
+
+Features:
+Flutter Integration: Full support for integrating the Samsung Pay SDK with Flutter, allowing developers to use Samsung Wallet in cross-platform applications with minimal effort.
+
+
+Compatibility:
+Samsung Pay SDK Flutter Plugin version 1.01.00 is compatible upto Samsung Pay SDK version 2.19

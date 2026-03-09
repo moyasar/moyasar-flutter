@@ -16,11 +16,18 @@ class PaymentRequest {
   String? baseUrl;
 
   PaymentRequest(
-      PaymentConfig config, PaymentRequestSource paymentRequestSource) {
+    PaymentConfig config,
+    PaymentRequestSource paymentRequestSource, {
+    Map<String, dynamic>? additionalMetadata,
+  }) {
     amount = config.amount;
     currency = config.currency;
     description = config.description;
-    metadata = config.metadata;
+    metadata = {
+      ...?config.metadata,
+      ...?additionalMetadata,
+    };
+    if (metadata!.isEmpty) metadata = null;
     source = paymentRequestSource;
     givenID = config.givenID;
     splits = config.splits;

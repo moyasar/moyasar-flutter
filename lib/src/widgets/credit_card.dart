@@ -635,4 +635,4 @@ OutlineInputBorder defaultErrorBorder = OutlineInputBorder(
     borderRadius: defaultBorderRadius);
 
 Color blueColor = const Color(0xFF768DFF); // Updated color
-Color lightBlueColor = const Color(0xFF768DFF).withOpacity(0.3); // Adjusted light blue color too
+Color lightBlueColor = const Color(0xFF768DFF).withValues(alpha: 0.3);

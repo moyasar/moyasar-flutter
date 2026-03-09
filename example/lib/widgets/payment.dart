@@ -25,6 +25,10 @@ class PaymentMethods extends StatelessWidget {
           )
         else
           const SizedBox.shrink(),
+        SamsungPay(
+          config: paymentConfig,
+          onPaymentResult: onPaymentResult,
+        ),
         CreditCard(
           config: paymentConfig,
           onPaymentResult: onPaymentResult,
@@ -52,7 +56,7 @@ class PaymentMethods extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                         builder: (context) => Scaffold(
-                            body: STCPaymentComponent(
+                            body: STCPay(
                                 config: paymentConfig,
                                 onPaymentResult: onPaymentResult))),
                   );
@@ -68,7 +72,7 @@ class PaymentMethods extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 10),
-        STCPay(
+        STCPayCustomizer(
           config: paymentConfig,
           onPaymentResult: onPaymentResult,
         ),

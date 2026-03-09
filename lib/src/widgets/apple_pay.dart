@@ -56,7 +56,7 @@ class _ApplePayState extends State<ApplePay> {
     widget.onPaymentResult(PaymentCanceledError());
   }
 
-  void onApplePayResult(paymentResult) async {
+  void onApplePayResult(Map<String, dynamic> paymentResult) async {
     final token = paymentResult['token'];
 
     if (((token ?? '') == '')) {

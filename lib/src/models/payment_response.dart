@@ -1,6 +1,9 @@
-import 'package:moyasar/moyasar.dart';
 import 'package:moyasar/src/models/payment_type.dart';
 import 'package:moyasar/src/models/payment_split.dart';
+import 'package:moyasar/src/models/sources/card/card_response_source.dart';
+import 'package:moyasar/src/models/sources/apple_pay/apple_pay_response_source.dart';
+import 'package:moyasar/src/models/sources/stc/stc_response_source.dart';
+import 'package:moyasar/src/models/sources/samsung_pay/samsung_pay_response_source.dart';
 
 /// Moyasar API response for processing a payment.
 class PaymentResponse {
@@ -66,6 +69,8 @@ class PaymentResponse {
       source = ApplePayPaymentResponseSource.fromJson(json['source']);
     } else if (paymentType == PaymentType.stcpay) {
       source = StcResponseSource.fromJson(json['source']);
+    } else if (paymentType == PaymentType.samsungpay) {
+      source = SamsungPayPaymentResponseSource.fromJson(json['source']);
     } else {
       source = json['source'];
     }
@@ -106,6 +111,8 @@ class PaymentResponse {
         data['source'] = (source as ApplePayPaymentResponseSource).toJson();
       } else if (source is StcResponseSource) {
         data['source'] = (source as StcResponseSource).toJson();
+      } else if (source is SamsungPayPaymentResponseSource) {
+        data['source'] = (source as SamsungPayPaymentResponseSource).toJson();
       } else {
         data['source'] = source;
       }

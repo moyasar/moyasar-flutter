@@ -4,7 +4,7 @@ import 'package:moyasar/moyasar.dart';
 
 import 'models/payment_type.dart';
 
-const version = '2.2.0';
+const version = '3.0.0';
 
 /// Payment service.
 ///
@@ -105,7 +105,7 @@ class Moyasar {
   }
 }
 
-Map<String, String> buildRequestHeaders(apiKey) {
+Map<String, String> buildRequestHeaders(String apiKey) {
   return {
     'Content-type': 'application/json',
     'Authorization': 'Basic ${base64Encode(utf8.encode(apiKey))}',

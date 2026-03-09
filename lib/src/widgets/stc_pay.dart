@@ -5,8 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:moyasar/moyasar.dart';
 
 
-class STCPaymentComponent extends StatefulWidget {
-  STCPaymentComponent(
+class STCPay extends StatefulWidget {
+  STCPay(
       {super.key,
       required this.config,
       required this.onPaymentResult,
@@ -20,10 +20,25 @@ class STCPaymentComponent extends StatefulWidget {
   final TextDirection textDirection;
 
   @override
-  State<STCPaymentComponent> createState() => _STCPaymentFormState();
+  State<STCPay> createState() => _STCPayState();
 }
 
-class _STCPaymentFormState extends State<STCPaymentComponent> {
+/// Deprecated: Use [STCPay] instead. [STCPaymentComponent] will be removed in the next major version.
+@Deprecated('Use STCPay instead. This will be removed in the next major version.')
+class STCPaymentComponent extends STCPay {
+  STCPaymentComponent({
+    super.key,
+    required PaymentConfig config,
+    required Function onPaymentResult,
+    Localization? locale,
+  }) : super(
+          config: config,
+          onPaymentResult: onPaymentResult,
+          locale: locale ?? const Localization.en(),
+        );
+}
+
+class _STCPayState extends State<STCPay> {
   final TextEditingController _controller = TextEditingController();
   bool _isValid = false;
   bool _isSubmitting = false;

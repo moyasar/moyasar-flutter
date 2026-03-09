@@ -2,21 +2,22 @@
 import 'package:flutter/material.dart';
 import 'package:moyasar/moyasar.dart';
 
-class STCPay extends StatefulWidget {
+/// Example-only widget showing a custom STC Pay UI (dialog flow). For standard integration use [STCPay] from package:moyasar.
+class STCPayCustomizer extends StatefulWidget {
   final PaymentConfig config;
   final Function onPaymentResult;
 
-  const STCPay({
+  const STCPayCustomizer({
     super.key,
     required this.config,
     required this.onPaymentResult,
   });
 
   @override
-  State<STCPay> createState() => _STCPayState();
+  State<STCPayCustomizer> createState() => _STCPayCustomizerState();
 }
 
-class _STCPayState extends State<STCPay> {
+class _STCPayCustomizerState extends State<STCPayCustomizer> {
   bool isLoading = false;
   String? error;
   String? transactionUrl;
@@ -143,6 +144,7 @@ class _STCPayState extends State<STCPay> {
                       }
                     } else {
                       // Verify OTP
+                      final navigator = Navigator.of(context);
                       final otpRequest = OtpRequestSource(
                         otpValue: otpController.text,
                       );
@@ -152,7 +154,7 @@ class _STCPayState extends State<STCPay> {
                       );
                       if (mounted) {
                         widget.onPaymentResult(result);
-                        Navigator.pop(context);
+                        navigator.pop();
                       }
                     }
                   } catch (e) {

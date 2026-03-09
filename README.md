@@ -1,6 +1,6 @@
 # Moyasar Flutter SDK
 
-Easily accept payments through Apple Pay, STC Pay, or Credit Card (with managed 3DS step) in your Flutter app with Moyasar.
+Easily accept payments through Apple Pay, Samsung Pay, STC Pay, or Credit Card (with managed 3DS step) in your Flutter app with Moyasar.
 
 ![Moyasar Flutter SDK Demo](https://i.imgur.com/nis9yCm.gif)
 
@@ -9,6 +9,7 @@ Easily accept payments through Apple Pay, STC Pay, or Credit Card (with managed 
 Use this plugin to support:
 
 - **Apple Pay**
+- **Samsung Pay** (Android, Samsung devices only)
 - **STC Pay**
 - **Credit Card**
 
@@ -22,6 +23,12 @@ Complete the following steps to easily accept Apple Pay payments:
 
 - Follow [this guide](https://help.moyasar.com/en/article/moyasar-dashboard-apple-pay-certificate-activation-9l6sd5/) to setup your Apple developer account and integrate it with Moyasar.
 - Follow [this guide](https://help.apple.com/xcode/mac/9.3/#/deva43983eb7?sub=dev44ce8ef13) to enable accepting Apple Pay in your application using xCode.
+
+#### **Accepting Samsung Pay Payments in Android**
+
+Samsung Pay is supported on Samsung Android devices only. Add `spay_sdk_api_level` meta-data to your AndroidManifest and configure `SamsungPayConfig` in `PaymentConfig`. See [Samsung Pay Basic Integration](https://docs.moyasar.com/guides/samsung-pay/basic-integration/).
+
+**Samsung Pay plugin:** This SDK uses Samsung’s **official** Flutter plugin from `third_party/SamsungPaySDKFlutterPlugin/Libs/samsungpaysdkflutter_v1.01.00` (path dependency). No app-level override is required; the example and any app depending on `moyasar` get the official plugin transitively. **MADA:** The official plugin’s Dart `Brand` enum may not include MADA; when it does, we will add `brands.add(Brand.MADA);` in `samsung_pay.dart`.
 
 #### **Accepting Payments in Android**
 
@@ -59,6 +66,11 @@ class PaymentMethods extends StatelessWidget {
     metadata: {'size': '250g'},
     creditCard: CreditCardConfig(saveCard: true, manual: false),
     applePay: ApplePayConfig(merchantId: 'YOUR_MERCHANT_ID', label: 'YOUR_STORE_NAME', manual: false),
+    samsungPay: SamsungPayConfig(
+      serviceId: 'YOUR_SAMSUNG_SERVICE_ID',
+      merchantName: 'YOUR_STORE_NAME',
+      manual: false,
+    ),
   );
 
   void onPaymentResult(result) {
@@ -82,7 +94,10 @@ class PaymentMethods extends StatelessWidget {
             config: paymentConfig,
             onPaymentResult: onPaymentResult,
         ),
-        const Text("or"),
+        SamsungPay(
+            config: paymentConfig,
+            onPaymentResult: onPaymentResult,
+        ),
         CreditCard(
           config: paymentConfig,
           onPaymentResult: onPaymentResult,
@@ -203,6 +218,10 @@ Moyasar provides a sandbox environment for testing credit card payments without 
 ### Apple Pay
 
 Please use a real device to perform Apple Pay testing and not a simulator. Learn more on how to test different scenarios in the sandbox [here.](https://docs.moyasar.com/guides/apple-pay/test-cards)
+
+### Samsung Pay
+
+Samsung Pay requires a Samsung Android device. The example app uses product flavors: `flutter run --flavor default_` for Apple Pay, `flutter run --flavor spay` for Samsung Pay. See [example/CONFIGURATION_GUIDE.md](example/CONFIGURATION_GUIDE.md).
 
 ## Migration Guide
 

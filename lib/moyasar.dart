@@ -5,26 +5,32 @@ export 'src/moyasar.dart' show Moyasar;
 
 export 'src/widgets/credit_card.dart' show CreditCard;
 export 'src/widgets/apple_pay.dart' show ApplePay;
+export 'src/widgets/samsung_pay.dart' show SamsungPay;
 
 export 'src/models/card_form_model.dart' show CardFormModel;
 export 'src/models/payment_config.dart' show PaymentConfig, PaymentNetwork;
 export 'src/models/payment_split.dart' show PaymentSplit;
 export 'src/models/apple_pay_config.dart' show ApplePayConfig;
+export 'src/models/samsung_pay_config.dart' show SamsungPayConfig;
 export 'src/models/credit_card_config.dart' show CreditCardConfig;
 export 'src/models/payment_request.dart' show PaymentRequest;
 export 'src/models/payment_response.dart' show PaymentResponse, PaymentStatus;
 
-export 'src/widgets/stc_pay.dart' show STCPaymentComponent;
+export 'src/widgets/stc_pay.dart' show STCPay, STCPaymentComponent;
 export 'src/widgets/otp.dart' show OtpComponent;
 
 export 'src/models/sources/card/card_request_source.dart'
     show CardPaymentRequestSource;
 export 'src/models/sources/apple_pay/apple_pay_request_source.dart'
     show ApplePayPaymentRequestSource;
+export 'src/models/sources/samsung_pay/samsung_pay_request_source.dart'
+    show SamsungPayPaymentRequestSource;
 export 'src/models/sources/card/card_response_source.dart'
     show CardPaymentResponseSource;
 export 'src/models/sources/apple_pay/apple_pay_response_source.dart'
     show ApplePayPaymentResponseSource;
+export 'src/models/sources/samsung_pay/samsung_pay_response_source.dart'
+    show SamsungPayPaymentResponseSource;
 export 'src/models/sources/card/card_company.dart' show CardCompany;
 
 export 'src/models/sources/otp/otp_request_source.dart' show OtpRequestSource;
