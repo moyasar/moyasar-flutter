@@ -109,7 +109,6 @@ Map<String, String> buildRequestHeaders(String apiKey) {
   return {
     'Content-type': 'application/json',
     'Authorization': 'Basic ${base64Encode(utf8.encode(apiKey))}',
-    'X-MOYASAR-LIB': 'moyasar-flutter-sdk',
-    'X-FLUTTER-SDK-VERSION': version
+    'User-Agent': 'MoyasarSDK/$version (flutter)'
   };
 }
