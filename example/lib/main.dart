@@ -64,6 +64,7 @@ class _CoffeeShopState extends State<CoffeeShop> {
     //       refundable: false
     //   )
     // ]
+    // applyCoupon: false,
   );
 
   void onPaymentResult(result) {

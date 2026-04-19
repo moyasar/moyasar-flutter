@@ -79,6 +79,11 @@ class PaymentConfig {
   /// For staging, use 'https://apimig.moyasar.com/v1/payments'.
   String? baseUrl;
 
+  /// A flag to control the coupon application.
+  /// This key is required only if you don't want to apply the coupon.
+  /// Otherwise, the coupon is going to be applied. The default value is true.
+  bool? applyCoupon;
+
   PaymentConfig(
       {required this.publishableApiKey,
       required this.amount,
@@ -92,7 +97,8 @@ class PaymentConfig {
       this.creditCard,
       this.givenID,
       this.splits,
-      this.baseUrl})
+      this.baseUrl,
+      this.applyCoupon})
       : supportedNetworks = (supportedNetworks ?? const [
           PaymentNetwork.visa,
           PaymentNetwork.mada,

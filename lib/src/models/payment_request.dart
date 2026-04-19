@@ -14,6 +14,7 @@ class PaymentRequest {
   String callbackUrl = PaymentConfig.callbackUrl;
   List<PaymentSplit>? splits;
   String? baseUrl;
+  bool? applyCoupon;
 
   PaymentRequest(
     PaymentConfig config,
@@ -32,6 +33,7 @@ class PaymentRequest {
     givenID = config.givenID;
     splits = config.splits;
     baseUrl = config.baseUrl;
+    applyCoupon = config.applyCoupon;
   }
 
   Map<String, dynamic> toJson() => {
@@ -44,5 +46,6 @@ class PaymentRequest {
         if (givenID != null) 'given_id': givenID,
         if (splits != null && splits!.isNotEmpty)
           'splits': splits!.map((split) => split.toJson()).toList(),
+        if (applyCoupon != null) 'apply_coupon': applyCoupon,
       };
 }

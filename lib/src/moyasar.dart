@@ -4,7 +4,7 @@ import 'package:moyasar/moyasar.dart';
 
 import 'models/payment_type.dart';
 
-const version = '3.0.0';
+const version = '3.0.1';
 
 /// Payment service.
 ///
@@ -109,7 +109,6 @@ Map<String, String> buildRequestHeaders(String apiKey) {
   return {
     'Content-type': 'application/json',
     'Authorization': 'Basic ${base64Encode(utf8.encode(apiKey))}',
-    'X-MOYASAR-LIB': 'moyasar-flutter-sdk',
-    'X-FLUTTER-SDK-VERSION': version
+    'User-Agent': 'MoyasarSDK/$version (flutter)'
   };
 }

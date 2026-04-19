@@ -1,5 +1,7 @@
-## 3.0.0
+## 3.0.1
+Adding ApplyCoupon flag 
 
+## 3.0.0
 Samsung Pay support and STC Pay widget rename.
 
 ### Added
