@@ -7,36 +7,36 @@ class CardPaymentResponseSource implements PaymentResponseSource {
   @override
   PaymentType type = PaymentType.creditcard;
 
-  final CardCompany company;
+  final CardCompany? company;
   final String name;
 
   /// The [number] is masked.
   /// For example, `"XXXX-XXXX-XXXX-1115"`
   final String number; // masked!
 
-  final String gatewayId;
+  final String? gatewayId;
   String? referenceNumber;
   String? token;
   String? message;
 
   /// Used to complete the 3DS step.
-  String transactionUrl;
+  String? transactionUrl;
 
   CardPaymentResponseSource({
-    required this.company,
+    this.company,
     required this.name,
     required this.number,
-    required this.gatewayId,
+    this.gatewayId,
     this.referenceNumber,
     this.token,
     this.message,
-    required this.transactionUrl,
+    this.transactionUrl,
   });
 
-  CardPaymentResponseSource.fromJson(Map<String, dynamic> json)
-      : company = CardCompany.values.byName(json['company']),
-        name = json['name'],
-        number = json['number'],
+  CardPaymentResponseSource.fromJson(Map<String, dynamic> json) 
+      : company = json['company'] != null ? CardCompany.values.byName(json['company']) : null,
+        name = json['name'] ?? '',
+        number = json['number'] ?? '',
         gatewayId = json['gateway_id'],
         referenceNumber = json['reference_number'],
         token = json['token'],
@@ -45,7 +45,7 @@ class CardPaymentResponseSource implements PaymentResponseSource {
 
   Map<String, dynamic> toJson() {
     return {
-      'company': company.name,
+      'company': company?.name,
       'name': name,
       'number': number,
       'gateway_id': gatewayId,
