@@ -114,7 +114,7 @@ class _CreditCardState extends State<CreditCard> {
     }
 
     final String transactionUrl =
-        (result.source as CardPaymentResponseSource).transactionUrl;
+        (result.source as CardPaymentResponseSource).transactionUrl ?? '';
 
     if (mounted) {
       Navigator.push(
