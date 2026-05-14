@@ -10,13 +10,18 @@ const version = '3.0.2';
 ///
 /// Use only when you need to customize the UI.
 class Moyasar {
-  static const String apiUrl = 'https://api.moyasar.com/v1/payments';
+  static const String defaultBaseUrl = 'https://api.moyasar.com';
+  static const String apiUrl = '$defaultBaseUrl/v1/payments';
 
   static Future<dynamic> pay(
       {required String apiKey, required PaymentRequest paymentRequest}) async {
     final headers = buildRequestHeaders(apiKey);
     final body = jsonEncode(paymentRequest.toJson());
-    final url = paymentRequest.baseUrl ?? apiUrl;
+    
+    String baseUrl = paymentRequest.baseUrl ?? defaultBaseUrl;
+    // Ensure baseUrl doesn't end with /v1/payments
+    baseUrl = baseUrl.replaceFirst(RegExp(r'/v1/payments$'), '');
+    final url = '$baseUrl/v1/payments';
 
     final res = await http
         .post(Uri.parse(url), headers: headers, body: body)

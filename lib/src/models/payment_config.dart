@@ -75,8 +75,9 @@ class PaymentConfig {
   List<PaymentSplit>? splits;
 
   /// Optional base URL for the API endpoint.
-  /// Default is 'https://api.moyasar.com/v1/payments'.
-  /// For staging, use 'https://apimig.moyasar.com/v1/payments'.
+  /// Default is 'https://api.moyasar.com'.
+  /// For staging, use 'https://apimig.moyasar.com'.
+  /// The '/v1/payments' path will be added automatically.
   String? baseUrl;
 
   /// A flag to control the coupon application.
