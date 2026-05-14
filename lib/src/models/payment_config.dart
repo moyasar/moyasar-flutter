@@ -3,12 +3,13 @@ import 'package:moyasar/src/models/credit_card_config.dart';
 import 'package:moyasar/src/models/payment_split.dart';
 import 'package:moyasar/src/models/samsung_pay_config.dart';
 
-/// Supported Networks: [PaymentNetwork.amex, PaymentNetwork.visa, PaymentNetwork.mada, PaymentNetwork.masterCard]
+/// Supported Networks: [PaymentNetwork.amex, PaymentNetwork.visa, PaymentNetwork.mada, PaymentNetwork.masterCard, PaymentNetwork.unionPay]
 enum PaymentNetwork {
   amex,
   visa,
   mada,
-  masterCard;
+  masterCard,
+  unionPay;
 
   String toJson() {
     switch (this) {
@@ -20,6 +21,8 @@ enum PaymentNetwork {
         return 'mada';
       case PaymentNetwork.masterCard:
         return 'masterCard';
+      case PaymentNetwork.unionPay:
+        return 'unionpay';
     }
   }
 }
@@ -100,20 +103,27 @@ class PaymentConfig {
       this.splits,
       this.baseUrl,
       this.applyCoupon})
-      : supportedNetworks = (supportedNetworks ?? const [
-          PaymentNetwork.visa,
-          PaymentNetwork.mada,
-          PaymentNetwork.masterCard
-        ]).toSet().toList(),
+      : supportedNetworks = (supportedNetworks ??
+                const [
+                  PaymentNetwork.visa,
+                  PaymentNetwork.mada,
+                  PaymentNetwork.masterCard
+                ])
+            .toSet()
+            .toList(),
         assert(publishableApiKey.isNotEmpty,
             'Please fill `publishableApiKey` argument with your key.'),
         assert(amount > 0, 'Please add a positive amount.'),
         assert(description.isNotEmpty, 'Please add a description.'),
-        assert((supportedNetworks ?? const [
-          PaymentNetwork.amex,
-          PaymentNetwork.visa,
-          PaymentNetwork.mada,
-          PaymentNetwork.masterCard
-        ]).toSet().isNotEmpty,
+        assert(
+            (supportedNetworks ??
+                    const [
+                      PaymentNetwork.unionPay,
+                      PaymentNetwork.visa,
+                      PaymentNetwork.mada,
+                      PaymentNetwork.masterCard
+                    ])
+                .toSet()
+                .isNotEmpty,
             'At least 1 network must be supported.');
 }

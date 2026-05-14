@@ -7,11 +7,8 @@ class NetworkIcons extends StatelessWidget {
   final PaymentConfig config;
   final TextDirection textDirection;
 
-  const NetworkIcons({
-    super.key,
-    required this.config,
-    required this.textDirection
-  });
+  const NetworkIcons(
+      {super.key, required this.config, required this.textDirection});
 
   /// Maps PaymentNetwork enum to their corresponding image assets
   static final Map<PaymentNetwork, String> _networkImages = {
@@ -19,6 +16,7 @@ class NetworkIcons extends StatelessWidget {
     PaymentNetwork.mada: 'assets/images/mada.png',
     PaymentNetwork.masterCard: 'assets/images/mastercard.png',
     PaymentNetwork.amex: 'assets/images/amex.png',
+    PaymentNetwork.unionPay: 'assets/images/unionpay.png',
   };
 
   @override
@@ -40,16 +38,15 @@ class NetworkIcons extends StatelessWidget {
     return Directionality(
       textDirection: textDirection,
       child: Row(
-        mainAxisAlignment: isRTL ? MainAxisAlignment.start : MainAxisAlignment.end,
+        mainAxisAlignment:
+            isRTL ? MainAxisAlignment.start : MainAxisAlignment.end,
         mainAxisSize: MainAxisSize.min,
         textDirection: textDirection,
         children: [
-          ...allNetworkImages.map((imagePath) =>
-              Padding(
+          ...allNetworkImages.map((imagePath) => Padding(
                 padding: EdgeInsets.symmetric(horizontal: 2.0),
                 child: NetworkIcon(name: imagePath),
-              )
-          ),
+              )),
           const SizedBox(width: 5),
         ],
       ),
@@ -69,7 +66,7 @@ class NetworkIcon extends StatelessWidget {
       height: 18,
       width: 26,
       package: 'moyasar',
-      fit: BoxFit.contain, // 🆕 إضافة fit
+      fit: BoxFit.contain,
     );
   }
 }

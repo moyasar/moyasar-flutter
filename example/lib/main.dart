@@ -38,7 +38,7 @@ class _CoffeeShopState extends State<CoffeeShop> {
       PaymentNetwork.mada,
       PaymentNetwork.visa,
       PaymentNetwork.masterCard,
-      PaymentNetwork.amex
+      PaymentNetwork.unionPay
     ],
     creditCard: CreditCardConfig(saveCard: false, manual: false),
     applePay: ApplePayConfig(
