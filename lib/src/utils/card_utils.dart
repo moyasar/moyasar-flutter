@@ -1,4 +1,5 @@
 import 'package:moyasar/moyasar.dart';
+import 'package:moyasar/src/utils/card_network_utils.dart';
 
 class CardUtils {
   static String? validateName(String? value, Localization locale) {
@@ -22,8 +23,11 @@ class CardUtils {
       return locale.invalidCardNumber;
     }
 
-    // Check if it's a valid Luhn number
-    if (!isValidLuhn(cardNumber)) {
+    // UnionPay cards skip client-side Luhn — the API validates them server-side.
+    // (Some legitimate UnionPay test cards deliberately fail Luhn.)
+    final isUnionPay =
+        getCardCompanyFromNumber(cardNumber) == CardCompany.unionPay;
+    if (!isUnionPay && !isValidLuhn(cardNumber)) {
       return locale.invalidCardNumber;
     }
 
@@ -84,6 +88,9 @@ class CardUtils {
       return CardCompany.master;
     } else if (input.startsWith(RegExp(r'((34)|(37))'))) {
       return CardCompany.amex;
+    } else if (input.startsWith(RegExp(r'(62|60|81)')) &&
+        !MadaUtil.instance.inMadaRange(input)) {
+      return CardCompany.unionPay;
     } else if (input.startsWith(RegExp(r'[4]'))) {
       return CardCompany.visa;
     }

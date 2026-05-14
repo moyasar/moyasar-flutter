@@ -3,7 +3,109 @@ import 'package:moyasar/src/models/payment_config.dart';
 class MadaUtil {
   static final instance = MadaUtil();
   final List<String> madaRanges = [
-    "22337902","22337986","22402030","242030","403024","40545400","406136","406996","40719700","40739500","407520","409201","410621","410685","410834","412565","417633","419593","420132","421141","422817","422818","422819","428331","428671","428672","428673","431361","432328","434107","439954","440533","440647","440795","442463","445564","446393","446404","446672","45488707","455036","455708","457865","457997","458456","462220","468540","468541","468542","468543","474491","483010","483011","483012","484783","486094","486095","486096","489318","489319","49098000","492464","504300","513213","515079","516138","520058","521076","52166100","524130","524514","524940","529415","529741","530060","531196","535825","535989","536023","537767","53973776","543085","543357","549760","554180","555610","558563","588845","588848","588850","589206","604906","636120","968201","968202","968203","968204","968205","968206","968207","968208","968209","968211"
+    "22337902",
+    "22337986",
+    "22402030",
+    "242030",
+    "403024",
+    "40545400",
+    "406136",
+    "406996",
+    "40719700",
+    "40739500",
+    "407520",
+    "409201",
+    "410621",
+    "410685",
+    "410834",
+    "412565",
+    "417633",
+    "419593",
+    "420132",
+    "421141",
+    "422817",
+    "422818",
+    "422819",
+    "428331",
+    "428671",
+    "428672",
+    "428673",
+    "431361",
+    "432328",
+    "434107",
+    "439954",
+    "440533",
+    "440647",
+    "440795",
+    "442463",
+    "445564",
+    "446393",
+    "446404",
+    "446672",
+    "45488707",
+    "455036",
+    "455708",
+    "457865",
+    "457997",
+    "458456",
+    "462220",
+    "468540",
+    "468541",
+    "468542",
+    "468543",
+    "474491",
+    "483010",
+    "483011",
+    "483012",
+    "484783",
+    "486094",
+    "486095",
+    "486096",
+    "489318",
+    "489319",
+    "49098000",
+    "492464",
+    "504300",
+    "513213",
+    "515079",
+    "516138",
+    "520058",
+    "521076",
+    "52166100",
+    "524130",
+    "524514",
+    "524940",
+    "529415",
+    "529741",
+    "530060",
+    "531196",
+    "535825",
+    "535989",
+    "536023",
+    "537767",
+    "53973776",
+    "543085",
+    "543357",
+    "549760",
+    "554180",
+    "555610",
+    "558563",
+    "588845",
+    "588848",
+    "588850",
+    "589206",
+    "604906",
+    "636120",
+    "968201",
+    "968202",
+    "968203",
+    "968204",
+    "968205",
+    "968206",
+    "968207",
+    "968208",
+    "968209",
+    "968211"
   ];
 
   bool inMadaRange(String number) {
@@ -14,7 +116,7 @@ class MadaUtil {
   }
 }
 
-enum CardNetwork { amex, visa, mada, masterCard, unknown }
+enum CardNetwork { amex, visa, mada, masterCard, unionPay, unknown }
 
 /// Check if a string contains only numeric characters
 bool isNumeric(String str) {
@@ -27,23 +129,24 @@ bool isValidLuhnNumber(String number) {
   if (!isNumeric(cleanNumber)) {
     return false;
   }
-  
+
   final doubleSum = [0, 2, 4, 6, 8, 1, 3, 5, 7, 9];
   var sum = 0;
-  
+
   for (int i = cleanNumber.length - 1; i >= 0; i--) {
     final digit = int.parse(cleanNumber[i]);
     final index = cleanNumber.length - 1 - i;
     sum += index % 2 == 0 ? digit : doubleSum[digit];
   }
-  
+
   return sum % 10 == 0;
 }
 
 /// Get card network based on number and supported networks (matches Swift logic)
-CardNetwork getCardNetwork(String number, List<PaymentNetwork> supportedNetworks) {
+CardNetwork getCardNetwork(
+    String number, List<PaymentNetwork> supportedNetworks) {
   final clean = number.replaceAll(' ', '');
-  
+
   // Convert PaymentNetwork to CardNetwork for comparison
   final supportedCardNetworks = supportedNetworks.map((network) {
     switch (network) {
@@ -55,23 +158,35 @@ CardNetwork getCardNetwork(String number, List<PaymentNetwork> supportedNetworks
         return CardNetwork.mada;
       case PaymentNetwork.masterCard:
         return CardNetwork.masterCard;
+      case PaymentNetwork.unionPay:
+        return CardNetwork.unionPay;
     }
   }).toList();
-  
+
   // Regex patterns matching Swift implementation
   final amexRangeRegex = RegExp(r'^3[47]');
   final visaRangeRegex = RegExp(r'^4');
-  final masterCardRangeRegex = RegExp(r'^(?:5[1-5][0-9]{2}|222[1-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720)');
-  
+  final masterCardRangeRegex = RegExp(
+      r'^(?:5[1-5][0-9]{2}|222[1-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720)');
+  final unionPayRangeRegex = RegExp(r'^(62|60|81)');
+
   // Check if the number matches known card types and if it's in supported networks
-  if (amexRangeRegex.hasMatch(clean) && supportedCardNetworks.contains(CardNetwork.amex)) {
+  // Mada is checked first to avoid BIN conflicts with Visa/Mastercard
+  if (amexRangeRegex.hasMatch(clean) &&
+      supportedCardNetworks.contains(CardNetwork.amex)) {
     return CardNetwork.amex;
-  } else if (MadaUtil.instance.inMadaRange(clean) && supportedCardNetworks.contains(CardNetwork.mada)) {
+  } else if (MadaUtil.instance.inMadaRange(clean) &&
+      supportedCardNetworks.contains(CardNetwork.mada)) {
     return CardNetwork.mada;
-  } else if (visaRangeRegex.hasMatch(clean) && supportedCardNetworks.contains(CardNetwork.visa)) {
+  } else if (visaRangeRegex.hasMatch(clean) &&
+      supportedCardNetworks.contains(CardNetwork.visa)) {
     return CardNetwork.visa;
-  } else if (masterCardRangeRegex.hasMatch(clean) && supportedCardNetworks.contains(CardNetwork.masterCard)) {
+  } else if (masterCardRangeRegex.hasMatch(clean) &&
+      supportedCardNetworks.contains(CardNetwork.masterCard)) {
     return CardNetwork.masterCard;
+  } else if (unionPayRangeRegex.hasMatch(clean) &&
+      supportedCardNetworks.contains(CardNetwork.unionPay)) {
+    return CardNetwork.unionPay;
   } else {
     return CardNetwork.unknown;
   }
@@ -81,15 +196,18 @@ CardNetwork getCardNetwork(String number, List<PaymentNetwork> supportedNetworks
 CardNetwork detectNetwork(String number) {
   final clean = number.replaceAll(RegExp(r'\D'), '');
   if (clean.isEmpty) return CardNetwork.unknown;
-  
+
   // Check Mada first to avoid conflicts with Visa/MasterCard
   if (MadaUtil.instance.inMadaRange(clean)) return CardNetwork.mada;
-  
+
   // Then check other networks
   if (clean.startsWith('34') || clean.startsWith('37')) return CardNetwork.amex;
   if (clean.startsWith('4')) return CardNetwork.visa;
   if (clean.startsWith('5')) return CardNetwork.masterCard;
-  
+  if (clean.startsWith('62') ||
+      clean.startsWith('60') ||
+      clean.startsWith('81')) return CardNetwork.unionPay;
+
   return CardNetwork.unknown;
 }
 
@@ -98,6 +216,9 @@ class CreditCardFormatter {
     final cleaned = number.replaceAll(RegExp(r'\D'), '');
     if (cleaned.startsWith('34') || cleaned.startsWith('37')) {
       return _formatAMEXCardNumber(cleaned);
+    }
+    if (_isUnionPay(cleaned)) {
+      return _formatOtherCardNumber(cleaned, maxLength: 19);
     }
     return _formatOtherCardNumber(cleaned);
   }
@@ -108,7 +229,8 @@ class CreditCardFormatter {
     var start = 0;
     for (final length in segments) {
       if (start >= number.length) break;
-      final end = (start + length > number.length) ? number.length : start + length;
+      final end =
+          (start + length > number.length) ? number.length : start + length;
       formatted += number.substring(start, end);
       if (end < number.length) formatted += ' ';
       start = end;
@@ -116,9 +238,9 @@ class CreditCardFormatter {
     return formatted;
   }
 
-  static String _formatOtherCardNumber(String number) {
-    final maxLength = 16;
-    final truncated = number.length > maxLength ? number.substring(0, maxLength) : number;
+  static String _formatOtherCardNumber(String number, {int maxLength = 16}) {
+    final truncated =
+        number.length > maxLength ? number.substring(0, maxLength) : number;
     final buffer = StringBuffer();
     for (var i = 0; i < truncated.length; i++) {
       if (i > 0 && i % 4 == 0) buffer.write(' ');
@@ -126,4 +248,10 @@ class CreditCardFormatter {
     }
     return buffer.toString();
   }
-} 
+
+  static bool _isUnionPay(String number) {
+    return number.startsWith('62') ||
+        number.startsWith('60') ||
+        number.startsWith('81');
+  }
+}
