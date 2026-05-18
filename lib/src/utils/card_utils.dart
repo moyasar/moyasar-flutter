@@ -23,8 +23,6 @@ class CardUtils {
       return locale.invalidCardNumber;
     }
 
-    // UnionPay cards skip client-side Luhn — the API validates them server-side.
-    // (Some legitimate UnionPay test cards deliberately fail Luhn.)
     final isUnionPay =
         getCardCompanyFromNumber(cardNumber) == CardCompany.unionPay;
     if (!isUnionPay && !isValidLuhn(cardNumber)) {
