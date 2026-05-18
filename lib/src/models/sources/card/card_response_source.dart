@@ -35,8 +35,7 @@ class CardPaymentResponseSource implements PaymentResponseSource {
 
   static CardCompany? _parseCompany(String? value) {
     if (value == null) return null;
-    // The API returns 'unionpay' (lowercase) but the enum value is 'unionPay'
-    if (value == 'unionpay') return CardCompany.unionPay;
+    if (value == 'unionPay') return CardCompany.unionPay;
     try {
       return CardCompany.values.byName(value);
     } catch (_) {
