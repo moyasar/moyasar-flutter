@@ -35,12 +35,10 @@ class CardPaymentResponseSource implements PaymentResponseSource {
 
   static CardCompany? _parseCompany(String? value) {
     if (value == null) return null;
-    if (value == 'unionPay') return CardCompany.unionPay;
-    try {
-      return CardCompany.values.byName(value);
-    } catch (_) {
-      return null;
+    for (final e in CardCompany.values) {
+      if (e.name == value) return e;
     }
+    return null;
   }
 
   CardPaymentResponseSource.fromJson(Map<String, dynamic> json)

@@ -45,7 +45,7 @@ void main() {
     message = CardUtils.validateCardNum(unionPaySuccess, locale);
     expect(message, null);
 
-    // UnionPay: decline test card (invalid Luhn — must reach API, not blocked client-side)
+    // UnionPay: decline test card (valid Luhn — blocked by API, not client-side)
     const unionPayDecline = '6200000000000047';
     message = CardUtils.validateCardNum(unionPayDecline, locale);
     expect(message, null);

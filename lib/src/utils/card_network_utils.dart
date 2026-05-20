@@ -114,6 +114,12 @@ class MadaUtil {
     }
     return false;
   }
+
+  static final _unionPayBinRegex = RegExp(r'^(62|60|81)');
+
+  bool isUnionPayBin(String number) {
+    return _unionPayBinRegex.hasMatch(number) && !inMadaRange(number);
+  }
 }
 
 enum CardNetwork { amex, visa, mada, masterCard, unionPay, unknown }
@@ -168,23 +174,20 @@ CardNetwork getCardNetwork(
   final visaRangeRegex = RegExp(r'^4');
   final masterCardRangeRegex = RegExp(
       r'^(?:5[1-5][0-9]{2}|222[1-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720)');
-  final unionPayRangeRegex = RegExp(r'^(62|60|81)');
 
-  // Check if the number matches known card types and if it's in supported networks
-  // Mada is checked first to avoid BIN conflicts with Visa/Mastercard
-  if (amexRangeRegex.hasMatch(clean) &&
-      supportedCardNetworks.contains(CardNetwork.amex)) {
-    return CardNetwork.amex;
-  } else if (MadaUtil.instance.inMadaRange(clean) &&
+  if (MadaUtil.instance.inMadaRange(clean) &&
       supportedCardNetworks.contains(CardNetwork.mada)) {
     return CardNetwork.mada;
+  } else if (amexRangeRegex.hasMatch(clean) &&
+      supportedCardNetworks.contains(CardNetwork.amex)) {
+    return CardNetwork.amex;
   } else if (visaRangeRegex.hasMatch(clean) &&
       supportedCardNetworks.contains(CardNetwork.visa)) {
     return CardNetwork.visa;
   } else if (masterCardRangeRegex.hasMatch(clean) &&
       supportedCardNetworks.contains(CardNetwork.masterCard)) {
     return CardNetwork.masterCard;
-  } else if (unionPayRangeRegex.hasMatch(clean) &&
+  } else if (MadaUtil.instance.isUnionPayBin(clean) &&
       supportedCardNetworks.contains(CardNetwork.unionPay)) {
     return CardNetwork.unionPay;
   } else {
@@ -204,9 +207,7 @@ CardNetwork detectNetwork(String number) {
   if (clean.startsWith('34') || clean.startsWith('37')) return CardNetwork.amex;
   if (clean.startsWith('4')) return CardNetwork.visa;
   if (clean.startsWith('5')) return CardNetwork.masterCard;
-  if (clean.startsWith('62') ||
-      clean.startsWith('60') ||
-      clean.startsWith('81')) return CardNetwork.unionPay;
+  if (CreditCardFormatter._isUnionPay(clean)) return CardNetwork.unionPay;
 
   return CardNetwork.unknown;
 }
@@ -250,8 +251,6 @@ class CreditCardFormatter {
   }
 
   static bool _isUnionPay(String number) {
-    return number.startsWith('62') ||
-        number.startsWith('60') ||
-        number.startsWith('81');
+    return MadaUtil.instance.isUnionPayBin(number);
   }
 }

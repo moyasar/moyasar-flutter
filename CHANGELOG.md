@@ -1,5 +1,7 @@
 ## 3.0.3
 - [Union Pay] Support union pay  🚀 
+- [PaymentConfig] Normalize baseUrl by stripping trailing `/v1/payments` if provided
+- [Samsung Pay] Add `SamsungPayEligibility` for explicit pre-check of Samsung Pay availability in custom UX flows
 
 ## 3.0.2
 Some Enhancements

@@ -107,7 +107,8 @@ class PaymentConfig {
                 const [
                   PaymentNetwork.visa,
                   PaymentNetwork.mada,
-                  PaymentNetwork.masterCard
+                  PaymentNetwork.masterCard,
+                  PaymentNetwork.unionPay,
                 ])
             .toSet()
             .toList(),

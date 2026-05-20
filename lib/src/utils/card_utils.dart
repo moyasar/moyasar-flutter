@@ -23,9 +23,7 @@ class CardUtils {
       return locale.invalidCardNumber;
     }
 
-    final isUnionPay =
-        getCardCompanyFromNumber(cardNumber) == CardCompany.unionPay;
-    if (!isUnionPay && !isValidLuhn(cardNumber)) {
+    if (!isValidLuhn(cardNumber)) {
       return locale.invalidCardNumber;
     }
 
@@ -81,13 +79,14 @@ class CardUtils {
   }
 
   static CardCompany getCardCompanyFromNumber(String input) {
-    if (input.startsWith(RegExp(
+    if (MadaUtil.instance.inMadaRange(input)) {
+      return CardCompany.mada;
+    } else if (input.startsWith(RegExp(
         r'((5[1-5])|(222[1-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720))'))) {
       return CardCompany.master;
     } else if (input.startsWith(RegExp(r'((34)|(37))'))) {
       return CardCompany.amex;
-    } else if (input.startsWith(RegExp(r'(62|60|81)')) &&
-        !MadaUtil.instance.inMadaRange(input)) {
+    } else if (MadaUtil.instance.isUnionPayBin(input)) {
       return CardCompany.unionPay;
     } else if (input.startsWith(RegExp(r'[4]'))) {
       return CardCompany.visa;
