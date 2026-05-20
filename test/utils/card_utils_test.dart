@@ -39,6 +39,26 @@ void main() {
     const valid = "4111111111111111";
     message = CardUtils.validateCardNum(valid, locale);
     expect(message, null);
+
+    // UnionPay: success test card (valid Luhn)
+    const unionPaySuccess = '6200000000000005';
+    message = CardUtils.validateCardNum(unionPaySuccess, locale);
+    expect(message, null);
+
+    // UnionPay: decline test card (valid Luhn — blocked by API, not client-side)
+    const unionPayDecline = '6200000000000047';
+    message = CardUtils.validateCardNum(unionPayDecline, locale);
+    expect(message, null);
+
+    // UnionPay: too short — still blocked
+    const unionPayTooShort = '620000000';
+    message = CardUtils.validateCardNum(unionPayTooShort, locale);
+    expect(message, locale.invalidCardNumber);
+
+    // Other networks: Luhn is still enforced
+    const invalidLuhnVisa = '4111111111111112';
+    message = CardUtils.validateCardNum(invalidLuhnVisa, locale);
+    expect(message, locale.invalidCardNumber);
   });
 
   test("should validate expiry date.", () {

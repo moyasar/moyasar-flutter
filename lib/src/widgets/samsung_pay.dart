@@ -41,6 +41,10 @@ String _extractToken(String paymentCredential) {
 ///
 /// Uses [samsung_pay_sdk_flutter] for native integration. The button is only
 /// shown on Android Samsung devices when Samsung Pay is configured and ready.
+/// If Samsung Pay is unavailable or not ready, this widget hides itself.
+///
+/// For proactive checks in custom UX flows, use [SamsungPayEligibility.check]
+/// or [SamsungPayEligibility.isEligible].
 ///
 /// Requires [PaymentConfig.samsungPay] to be set.
 class SamsungPay extends StatefulWidget {
@@ -152,8 +156,8 @@ class _SamsungPayState extends State<SamsungPay> {
       customSheet: customSheet,
       orderNumber: orderNumber,
     );
-    paymentInfo.merchantId =
-        widget.config.publishableApiKey.substring(0, 15.clamp(0, widget.config.publishableApiKey.length));
+    paymentInfo.merchantId = widget.config.publishableApiKey
+        .substring(0, 15.clamp(0, widget.config.publishableApiKey.length));
     paymentInfo.setMerchantCountryCode(widget.config.merchantCountryCode);
     paymentInfo.setAllowedCardBrands(_getBrandList());
     paymentInfo.setAddressInPaymentSheet(AddressInPaymentSheet.DO_NOT_SHOW);

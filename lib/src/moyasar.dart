@@ -4,19 +4,21 @@ import 'package:moyasar/moyasar.dart';
 
 import 'models/payment_type.dart';
 
-const version = '3.0.2';
+const version = '3.0.3';
 
 /// Payment service.
 ///
 /// Use only when you need to customize the UI.
 class Moyasar {
-  static const String apiUrl = 'https://api.moyasar.com/v1/payments';
+  static const String defaultBaseUrl = 'https://api.moyasar.com';
 
   static Future<dynamic> pay(
       {required String apiKey, required PaymentRequest paymentRequest}) async {
     final headers = buildRequestHeaders(apiKey);
     final body = jsonEncode(paymentRequest.toJson());
-    final url = paymentRequest.baseUrl ?? apiUrl;
+    String baseUrl = paymentRequest.baseUrl ?? defaultBaseUrl;
+    baseUrl = baseUrl.replaceFirst(RegExp(r'/v1/payments/?$'), '');
+    final url = '$baseUrl/v1/payments';
 
     final res = await http
         .post(Uri.parse(url), headers: headers, body: body)

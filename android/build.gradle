@@ -2,14 +2,16 @@ group 'com.samsung.flutter.sdk.samsungpay.v2.samsung_pay_sdk_flutter'
 version '1.0-SNAPSHOT'
 
 buildscript {
-    ext.kotlin_version = '1.7.10'
+    // Updated Kotlin version to 2.3.0 to be compatible with newer Gradle plugins and webview_flutter_android
+    ext.kotlin_version = '2.3.0'
     repositories {
         google()
         mavenCentral()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.3.0'
+        // Updated Android Gradle Plugin to version 8.5.0 which supports Kotlin 2.x compiler options
+        classpath 'com.android.tools.build:gradle:8.5.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }

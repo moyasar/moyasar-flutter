@@ -33,8 +33,16 @@ class CardPaymentResponseSource implements PaymentResponseSource {
     this.transactionUrl,
   });
 
-  CardPaymentResponseSource.fromJson(Map<String, dynamic> json) 
-      : company = json['company'] != null ? CardCompany.values.byName(json['company']) : null,
+  static CardCompany? _parseCompany(String? value) {
+    if (value == null) return null;
+    for (final e in CardCompany.values) {
+      if (e.name == value) return e;
+    }
+    return null;
+  }
+
+  CardPaymentResponseSource.fromJson(Map<String, dynamic> json)
+      : company = _parseCompany(json['company']),
         name = json['name'] ?? '',
         number = json['number'] ?? '',
         gatewayId = json['gateway_id'],

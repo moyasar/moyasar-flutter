@@ -1,2 +1,2 @@
 /// Types of Credit Card companies.
-enum CardCompany { amex, visa, master, mada }
+enum CardCompany { amex, visa, master, mada, unionPay }

@@ -1,4 +1,5 @@
 import 'package:moyasar/moyasar.dart';
+import 'package:moyasar/src/utils/card_network_utils.dart';
 
 class CardUtils {
   static String? validateName(String? value, Localization locale) {
@@ -22,7 +23,6 @@ class CardUtils {
       return locale.invalidCardNumber;
     }
 
-    // Check if it's a valid Luhn number
     if (!isValidLuhn(cardNumber)) {
       return locale.invalidCardNumber;
     }
@@ -79,11 +79,15 @@ class CardUtils {
   }
 
   static CardCompany getCardCompanyFromNumber(String input) {
-    if (input.startsWith(RegExp(
+    if (MadaUtil.instance.inMadaRange(input)) {
+      return CardCompany.mada;
+    } else if (input.startsWith(RegExp(
         r'((5[1-5])|(222[1-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720))'))) {
       return CardCompany.master;
     } else if (input.startsWith(RegExp(r'((34)|(37))'))) {
       return CardCompany.amex;
+    } else if (MadaUtil.instance.isUnionPayBin(input)) {
+      return CardCompany.unionPay;
     } else if (input.startsWith(RegExp(r'[4]'))) {
       return CardCompany.visa;
     }

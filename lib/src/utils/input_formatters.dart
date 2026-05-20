@@ -40,22 +40,27 @@ String getFormattedExpiryDate(String date) {
 
 String getFormattedCardNumber(String number) {
   final company = CardUtils.getCardCompanyFromNumber(number);
-  var buffer = StringBuffer();
+  final buffer = StringBuffer();
 
   if (company == CardCompany.amex) {
+    // AMEX: 4-6-5 groups (15 digits)
     for (int i = 0; i < number.length; i++) {
       buffer.write("\u200E${number[i]}");
-      int nonZeroIndex = i + 1;
+      final nonZeroIndex = i + 1;
       if ((nonZeroIndex == 4 || nonZeroIndex == 11) &&
           nonZeroIndex != number.length) {
         buffer.write(' ');
       }
     }
   } else {
-    for (int i = 0; i < number.length; i++) {
-      buffer.write("\u200E${number[i]}");
-      int nonZeroIndex = i + 1;
-      if (nonZeroIndex % 4 == 0 && nonZeroIndex != number.length) {
+    // Standard (16 digits) and UnionPay (19 digits): groups of 4
+    final maxLength = company == CardCompany.unionPay ? 19 : 16;
+    final truncated =
+        number.length > maxLength ? number.substring(0, maxLength) : number;
+    for (int i = 0; i < truncated.length; i++) {
+      buffer.write("\u200E${truncated[i]}");
+      final nonZeroIndex = i + 1;
+      if (nonZeroIndex % 4 == 0 && nonZeroIndex != truncated.length) {
         buffer.write(' ');
       }
     }

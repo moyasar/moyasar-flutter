@@ -36,6 +36,11 @@ export 'src/models/sources/card/card_company.dart' show CardCompany;
 export 'src/models/sources/otp/otp_request_source.dart' show OtpRequestSource;
 export 'src/models/sources/stc/stc_request_source.dart' show StcRequestSource;
 export 'src/models/sources/stc/stc_response_source.dart' show StcResponseSource;
+export 'src/services/samsung_pay_eligibility.dart'
+    show
+        SamsungPayEligibility,
+        SamsungPayEligibilityReason,
+        SamsungPayEligibilityResult;
 
 export 'src/locales/localizaton.dart' show Localization;
 

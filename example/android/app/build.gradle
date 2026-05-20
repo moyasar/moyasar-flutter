@@ -73,5 +73,6 @@ flutter {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22"
+    // Updated Kotlin stdlib version to match Kotlin plugin version 2.3.0
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:2.3.0"
 }
