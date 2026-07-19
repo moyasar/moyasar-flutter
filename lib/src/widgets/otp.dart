@@ -85,10 +85,14 @@ class _OtpComponentState extends State<OtpComponent> {
               _otpController.text.isNotEmpty && !_isFormValid
                   ? widget.locale.otpValidation
                   : widget.locale.oneTimePassword,
-              style: MoyasarTextStyles.title(
-                  color: _otpController.text.isNotEmpty && !_isFormValid
-                      ? Colors.red
-                      : Colors.black),
+              style: TextStyle(
+                fontFamily: MoyasarStyles.fontFamily,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: _otpController.text.isNotEmpty && !_isFormValid
+                    ? Colors.red
+                    : Colors.black,
+              ),
               textDirection: widget.textDirection,
             ),
             const SizedBox(height: 12),
@@ -97,7 +101,11 @@ class _OtpComponentState extends State<OtpComponent> {
               keyboardType: TextInputType.number,
               maxLength: 10, // allow 4–10 digits
               textAlign: TextAlign.start,
-              style: MoyasarTextStyles.inputSpaced,
+              style: const TextStyle(
+                fontFamily: MoyasarStyles.fontFamily,
+                fontSize: 20,
+                letterSpacing: 10,
+              ),
               buildCounter: (context,
                       {required currentLength,
                       required isFocused,
@@ -114,7 +122,12 @@ class _OtpComponentState extends State<OtpComponent> {
               },
               decoration: InputDecoration(
                 hintText: 'XXXXXX',
-                hintStyle: MoyasarTextStyles.hintOtp,
+                hintStyle: const TextStyle(
+                  fontFamily: MoyasarStyles.fontFamily,
+                  color: Colors.grey,
+                  letterSpacing: 8,
+                  fontSize: 20,
+                ),
                 isDense: true,
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 16.0,
@@ -171,7 +184,9 @@ class _OtpComponentState extends State<OtpComponent> {
                         padding: const EdgeInsets.symmetric(vertical: 15),
                         child: Text(
                           widget.locale.confirm,
-                          style: MoyasarTextStyles.buttonConfirm,
+                          style: const TextStyle(
+                              fontFamily: MoyasarStyles.fontFamily,
+                              fontSize: 18, color: Colors.white),
                         ),
                       ),
               ),
