@@ -1,6 +1,6 @@
 name: moyasar
 description: Accept payments in your Flutter app with ease by using Moyasar. With this SDK, you can quickly and safely accept payments through Apple Pay, Samsung Pay, STC Pay and Credit Card (with managed 3DS step).
-version: 3.0.3
+version: 3.0.4
 homepage: https://moyasar.com/en/
 repository: https://github.com/moyasar/moyasar-flutter
 issue_tracker: https://github.com/moyasar/moyasar-flutter/issues
@@ -13,7 +13,7 @@ dependencies:
   flutter:
     sdk: flutter
   http: ^1.4.0
-  pay: ^3.2.1
+  pay: ^3.3.0
   plugin_platform_interface: ^2.0.2
   webview_flutter: ^4.13.0
 
@@ -34,8 +34,17 @@ flutter:
     - assets/images/
     - assets/fonts/
   fonts:
-    - family: Aeonik
+    - family: ReadexPro
       fonts:
-        - asset: assets/fonts/Aeonik-Regular.ttf
-        - asset: assets/fonts/Aeonik-Medium.ttf
+        - asset: assets/fonts/ReadexPro-ExtraLight.ttf
+          weight: 200
+        - asset: assets/fonts/ReadexPro-Light.ttf
+          weight: 300
+        - asset: assets/fonts/ReadexPro-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/ReadexPro-Medium.ttf
           weight: 500
+        - asset: assets/fonts/ReadexPro-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/ReadexPro-Bold.ttf
+          weight: 700

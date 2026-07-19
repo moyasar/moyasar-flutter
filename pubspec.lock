@@ -183,7 +183,7 @@ packages:
       sha256: ca4a7a12b4396b1205f314bebbc92e5268c627b65e5e6b3ab30efc2326da0a28
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.0"
+    version: "1.2.0"
   pay_platform_interface:
     dependency: transitive
     description:

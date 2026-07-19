@@ -229,7 +229,7 @@ class _CreditCardState extends State<CreditCard> {
                   ? TextAlign.right
                   : TextAlign.left,
               style: TextStyle(
-                fontFamily: 'Aeonik',
+                fontFamily: 'ReadexPro',
                 fontWeight: FontWeight.w500, // Medium weight
                 fontSize: 16,
                 color: _nameError != null ? Colors.red : Colors.black,
@@ -275,7 +275,7 @@ class _CreditCardState extends State<CreditCard> {
                   ? TextAlign.right
                   : TextAlign.left,
               style: TextStyle(
-                fontFamily: 'Aeonik',
+                fontFamily: 'ReadexPro',
                 fontWeight: FontWeight.w500, // Medium weight
                 fontSize: 16,
                 color: (_cardNumberError != null ||
@@ -429,7 +429,7 @@ class _CreditCardState extends State<CreditCard> {
                             Text(
                               '${widget.locale.pay} ',
                               style: const TextStyle(
-                                fontFamily: 'Aeonik',
+                                fontFamily: 'ReadexPro',
                                 color: Colors.white,
                                 fontWeight: FontWeight.w500, // Medium weight
                                 fontSize: 16,
@@ -447,7 +447,7 @@ class _CreditCardState extends State<CreditCard> {
                             Text(
                               getAmount(widget.config.amount),
                               style: const TextStyle(
-                                fontFamily: 'Aeonik',
+                                fontFamily: 'ReadexPro',
                                 color: Colors.white,
                                 fontWeight: FontWeight.w500, // Medium weight
                                 fontSize: 16,
@@ -513,7 +513,7 @@ class SaveCardNotice extends StatelessWidget {
                     child: Text(
                       locale.saveCardNotice,
                       style: TextStyle(
-                          fontFamily: 'Aeonik',
+                          fontFamily: 'ReadexPro',
                           color: blueColor,
                           fontWeight: FontWeight.w500),
                       textDirection: textDirection,
@@ -551,7 +551,7 @@ class CardFormField extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 0),
       child: TextFormField(
-        style: const TextStyle(fontFamily: 'Aeonik'), // Font for input text
+        style: const TextStyle(fontFamily: 'ReadexPro'), // Font for input text
         keyboardType: keyboardType,
         textInputAction: textInputAction,
         decoration: inputDecoration,
@@ -627,8 +627,7 @@ InputDecoration buildInputDecoration(
     suffixIcon: isRTL ? null : iconWidget,
     prefixIcon: isRTL ? iconWidget : null,
     hintText: hintText,
-    hintStyle: const TextStyle(
-        fontFamily: 'Aeonik', color: Color(0xFF9E9E9E)), // Font for hint text
+    hintStyle: const TextStyle(fontFamily: 'ReadexPro', color: Color(0xFF9E9E9E)), // Font for hint text
     border: hideBorder ? InputBorder.none : defaultEnabledBorder,
     isDense: true,
     contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
