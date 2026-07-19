@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:moyasar/moyasar.dart';
+import 'package:moyasar/src/utils/moyasar_text_styles.dart';
 
 
 class STCPay extends StatefulWidget {
@@ -270,13 +271,10 @@ class _STCPayState extends State<STCPay> {
               _controller.text.isNotEmpty && !_isValid
                   ? widget.locale.invalidPhoneNumber
                   : widget.locale.mobileNumber,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: _controller.text.isNotEmpty && !_isValid
-                    ? Colors.red // error color
-                    : Colors.black, // normal color
-              ),
+              style: MoyasarTextStyles.title(
+                  color: _controller.text.isNotEmpty && !_isValid
+                      ? Colors.red
+                      : Colors.black),
               textDirection: widget.textDirection,
             ),
 
@@ -292,10 +290,7 @@ class _STCPayState extends State<STCPay> {
               ],
               decoration: InputDecoration(
                 hintText: '05x xxx xxxx',
-                hintStyle: TextStyle(
-                  color: Colors.grey[400],
-                  fontSize: 20,
-                ),
+                hintStyle: MoyasarTextStyles.hintStc(),
                 filled: true,
                 fillColor: Colors.white,
                 contentPadding: const EdgeInsets.symmetric(
@@ -319,7 +314,7 @@ class _STCPayState extends State<STCPay> {
                 //     ? widget.locale.invalidPhoneNumber
                 //     : null,
               ),
-              style: const TextStyle(fontSize: 20),
+              style: MoyasarTextStyles.input,
               onChanged: (_) {
                 // ensure label updates when user types
                 setState(() {});
@@ -355,11 +350,7 @@ class _STCPayState extends State<STCPay> {
                           const Spacer(),
                           Text(
                             '${widget.locale.pay} ',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
+                            style: MoyasarTextStyles.buttonBold,
                             textDirection: widget.textDirection,
                           ),
                           SizedBox(
@@ -373,11 +364,7 @@ class _STCPayState extends State<STCPay> {
                           const SizedBox(width: 4),
                           Text(
                             getAmount(widget.config.amount),
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
+                            style: MoyasarTextStyles.buttonBold,
                             textDirection: widget.textDirection,
                           ),
                           const Spacer(),

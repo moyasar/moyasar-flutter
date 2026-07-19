@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../moyasar.dart';
+import 'package:moyasar/src/utils/moyasar_text_styles.dart';
 
 class OtpComponent extends StatefulWidget {
   OtpComponent(
@@ -84,13 +85,10 @@ class _OtpComponentState extends State<OtpComponent> {
               _otpController.text.isNotEmpty && !_isFormValid
                   ? widget.locale.otpValidation
                   : widget.locale.oneTimePassword,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: _otpController.text.isNotEmpty && !_isFormValid
-                    ? Colors.red
-                    : Colors.black,
-              ),
+              style: MoyasarTextStyles.title(
+                  color: _otpController.text.isNotEmpty && !_isFormValid
+                      ? Colors.red
+                      : Colors.black),
               textDirection: widget.textDirection,
             ),
             const SizedBox(height: 12),
@@ -99,10 +97,7 @@ class _OtpComponentState extends State<OtpComponent> {
               keyboardType: TextInputType.number,
               maxLength: 10, // allow 4–10 digits
               textAlign: TextAlign.start,
-              style: const TextStyle(
-                fontSize: 20,
-                letterSpacing: 10,
-              ),
+              style: MoyasarTextStyles.inputSpaced,
               buildCounter: (context,
                       {required currentLength,
                       required isFocused,
@@ -119,11 +114,7 @@ class _OtpComponentState extends State<OtpComponent> {
               },
               decoration: InputDecoration(
                 hintText: 'XXXXXX',
-                hintStyle: const TextStyle(
-                  color: Colors.grey,
-                  letterSpacing: 8,
-                  fontSize: 20,
-                ),
+                hintStyle: MoyasarTextStyles.hintOtp,
                 isDense: true,
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 16.0,
@@ -180,8 +171,7 @@ class _OtpComponentState extends State<OtpComponent> {
                         padding: const EdgeInsets.symmetric(vertical: 15),
                         child: Text(
                           widget.locale.confirm,
-                          style: const TextStyle(
-                              fontSize: 18, color: Colors.white),
+                          style: MoyasarTextStyles.buttonConfirm,
                         ),
                       ),
               ),
