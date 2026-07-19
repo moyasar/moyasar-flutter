@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../moyasar.dart';
+import 'package:moyasar/src/utils/moyasar_text_styles.dart';
 
 class OtpComponent extends StatefulWidget {
   OtpComponent(
@@ -85,6 +86,7 @@ class _OtpComponentState extends State<OtpComponent> {
                   ? widget.locale.otpValidation
                   : widget.locale.oneTimePassword,
               style: TextStyle(
+                fontFamily: MoyasarStyles.fontFamily,
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
                 color: _otpController.text.isNotEmpty && !_isFormValid
@@ -100,6 +102,7 @@ class _OtpComponentState extends State<OtpComponent> {
               maxLength: 10, // allow 4–10 digits
               textAlign: TextAlign.start,
               style: const TextStyle(
+                fontFamily: MoyasarStyles.fontFamily,
                 fontSize: 20,
                 letterSpacing: 10,
               ),
@@ -120,6 +123,7 @@ class _OtpComponentState extends State<OtpComponent> {
               decoration: InputDecoration(
                 hintText: 'XXXXXX',
                 hintStyle: const TextStyle(
+                  fontFamily: MoyasarStyles.fontFamily,
                   color: Colors.grey,
                   letterSpacing: 8,
                   fontSize: 20,
@@ -181,6 +185,7 @@ class _OtpComponentState extends State<OtpComponent> {
                         child: Text(
                           widget.locale.confirm,
                           style: const TextStyle(
+                              fontFamily: MoyasarStyles.fontFamily,
                               fontSize: 18, color: Colors.white),
                         ),
                       ),

@@ -10,10 +10,10 @@ Pod::Spec.new do |s|
 A new Flutter plugin project.
                        DESC
   s.homepage         = 'https://github.com/moyasar/moyasar-flutter'
-  s.license          = { type: 'MIT', file: 'LICENSE' }
+  s.license          = { type: 'MIT', file: '../LICENSE' }
   s.author           = { 'Moyasar' => 'developers@moyasar.com' }
   s.source           = { :path => '.' }
-  s.source_files = 'Classes/**/*'
+  s.source_files = 'moyasar/Sources/moyasar/**/*.swift'
   s.dependency 'Flutter'
   s.platform = :ios, '12.0'
   s.frameworks  = 'PassKit'
@@ -21,5 +21,5 @@ A new Flutter plugin project.
   # Flutter.framework does not contain a i386 slice.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }
   s.swift_version = '5.0'
-  s.resource_bundles = {'moyasar_privacy' => ['Resources/PrivacyInfo.xcprivacy']}
+  s.resource_bundles = {'moyasar_privacy' => ['moyasar/Sources/moyasar/Resources/PrivacyInfo.xcprivacy']}
 end

@@ -7,6 +7,7 @@ import 'package:moyasar/src/samsung_pay_sdk/model/amount_box_control.dart';
 import 'package:moyasar/src/samsung_pay_sdk/model/custom_sheet.dart';
 import 'package:moyasar/src/samsung_pay_sdk/model/custom_sheet_payment_info.dart';
 import 'package:moyasar/src/samsung_pay_sdk/samsung_pay_sdk_flutter.dart';
+import 'package:moyasar/src/utils/moyasar_text_styles.dart';
 
 /// Converts amount from minor units to major (e.g. 20001 -> 200.01 for SAR).
 double _toMajorAmount(int amount, String currency) {
@@ -232,9 +233,10 @@ class _SamsungPayState extends State<SamsungPay> {
               borderRadius: BorderRadius.circular(8),
             ),
           ),
-          child: const Text(
+          child: Text(
             'Samsung Pay',
             style: TextStyle(
+              fontFamily: MoyasarStyles.fontFamily,
               fontSize: 16,
               fontWeight: FontWeight.w600,
             ),

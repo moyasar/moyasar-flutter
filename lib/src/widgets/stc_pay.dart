@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:moyasar/moyasar.dart';
+import 'package:moyasar/src/utils/moyasar_text_styles.dart';
 
 
 class STCPay extends StatefulWidget {
@@ -271,6 +272,7 @@ class _STCPayState extends State<STCPay> {
                   ? widget.locale.invalidPhoneNumber
                   : widget.locale.mobileNumber,
               style: TextStyle(
+                fontFamily: MoyasarStyles.fontFamily,
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
                 color: _controller.text.isNotEmpty && !_isValid
@@ -293,6 +295,7 @@ class _STCPayState extends State<STCPay> {
               decoration: InputDecoration(
                 hintText: '05x xxx xxxx',
                 hintStyle: TextStyle(
+                  fontFamily: MoyasarStyles.fontFamily,
                   color: Colors.grey[400],
                   fontSize: 20,
                 ),
@@ -319,7 +322,7 @@ class _STCPayState extends State<STCPay> {
                 //     ? widget.locale.invalidPhoneNumber
                 //     : null,
               ),
-              style: const TextStyle(fontSize: 20),
+              style: const TextStyle(fontFamily: MoyasarStyles.fontFamily, fontSize: 20),
               onChanged: (_) {
                 // ensure label updates when user types
                 setState(() {});
@@ -356,6 +359,7 @@ class _STCPayState extends State<STCPay> {
                           Text(
                             '${widget.locale.pay} ',
                             style: const TextStyle(
+                              fontFamily: MoyasarStyles.fontFamily,
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
@@ -374,6 +378,7 @@ class _STCPayState extends State<STCPay> {
                           Text(
                             getAmount(widget.config.amount),
                             style: const TextStyle(
+                              fontFamily: MoyasarStyles.fontFamily,
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                               fontSize: 16,

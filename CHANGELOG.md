@@ -1,3 +1,8 @@
+## 3.0.4
+- [iOS] Add Swift Package Manager (SPM) support for the Moyasar plugin while keeping CocoaPods compatibility.
+- [Apple Pay] Upgrade `pay` dependency to `3.3.0` to align with SPM-compatible iOS dependency resolution.
+- [UI] Replace proprietary Aeonik font assets with free Readex Pro font family to avoid licensing issues in the SDK.
+
 ## 3.0.3
 - [Union Pay] Support union pay  🚀 
 - [PaymentConfig] Normalize baseUrl by stripping trailing `/v1/payments` if provided

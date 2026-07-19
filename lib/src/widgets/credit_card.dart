@@ -4,6 +4,7 @@ import 'package:moyasar/moyasar.dart';
 import 'package:moyasar/src/utils/card_utils.dart';
 import 'package:moyasar/src/utils/input_formatters.dart';
 import 'package:moyasar/src/utils/card_network_utils.dart';
+import 'package:moyasar/src/utils/moyasar_text_styles.dart';
 import 'package:moyasar/src/widgets/network_icons.dart';
 import 'package:moyasar/src/widgets/three_d_s_webview.dart';
 
@@ -229,8 +230,8 @@ class _CreditCardState extends State<CreditCard> {
                   ? TextAlign.right
                   : TextAlign.left,
               style: TextStyle(
-                fontFamily: 'Aeonik',
-                fontWeight: FontWeight.w500, // Medium weight
+                fontFamily: MoyasarStyles.fontFamily,
+                fontWeight: FontWeight.w500,
                 fontSize: 16,
                 color: _nameError != null ? Colors.red : Colors.black,
               )),
@@ -275,8 +276,8 @@ class _CreditCardState extends State<CreditCard> {
                   ? TextAlign.right
                   : TextAlign.left,
               style: TextStyle(
-                fontFamily: 'Aeonik',
-                fontWeight: FontWeight.w500, // Medium weight
+                fontFamily: MoyasarStyles.fontFamily,
+                fontWeight: FontWeight.w500,
                 fontSize: 16,
                 color: (_cardNumberError != null ||
                         _expiryError != null ||
@@ -428,10 +429,10 @@ class _CreditCardState extends State<CreditCard> {
                             Spacer(),
                             Text(
                               '${widget.locale.pay} ',
-                              style: const TextStyle(
-                                fontFamily: 'Aeonik',
+                              style: TextStyle(
+                                fontFamily: MoyasarStyles.fontFamily,
                                 color: Colors.white,
-                                fontWeight: FontWeight.w500, // Medium weight
+                                fontWeight: FontWeight.w500,
                                 fontSize: 16,
                               ),
                               textDirection: widget.textDirection,
@@ -446,10 +447,10 @@ class _CreditCardState extends State<CreditCard> {
                             const SizedBox(width: 4),
                             Text(
                               getAmount(widget.config.amount),
-                              style: const TextStyle(
-                                fontFamily: 'Aeonik',
+                              style: TextStyle(
+                                fontFamily: MoyasarStyles.fontFamily,
                                 color: Colors.white,
-                                fontWeight: FontWeight.w500, // Medium weight
+                                fontWeight: FontWeight.w500,
                                 fontSize: 16,
                               ),
                               textDirection: widget.textDirection,
@@ -513,7 +514,7 @@ class SaveCardNotice extends StatelessWidget {
                     child: Text(
                       locale.saveCardNotice,
                       style: TextStyle(
-                          fontFamily: 'Aeonik',
+                          fontFamily: MoyasarStyles.fontFamily,
                           color: blueColor,
                           fontWeight: FontWeight.w500),
                       textDirection: textDirection,
@@ -551,7 +552,7 @@ class CardFormField extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 0),
       child: TextFormField(
-        style: const TextStyle(fontFamily: 'Aeonik'), // Font for input text
+        style: TextStyle(fontFamily: MoyasarStyles.fontFamily),
         keyboardType: keyboardType,
         textInputAction: textInputAction,
         decoration: inputDecoration,
@@ -627,8 +628,8 @@ InputDecoration buildInputDecoration(
     suffixIcon: isRTL ? null : iconWidget,
     prefixIcon: isRTL ? iconWidget : null,
     hintText: hintText,
-    hintStyle: const TextStyle(
-        fontFamily: 'Aeonik', color: Color(0xFF9E9E9E)), // Font for hint text
+    hintStyle: TextStyle(
+        fontFamily: MoyasarStyles.fontFamily, color: Color(0xFF9E9E9E)),
     border: hideBorder ? InputBorder.none : defaultEnabledBorder,
     isDense: true,
     contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
