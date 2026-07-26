@@ -24,11 +24,11 @@ class PaymentMethods extends StatelessWidget {
               // Optional. `buttonStyle` sets the button's colors: black,
               // white, whiteOutline, or automatic (follows light/dark mode).
               // Defaults to black.
-              buttonStyle: ApplePayButtonStyle.whiteOutline,
+              buttonStyle: ApplePayButtonStyle.black,
               // Optional. `buttonType` sets the wording Apple shows on the
               // button (buy, checkout, book, donate, subscribe...). Pick the
               // one matching the action. Defaults to inStore.
-              buttonType: ApplePayButtonType.book,
+              buttonType: ApplePayButtonType.inStore,
             ),
           )
         else
