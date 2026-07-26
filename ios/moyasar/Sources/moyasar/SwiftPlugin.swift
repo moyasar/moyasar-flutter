@@ -23,27 +23,28 @@ public class SwiftPlugin: NSObject, FlutterPlugin {
         registrar.register(applePayViewFactory, withId: instance.applePayButtonId)
     }
     
-     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-       if (call.method == "isApplePayAvailable") {
-         guard let args = call.arguments as? [String: Any], let supportedNetworks = args["supportedNetworks"] as? [String] else {
-           result(FlutterError(code: "INVALID_ARGUMENTS", message: "Invalid arguments", details: nil))
-           return
-         }
-    
-         result(isApplePayAvailable(supportedNetworks: supportedNetworks))
-       } else {
-         result(FlutterMethodNotImplemented)
-       }
-     }
-    
-    private func isApplePayAvailable(supportedNetworks: [String]) -> Bool {
-        // TODO: Check capabilities as well
-        return PKPaymentAuthorizationViewController.canMakePayments(usingNetworks: supportedNetworks.compactMap({ PKPaymentNetwork.fromString($0) }))
+    public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        switch call.method {
+        case "getApplePayAvailability":
+            guard let args = call.arguments as? [String: Any],
+                  let supportedNetworks = args["supportedNetworks"] as? [String] else {
+                result(FlutterError(code: "INVALID_ARGUMENTS", message: "Invalid arguments", details: nil))
+                return
+            }
+
+            result(ApplePayAvailability.current(supportedNetworks: supportedNetworks).rawValue)
+        default:
+            result(FlutterMethodNotImplemented)
+        }
     }
 }
 
 extension SwiftPlugin: ApplePayButtonHandler {
     func onApplePayButtonPressed(applePayConfig: Any?) {
         applePayHandler.presentApplePay(applePayConfig: applePayConfig)
+    }
+
+    func onApplePaySetupButtonPressed() {
+        applePayHandler.openApplePaySetup()
     }
 }

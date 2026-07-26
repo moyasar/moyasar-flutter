@@ -6,4 +6,6 @@ public struct ApplePayConfig: Codable {
     let countryCode: String
     let currencyCode: String
     let paymentAmount: String
+    let buttonType: String?
+    let buttonStyle: String?
 }
