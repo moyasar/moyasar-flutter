@@ -9,9 +9,12 @@ import 'dart:convert';
 ///
 /// The button hides itself on non-iOS platforms and on devices that can't use
 /// Apple Pay, so apps don't need to guard it with their own platform check.
-/// When Apple Pay is supported but no accepted card has been added yet, it
-/// shows Apple's "Set Up Apple Pay" button, which opens Wallet so the user can
-/// add one; the button switches to the normal payment button once they return.
+///
+/// A user with no card in Wallet still sees the normal payment button: since
+/// iOS 15 they can add one from inside the payment sheet. On iOS 14 and below
+/// the sheet can't do that, so the widget shows Apple's "Set Up Apple Pay"
+/// button instead, which opens Wallet; it switches back to the payment button
+/// once the user returns.
 class ApplePay extends StatefulWidget {
   ApplePay(
       {super.key,
@@ -24,7 +27,14 @@ class ApplePay extends StatefulWidget {
 
   final PaymentConfig config;
   final Function onPaymentResult;
+
+  /// The wording Apple shows on the button, e.g. "Buy with Apple Pay" for
+  /// [ApplePayButtonType.buy]. Pick the one that matches the action the user
+  /// is completing. Defaults to [ApplePayButtonType.inStore].
   final ApplePayButtonType buttonType;
+
+  /// The button's color scheme. Use [ApplePayButtonStyle.automatic] to follow
+  /// the system light/dark appearance. Defaults to [ApplePayButtonStyle.black].
   final ApplePayButtonStyle buttonStyle;
   final MethodChannel channel =
       const MethodChannel('flutter.moyasar.com/apple_pay');
