@@ -4,7 +4,6 @@ import 'package:moyasar/moyasar.dart';
 import 'package:moyasar/src/utils/card_utils.dart';
 import 'package:moyasar/src/utils/input_formatters.dart';
 import 'package:moyasar/src/utils/card_network_utils.dart';
-import 'package:moyasar/src/utils/moyasar_text_styles.dart';
 import 'package:moyasar/src/widgets/network_icons.dart';
 import 'package:moyasar/src/widgets/three_d_s_webview.dart';
 
@@ -14,7 +13,8 @@ class CreditCard extends StatefulWidget {
       {super.key,
       required this.config,
       required this.onPaymentResult,
-      this.locale = const Localization.en()})
+      this.locale = const Localization.en(),
+      this.theme = const CreditCardTheme()})
       : textDirection =
             locale.languageCode == 'ar' ? TextDirection.rtl : TextDirection.ltr;
 
@@ -22,6 +22,10 @@ class CreditCard extends StatefulWidget {
   final PaymentConfig config;
   final Localization locale;
   final TextDirection textDirection;
+
+  /// Colors and font used to render the form. Defaults to the SDK's built-in
+  /// light appearance.
+  final CreditCardTheme theme;
 
   @override
   State<CreditCard> createState() => _CreditCardState();
@@ -219,7 +223,8 @@ class _CreditCardState extends State<CreditCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
+    final theme = widget.theme;
+    final form = Form(
       autovalidateMode: _autoValidateMode,
       key: _formKey,
       child: Column(
@@ -230,21 +235,21 @@ class _CreditCardState extends State<CreditCard> {
                   ? TextAlign.right
                   : TextAlign.left,
               style: TextStyle(
-                fontFamily: MoyasarStyles.fontFamily,
+                fontFamily: theme.fontFamily,
                 fontWeight: FontWeight.w500,
                 fontSize: 16,
-                color: _nameError != null ? Colors.red : Colors.black,
+                color: theme.labelColorFor(_nameError),
               )),
           SizedBox(
             height: 8,
           ),
           Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: theme.fieldColor,
               borderRadius: BorderRadius.circular(6),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black26,
+                  color: theme.fieldShadowColor,
                   blurRadius: 4,
                   offset: Offset(0, 2),
                 ),
@@ -252,9 +257,11 @@ class _CreditCardState extends State<CreditCard> {
             ),
             padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
             child: CardFormField(
+              theme: theme,
               inputDecoration: buildInputDecoration(
                   hintText: widget.locale.nameOnCard,
                   hideBorder: true,
+                  theme: theme,
                   hintTextDirection: widget.textDirection),
               keyboardType: TextInputType.text,
               onChanged: _validateName,
@@ -276,25 +283,22 @@ class _CreditCardState extends State<CreditCard> {
                   ? TextAlign.right
                   : TextAlign.left,
               style: TextStyle(
-                fontFamily: MoyasarStyles.fontFamily,
+                fontFamily: theme.fontFamily,
                 fontWeight: FontWeight.w500,
                 fontSize: 16,
-                color: (_cardNumberError != null ||
-                        _expiryError != null ||
-                        _cvcError != null)
-                    ? Colors.red
-                    : Colors.black,
+                color: theme.labelColorFor(
+                    _cardNumberError ?? _expiryError ?? _cvcError),
               )),
           SizedBox(
             height: 8,
           ),
           Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: theme.fieldColor,
               borderRadius: BorderRadius.circular(6),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black26,
+                  color: theme.fieldShadowColor,
                   blurRadius: 4,
                   offset: Offset(0, 2),
                 ),
@@ -307,10 +311,12 @@ class _CreditCardState extends State<CreditCard> {
                   : CrossAxisAlignment.start,
               children: [
                 CardFormField(
+                  theme: theme,
                   inputDecoration: buildInputDecoration(
                       hintText: widget.locale.cardNumber,
                       hintTextDirection: widget.textDirection,
                       hideBorder: true,
+                      theme: theme,
                       addNetworkIcons: true,
                       config: widget.config,
                       detectedNetwork: _detectedNetwork,
@@ -336,10 +342,12 @@ class _CreditCardState extends State<CreditCard> {
                                 : CrossAxisAlignment.start,
                         children: [
                           CardFormField(
+                            theme: theme,
                             inputDecoration: buildInputDecoration(
                               hintText: '${widget.locale.expiry} (MM / YY)',
                               hintTextDirection: widget.textDirection,
                               hideBorder: true,
+                              theme: theme,
                             ),
                             inputFormatters: [
                               FilteringTextInputFormatter.digitsOnly,
@@ -375,10 +383,12 @@ class _CreditCardState extends State<CreditCard> {
                                 : CrossAxisAlignment.start,
                         children: [
                           CardFormField(
+                            theme: theme,
                             inputDecoration: buildInputDecoration(
                               hintText: widget.locale.cvc,
                               hintTextDirection: widget.textDirection,
                               hideBorder: true,
+                              theme: theme,
                             ),
                             inputFormatters: [
                               FilteringTextInputFormatter.digitsOnly,
@@ -406,7 +416,9 @@ class _CreditCardState extends State<CreditCard> {
                   minimumSize:
                       const WidgetStatePropertyAll<Size>(Size.fromHeight(52)),
                   backgroundColor: WidgetStatePropertyAll<Color>(
-                    _isButtonEnabled ? blueColor : lightBlueColor,
+                    _isButtonEnabled
+                        ? theme.buttonColor
+                        : theme.resolvedDisabledButtonColor,
                   ),
                   shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
@@ -416,8 +428,8 @@ class _CreditCardState extends State<CreditCard> {
                 ),
                 onPressed: _isButtonEnabled ? _saveForm : null,
                 child: _isSubmitting
-                    ? const CircularProgressIndicator(
-                        color: Colors.white,
+                    ? CircularProgressIndicator(
+                        color: theme.buttonTextColor,
                         strokeWidth: 2,
                       )
                     : Directionality(
@@ -430,8 +442,8 @@ class _CreditCardState extends State<CreditCard> {
                             Text(
                               '${widget.locale.pay} ',
                               style: TextStyle(
-                                fontFamily: MoyasarStyles.fontFamily,
-                                color: Colors.white,
+                                fontFamily: theme.fontFamily,
+                                color: theme.buttonTextColor,
                                 fontWeight: FontWeight.w500,
                                 fontSize: 16,
                               ),
@@ -441,15 +453,15 @@ class _CreditCardState extends State<CreditCard> {
                                 width: 16,
                                 child: Image.asset(
                                   'assets/images/saudiriyal.png',
-                                  color: Colors.white,
+                                  color: theme.buttonTextColor,
                                   package: 'moyasar',
                                 )),
                             const SizedBox(width: 4),
                             Text(
                               getAmount(widget.config.amount),
                               style: TextStyle(
-                                fontFamily: MoyasarStyles.fontFamily,
-                                color: Colors.white,
+                                fontFamily: theme.fontFamily,
+                                color: theme.buttonTextColor,
                                 fontWeight: FontWeight.w500,
                                 fontSize: 16,
                               ),
@@ -472,10 +484,16 @@ class _CreditCardState extends State<CreditCard> {
             tokenizeCard: _tokenizeCard,
             locale: widget.locale,
             textDirection: widget.textDirection,
+            theme: theme,
           ),
         ],
       ),
     );
+
+    final background = theme.backgroundColor;
+    return background == null
+        ? form
+        : ColoredBox(color: background, child: form);
   }
 }
 
@@ -485,11 +503,13 @@ class SaveCardNotice extends StatelessWidget {
     required this.tokenizeCard,
     required this.locale,
     required this.textDirection,
+    this.theme = const CreditCardTheme(),
   });
 
   final bool tokenizeCard;
   final Localization locale;
   final TextDirection textDirection;
+  final CreditCardTheme theme;
 
   @override
   Widget build(BuildContext context) {
@@ -507,15 +527,15 @@ class SaveCardNotice extends StatelessWidget {
                 children: [
                   Icon(
                     Icons.info,
-                    color: blueColor,
+                    color: theme.noticeColor,
                   ),
                   SizedBox(width: 5),
                   Flexible(
                     child: Text(
                       locale.saveCardNotice,
                       style: TextStyle(
-                          fontFamily: MoyasarStyles.fontFamily,
-                          color: blueColor,
+                          fontFamily: theme.fontFamily,
+                          color: theme.noticeColor,
                           fontWeight: FontWeight.w500),
                       textDirection: textDirection,
                       textAlign: isRTL ? TextAlign.right : TextAlign.left,
@@ -536,6 +556,7 @@ class CardFormField extends StatelessWidget {
   final TextInputAction textInputAction;
   final List<TextInputFormatter>? inputFormatters;
   final InputDecoration? inputDecoration;
+  final CreditCardTheme theme;
 
   const CardFormField(
       {super.key,
@@ -545,14 +566,17 @@ class CardFormField extends StatelessWidget {
       this.inputDecoration,
       this.keyboardType = TextInputType.number,
       this.textInputAction = TextInputAction.next,
-      this.inputFormatters});
+      this.inputFormatters,
+      this.theme = const CreditCardTheme()});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 0),
       child: TextFormField(
-        style: TextStyle(fontFamily: MoyasarStyles.fontFamily),
+        style: TextStyle(
+            fontFamily: theme.fontFamily,
+            color: theme.resolvedInputTextColor),
         keyboardType: keyboardType,
         textInputAction: textInputAction,
         decoration: inputDecoration,
@@ -586,7 +610,8 @@ InputDecoration buildInputDecoration(
     bool hideBorder = false,
     PaymentConfig? config,
     CardNetwork? detectedNetwork,
-    bool unsupportedNetwork = false}) {
+    bool unsupportedNetwork = false,
+    CreditCardTheme theme = const CreditCardTheme()}) {
   Widget? iconWidget;
   if (addNetworkIcons && config != null) {
     if (detectedNetwork != null) {
@@ -628,8 +653,8 @@ InputDecoration buildInputDecoration(
     suffixIcon: isRTL ? null : iconWidget,
     prefixIcon: isRTL ? iconWidget : null,
     hintText: hintText,
-    hintStyle: TextStyle(
-        fontFamily: MoyasarStyles.fontFamily, color: Color(0xFF9E9E9E)),
+    hintStyle:
+        TextStyle(fontFamily: theme.fontFamily, color: theme.hintColor),
     border: hideBorder ? InputBorder.none : defaultEnabledBorder,
     isDense: true,
     contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
