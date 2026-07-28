@@ -13,6 +13,7 @@ export 'src/models/payment_split.dart' show PaymentSplit;
 export 'src/models/apple_pay_config.dart' show ApplePayConfig;
 export 'src/models/samsung_pay_config.dart' show SamsungPayConfig;
 export 'src/models/credit_card_config.dart' show CreditCardConfig;
+export 'src/models/credit_card_theme.dart' show CreditCardTheme;
 export 'src/models/payment_request.dart' show PaymentRequest;
 export 'src/models/payment_response.dart' show PaymentResponse, PaymentStatus;
 

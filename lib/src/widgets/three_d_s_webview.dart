@@ -27,22 +27,36 @@ class _ThreeDSWebViewState extends State<ThreeDSWebView> {
   void initWebViewController() {
     final controller = WebViewController()
       ..loadRequest(Uri.parse(widget.transactionUrl))
+      // JavaScript must stay enabled — bank 3DS challenge pages require it.
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setNavigationDelegate(NavigationDelegate(onPageFinished: (pageUrl) {
-        final redirectedTo = Uri.parse(pageUrl);
+      ..setNavigationDelegate(NavigationDelegate(
+        // Allow-list schemes: bank/gateway redirects and the callback URL are
+        // http(s) only. Block every other scheme (javascript:, data:, file:,
+        // intent:, ...) so a compromised or malicious 3DS page cannot escape
+        // the payment flow.
+        onNavigationRequest: (NavigationRequest request) {
+          final scheme = Uri.tryParse(request.url)?.scheme;
+          if (scheme != 'https' && scheme != 'http') {
+            return NavigationDecision.prevent;
+          }
+          return NavigationDecision.navigate;
+        },
+        onPageFinished: (pageUrl) {
+          final redirectedTo = Uri.parse(pageUrl);
 
-        final bool hasReachedFinalRedirection =
-            redirectedTo.host == widget.callbackUri.host;
+          final bool hasReachedFinalRedirection =
+              redirectedTo.host == widget.callbackUri.host;
 
-        if (hasReachedFinalRedirection) {
-          final queryParams = redirectedTo.queryParameters;
+          if (hasReachedFinalRedirection) {
+            final queryParams = redirectedTo.queryParameters;
 
-          String status = queryParams['status'] ?? '';
-          String message = queryParams['message'] ?? '';
+            String status = queryParams['status'] ?? '';
+            String message = queryParams['message'] ?? '';
 
-          widget.on3dsDone(status, message);
-        }
-      }));
+            widget.on3dsDone(status, message);
+          }
+        },
+      ));
 
     _controller = controller;
   }

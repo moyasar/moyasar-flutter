@@ -11,6 +11,8 @@ class ApplePay extends StatefulWidget {
       required this.config,
       required this.onPaymentResult,
       this.buttonType = ApplePayButtonType.inStore,
+      this.onPressed,
+      this.onBeforePayment,
       this.buttonStyle = ApplePayButtonStyle.black})
       : assert(config.applePay != null,
             "Please add applePayConfig when instantiating the paymentConfig.");
@@ -18,6 +20,20 @@ class ApplePay extends StatefulWidget {
   final PaymentConfig config;
   final Function onPaymentResult;
   final ApplePayButtonType buttonType;
+
+  /// Called when the button is tapped, before the Apple Pay sheet is shown.
+  /// Useful for validating the screen or showing a loading state.
+  final VoidCallback? onPressed;
+
+  /// Called after Apple Pay authorizes the payment and a token is obtained,
+  /// but *before* the charge is sent to Moyasar.
+  ///
+  /// Return `false` to abort: nothing is charged and [onPaymentResult] is not
+  /// called. Use it for work that must succeed before taking money — creating
+  /// an order server-side, for example — so a failure there cannot leave the
+  /// customer charged without one.
+  final Future<bool> Function()? onBeforePayment;
+
   final ApplePayButtonStyle buttonStyle;
   final MethodChannel channel =
       const MethodChannel('flutter.moyasar.com/apple_pay');
@@ -62,6 +78,15 @@ class _ApplePayState extends State<ApplePay> {
     if (((token ?? '') == '')) {
       widget.onPaymentResult(UnprocessableTokenError());
       return;
+    }
+
+    // Give the host app a chance to do work that must succeed before the card
+    // is charged. If it reports failure, stop here so nothing is taken.
+    if (widget.onBeforePayment != null) {
+      final shouldContinue = await widget.onBeforePayment!();
+      if (!shouldContinue) {
+        return;
+      }
     }
 
     final source = ApplePayPaymentRequestSource(token,
@@ -119,6 +144,7 @@ class _ApplePayState extends State<ApplePay> {
             ],
             type: widget.buttonType,
             style: widget.buttonStyle,
+            onPressed: widget.onPressed,
             onPaymentResult: onApplePayResult,
             width: MediaQuery.of(context).size.width,
             height: 40,
