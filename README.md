@@ -1,88 +1,56 @@
 # Moyasar Flutter SDK
 
-Easily accept payments through Apple Pay, Samsung Pay, STC Pay, or Credit Card (with managed 3DS step) in your Flutter app with Moyasar.
+Accept payments in your Flutter app through **Apple Pay**, **Samsung Pay**, **STC Pay**, and **Credit Card** — with the 3DS step handled for you.
 
 ![Moyasar Flutter SDK Demo](https://i.imgur.com/nis9yCm.gif)
 
-## Features
+| Method | Platforms | Widget |
+| --- | --- | --- |
+| Credit Card (with managed 3DS) | iOS, Android | `CreditCard` |
+| Apple Pay | iOS | `ApplePay` |
+| Samsung Pay | Android (Samsung devices) | `SamsungPay` |
+| STC Pay | iOS, Android | `STCPay` |
 
-Use this plugin to support:
+Every widget **hides itself** when its method isn't available on the device, so you can drop them all into one screen without platform checks.
 
-- **Apple Pay**
-- **Samsung Pay** (Android, Samsung devices only)
-- **STC Pay**
-- **Credit Card**
-
-## Getting started
-
-### Prerequisites
-
-#### **Accepting Apple Pay Payments in iOS**
-
-Complete the following steps to easily accept Apple Pay payments:
-
-- Follow [this guide](https://help.moyasar.com/en/article/moyasar-dashboard-apple-pay-certificate-activation-9l6sd5/) to setup your Apple developer account and integrate it with Moyasar.
-- Follow [this guide](https://help.apple.com/xcode/mac/9.3/#/deva43983eb7?sub=dev44ce8ef13) to enable accepting Apple Pay in your application using xCode.
-
-#### **Accepting Samsung Pay Payments in Android**
-
-Samsung Pay is supported on Samsung Android devices only. Add `spay_sdk_api_level` meta-data to your AndroidManifest and configure `SamsungPayConfig` in `PaymentConfig`. See [Samsung Pay Basic Integration](https://docs.moyasar.com/guides/samsung-pay/basic-integration/).
-
-**Samsung Pay plugin:** This SDK uses Samsung’s **official** Flutter plugin from `third_party/SamsungPaySDKFlutterPlugin/Libs/samsungpaysdkflutter_v1.01.00` (path dependency). No app-level override is required; the example and any app depending on `moyasar` get the official plugin transitively. **MADA:** The official plugin’s Dart `Brand` enum may not include MADA; when it does, we will add `brands.add(Brand.MADA);` in `samsung_pay.dart`.
-
-#### **Accepting Payments in Android**
-
-Due to depending on the `pay` package, make sure to set the correct minSdkVersion in android/app/build.gradle if it was previously lower than 21:
-
-```gradle
-android {
-    defaultConfig {
-        minSdkVersion 21
-    }
-}
-```
-
-### Installation
+## Install
 
 ```sh
 flutter pub add moyasar
 ```
 
-## Usage
+Requires Flutter `>=1.17.0`, Dart `>=2.18.2 <4.0.0`, and iOS 12.0+.
+You'll need a Moyasar account — [get your API keys](https://docs.moyasar.com/guides/dashboard/get-your-api-keys).
 
-### Moyasar Widgets
+## Quick start
 
 ```dart
 import 'package:flutter/material.dart';
 import 'package:moyasar/moyasar.dart';
 
-class PaymentMethods extends StatelessWidget {
-  PaymentMethods({super.key});
+class Checkout extends StatelessWidget {
+  Checkout({super.key});
 
   final paymentConfig = PaymentConfig(
-    publishableApiKey: 'YOUR_API_KEY',
-    amount: 25758, // SAR 257.58
-    description: 'order #1324',
-    metadata: {'size': '250g'},
-    creditCard: CreditCardConfig(saveCard: true, manual: false),
-    applePay: ApplePayConfig(merchantId: 'YOUR_MERCHANT_ID', label: 'YOUR_STORE_NAME', manual: false),
+    publishableApiKey: 'YOUR_PUBLISHABLE_API_KEY',
+    amount: 25758, // SAR 257.58 — smallest currency unit (1 SAR = 100 halalas)
+    description: 'Order #1324',
+    creditCard: CreditCardConfig(saveCard: false, manual: false),
+    applePay: ApplePayConfig(
+      merchantId: 'YOUR_APPLE_MERCHANT_ID',
+      label: 'YOUR_STORE_NAME',
+      manual: false,
+      saveCard: false,
+    ),
     samsungPay: SamsungPayConfig(
       serviceId: 'YOUR_SAMSUNG_SERVICE_ID',
       merchantName: 'YOUR_STORE_NAME',
-      manual: false,
     ),
   );
 
   void onPaymentResult(result) {
-    if (result is PaymentResponse) {
-      switch (result.status) {
-        case PaymentStatus.paid:
-          // handle success.
-          break;
-        case PaymentStatus.failed:
-          // handle failure.
-          break;
-      }
+    if (result is PaymentResponse && result.status == PaymentStatus.paid) {
+      // Verify on your backend before fulfilling the order.
     }
   }
 
@@ -90,154 +58,248 @@ class PaymentMethods extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        ApplePay(
-            config: paymentConfig,
-            onPaymentResult: onPaymentResult,
-        ),
-        SamsungPay(
-            config: paymentConfig,
-            onPaymentResult: onPaymentResult,
-        ),
-        CreditCard(
-          config: paymentConfig,
-          onPaymentResult: onPaymentResult,
-        )
+        ApplePay(config: paymentConfig, onPaymentResult: onPaymentResult),
+        SamsungPay(config: paymentConfig, onPaymentResult: onPaymentResult),
+        CreditCard(config: paymentConfig, onPaymentResult: onPaymentResult),
       ],
     );
   }
 }
 ```
 
-### Custom Widgets
+> A widget requires its matching config: `ApplePay` needs `applePay`, `SamsungPay` needs `samsungPay`.
+
+## Handling the result
+
+`onPaymentResult` receives either a `PaymentResponse` or an error. Always check the type first:
 
 ```dart
-// Unified config for Moyasar API
-  final paymentConfig = PaymentConfig(
-    publishableApiKey: 'YOUR_API_KEY',
-    amount: 25758, // SAR 257.58
-    description: 'order #1324',
-    metadata: {'size': '250g'},
-    creditCard: CreditCardConfig(saveCard: true, manual: false),
-    applePay: ApplePayConfig(
-        merchantId: 'YOUR_MERCHANT_ID',
-        label: 'YOUR_STORE_NAME',
-        manual: false),
-  );
-
-  // Callback once the user clicks on the custom Apple Pay widget
-  void onSubmitApplePay(applePay) async {
-    final source = ApplePayPaymentRequestSource(
-        applePay['token'], (paymentConfig.applePay as ApplePayConfig).manual);
-    final paymentRequest = PaymentRequest(paymentConfig, source);
-
-    final result = await Moyasar.pay(
-        apiKey: paymentConfig.publishableApiKey,
-        paymentRequest: paymentRequest);
-
-    onPaymentResult(result);
-  }
-
-  // Callback once the user fills & submit their CC information using the custom form widget
-  
-  void onSubmitCcForm() async {
-    final source = CardPaymentRequestSource(
-        creditCardData: CardFormModel(
-            name: 'John Doe',
-            number: '4111111111111111',
-            month: '05',
-            year: '2025'),
-        tokenizeCard: (paymentConfig.creditCard as CreditCardConfig).saveCard,
-        manualPayment: (paymentConfig.creditCard as CreditCardConfig).manual);
-
-    final paymentRequest = PaymentRequest(paymentConfig, source);
-
-    final result = await Moyasar.pay(
-        apiKey: paymentConfig.publishableApiKey,
-        paymentRequest: paymentRequest);
-
-    onPaymentResult(result);
-  }
-  
- // Callback once the user fills & submit their mobile number for STC and OTP information using the custom form widget
-
- # Mobile Number
- 
-  final source = StcRequestSource( mobile: phoneController.text );
-  final paymentConfig = PaymentConfig(
-                        publishableApiKey: widget.config.publishableApiKey,
-                        amount: widget.config.amount,
-                        description: widget.config.description,
-                      );
-                      
- final paymentRequest = PaymentRequest(
-                        paymentConfig,
-                        source,
-                      );
-                      
- final result = await Moyasar.pay(
-                        apiKey: widget.config.publishableApiKey,
-                        paymentRequest: paymentRequest,
-                      );
-  onPaymentResult(result);
-
- # OTP
- 
-  final otpRequest = OtpRequestSource( otpValue: otpController.text);
-  final result = await Moyasar.verifyOTP(
-                        transactionURL: transactionUrl!,
-                        otpRequest: otpRequest,
-                      );
-                      
-  onPaymentResult(result);
-
-
-  // Unified payment result processor
-  void onPaymentResult(result) {
-    if (result is PaymentResponse) {
-      switch (result.status) {
-        case PaymentStatus.initiated:
-          // handle 3DS redirection.
-          break;
-        case PaymentStatus.paid:
-          // handle success.
-          break;
-        case PaymentStatus.failed:
-          // handle failure.
-          break;
-      }
+void onPaymentResult(result) {
+  if (result is PaymentResponse) {
+    switch (result.status) {
+      case PaymentStatus.paid:
+        // Charged. Verify on your backend before fulfilling.
+        break;
+      case PaymentStatus.authorized:
+      case PaymentStatus.captured:
+        // Manual capture flow: funds held, then taken.
+        break;
+      case PaymentStatus.initiated:
+        // Awaiting the 3DS step or an OTP.
+        break;
+      case PaymentStatus.failed:
+        // Declined.
+        break;
     }
+    return;
   }
+
+  if (result is PaymentCanceledError) {
+    // The user dismissed the payment sheet.
+  } else if (result is ValidationError) {
+    // Invalid input — inspect result.errors.
+  } else if (result is NetworkError || result is TimeoutError) {
+    // Connectivity problem; let the user retry.
+  }
+}
+```
+
+| Error type | Meaning |
+| --- | --- |
+| `PaymentCanceledError` | The user dismissed the payment sheet. |
+| `UnprocessableTokenError` | The wallet returned an empty or unusable token. |
+| `ValidationError` | Invalid request data. Has `message` and `errors`. |
+| `AuthError` | The publishable API key was rejected. |
+| `ApiError` | Moyasar returned a server-side error. |
+| `NetworkError` / `TimeoutError` | The request never completed. |
+| `UnspecifiedError` | Anything else. |
+
+Per-method details (masked card number, STC message, 3DS URL) live on `result.source`.
+
+## Apple Pay
+
+1. [Set up your Apple developer account and connect it to Moyasar](https://help.moyasar.com/en/article/moyasar-dashboard-apple-pay-certificate-activation-9l6sd5/).
+2. [Enable the Apple Pay capability in Xcode](https://help.apple.com/xcode/mac/current/#/dev44ce8ef13).
+
+```dart
+ApplePay(
+  config: paymentConfig,
+  onPaymentResult: onPaymentResult,
+  buttonType: ApplePayButtonType.buy,          // optional, default: inStore
+  buttonStyle: ApplePayButtonStyle.automatic,  // optional, default: black
+)
+```
+
+Renders Apple's native `PKPaymentButton` and drives the sheet through PassKit — no third-party dependency.
+
+**Visibility** is handled for you:
+
+| Situation | Behavior |
+| --- | --- |
+| Not iOS, or the device can't support Apple Pay | Renders nothing |
+| iOS 15+, no card in Wallet | Payment button — the user adds a card inside the sheet |
+| iOS 14 and below, no card | "Set Up Apple Pay", which opens Wallet |
+| Card available | Payment button |
+
+**`buttonType`:** `plain`, `buy`, `setUp`, `inStore`, `donate`, `checkout`, `book`, `subscribe`, `reload`, `addMoney`, `topUp`, `order`, `rent`, `support`, `contribute`, `tip`
+**`buttonStyle`:** `white`, `whiteOutline`, `black`, `automatic` (follows light/dark mode)
+
+## Samsung Pay
+
+Samsung Android devices only. Add the `spay_sdk_api_level` meta-data to your `AndroidManifest.xml` — see the [integration guide](https://docs.moyasar.com/guides/samsung-pay/basic-integration/). The SDK bundles Samsung's official Flutter plugin, so no app-level override is needed.
+
+```dart
+SamsungPay(config: paymentConfig, onPaymentResult: onPaymentResult)
+```
+
+The widget hides itself when Samsung Pay isn't ready. To check explicitly in a custom flow:
+
+```dart
+final eligible = await SamsungPayEligibility.isEligible(paymentConfig);
+
+final result = await SamsungPayEligibility.check(paymentConfig); // with diagnostics
+debugPrint('${result.reason}'); // ready, notAndroid, notReady, sdkError, timeout...
+```
+
+## Credit Card & STC Pay
+
+Both render a full form and accept an optional `locale`. `Localization.ar()` also switches the layout to RTL; individual strings can be overridden through its named parameters.
+
+```dart
+CreditCard(config: paymentConfig, onPaymentResult: onPaymentResult)
+
+STCPay(
+  config: paymentConfig,
+  onPaymentResult: onPaymentResult,
+  locale: const Localization.ar(),
+)
+```
+
+## Configuration
+
+### `PaymentConfig`
+
+| Field | Type | Default | Description |
+| --- | --- | --- | --- |
+| `publishableApiKey` | `String` | **required** | Your publishable key. |
+| `amount` | `int` | **required** | Smallest currency unit (`25758` = SAR 257.58). |
+| `description` | `String` | **required** | Tag for the payment. |
+| `currency` | `String` | `'SAR'` | ISO currency code. |
+| `metadata` | `Map<String, dynamic>?` | `null` | Searchable key/value pairs. |
+| `supportedNetworks` | `List<PaymentNetwork>` | `visa, mada, masterCard, unionPay` | Also accepts `amex`. |
+| `applePay` | `ApplePayConfig?` | `null` | Required by `ApplePay`. |
+| `samsungPay` | `SamsungPayConfig?` | `null` | Required by `SamsungPay`. |
+| `creditCard` | `CreditCardConfig?` | `null` | Used by `CreditCard`. |
+| `merchantCountryCode` | `String` | `'SA'` | Used by Samsung Pay. |
+| `givenID` | `String?` | `null` | Sets the payment ID — use for idempotent retries. |
+| `splits` | `List<PaymentSplit>?` | `null` | Split the amount (aggregation clients only). |
+| `baseUrl` | `String?` | `null` | Override the API host, e.g. `https://apimig.moyasar.com`. |
+| `applyCoupon` | `bool?` | `null` | Set `false` to skip coupon application. |
+
+### `ApplePayConfig`
+
+| Field | Type | Default | Description |
+| --- | --- | --- | --- |
+| `merchantId` | `String` | **required** | Must match Xcode and your dashboard. |
+| `label` | `String` | **required** | Store name in the payment sheet. |
+| `manual` | `bool` | **required** | Authorize now, capture later. |
+| `saveCard` | `bool` | **required** | Tokenize for later charges. |
+| `merchantCapabilities` | `List<String>` | `["3DS", "debit", "credit"]` | Must include `"3DS"`. |
+| `supportedCountries` | `List<String>` | `["SA"]` | Widening this raises fraud risk. |
+
+### `SamsungPayConfig`
+
+| Field | Type | Default | Description |
+| --- | --- | --- | --- |
+| `serviceId` | `String` | **required** | From the Samsung merchant dashboard. |
+| `merchantName` | `String` | **required** | Shown in the payment sheet. |
+| `orderNumber` | `String?` | auto-generated | `[A-Za-z0-9-]`, max 36 chars. Returned as `samsungpay_order_id` in the response metadata. |
+| `manual` | `bool` | `false` | Authorize now, capture later. |
+
+### `CreditCardConfig`
+
+`saveCard` (`bool`, required) — tokenize after a successful payment.
+`manual` (`bool`, required) — authorize now, capture later.
+
+### `PaymentSplit`
+
+Divide a payment among recipients, in compliance with SAMA and ZATCA. Aggregation clients only — splits on other payments are ignored. The splits must total the payment amount.
+
+```dart
+splits: [
+  PaymentSplit(recipientId: 'ENTITY_ID', amount: 20000, recipientType: 'Entity'),
+  PaymentSplit(recipientId: 'PLATFORM_ID', amount: 5758, recipientType: 'Platform', feeSource: true),
+]
+```
+
+Also accepts `description`, `reference`, `feeSource` (default `false`, only one split may be the fee source), and `refundable` (default `true`).
+
+## Building your own UI
+
+Use these when you need full control over the interface — you collect the payment data, the SDK talks to the API.
+
+```dart
+// Credit Card
+final source = CardPaymentRequestSource(
+  creditCardData: CardFormModel(
+    name: 'John Doe',
+    number: '4111111111111111',
+    cvc: '123',
+    month: '05',
+    year: '2027',
+  ),
+  tokenizeCard: paymentConfig.creditCard!.saveCard,
+  manualPayment: paymentConfig.creditCard!.manual,
+);
+
+// Apple Pay — appleToken is the PKPaymentToken payment data
+final source = ApplePayPaymentRequestSource(
+  appleToken,
+  paymentConfig.applePay!.manual,
+  paymentConfig.applePay!.saveCard,
+);
+
+// Samsung Pay
+final source = SamsungPayPaymentRequestSource(
+  samsungPayToken: token,
+  manualPayment: paymentConfig.samsungPay!.manual,
+);
+
+// Then, for any source:
+final result = await Moyasar.pay(
+  apiKey: paymentConfig.publishableApiKey,
+  paymentRequest: PaymentRequest(paymentConfig, source),
+);
+```
+
+With a custom Credit Card UI, **3DS is your responsibility**: when `status` is `initiated`, open `(result.source as CardPaymentResponseSource).transactionUrl` in a web view and watch for the redirect to `PaymentConfig.callbackUrl`.
+
+STC Pay takes two steps — start the payment, then verify the OTP:
+
+```dart
+final result = await Moyasar.pay(
+  apiKey: paymentConfig.publishableApiKey,
+  paymentRequest: PaymentRequest(paymentConfig, StcRequestSource(mobile: '0512345678')),
+);
+
+final transactionUrl = (result.source as StcResponseSource).transactionUrl!;
+
+final verified = await Moyasar.verifyOTP(
+  transactionURL: transactionUrl,
+  otpRequest: OtpRequestSource(otpValue: '1234'),
+);
 ```
 
 ## Testing
 
-### Credit Cards
+- **Credit Card** — [test cards](https://docs.moyasar.com/guides/card-payments/test-cards) work against the sandbox.
+- **Apple Pay** — use a **real device**; the simulator can't complete an authorization. [Test amounts](https://docs.moyasar.com/guides/apple-pay/testing).
+- **Samsung Pay** — requires a Samsung device. The example app uses flavors: `flutter run --flavor default_` (Apple Pay) or `--flavor spay` (Samsung Pay). See [example/CONFIGURATION_GUIDE.md](example/CONFIGURATION_GUIDE.md).
 
-Moyasar provides a sandbox environment for testing credit card payments without charging any real money. This allows you to test your integration and ensure that everything is working correctly before going live with actual payments. Learn more about our testing cards [here](https://docs.moyasar.com/guides/card-payments/test-cards)
+## Deprecations
 
-### Apple Pay
+`STCPaymentComponent` is deprecated and will be removed in the next major version — it's a drop-in rename to `STCPay`.
 
-Please use a real device to perform Apple Pay testing and not a simulator. Learn more on how to test different scenarios in the sandbox [here.](https://docs.moyasar.com/guides/apple-pay/test-cards)
+---
 
-### Samsung Pay
-
-Samsung Pay requires a Samsung Android device. The example app uses product flavors: `flutter run --flavor default_` for Apple Pay, `flutter run --flavor spay` for Samsung Pay. See [example/CONFIGURATION_GUIDE.md](example/CONFIGURATION_GUIDE.md).
-
-## Migration Guide
-
-### From `1.0` to `2.0`
-
-This upgrade changes how Apple Pay is configured. Do the following changes to complete the upgrade:
-
-- Delete the `default_payment_profile_apple_pay.json` file under your assets file.
-- Update the `paymentConfig` instance to include the new `applePay` configuration.
-
-```diff
-final paymentConfig = PaymentConfig(
-    publishableApiKey: 'YOUR_API_KEY',
-    amount: 25758, // SAR 257.58
-    description: 'order #1324',
-    metadata: {'size': '250g'},
-+   applePay: ApplePayConfig(merchantId: 'YOUR_MERCHANT_ID', label: 'YOUR_STORE_NAME'),
-);
-```
+Issues and pull requests are welcome at [moyasar/moyasar-flutter](https://github.com/moyasar/moyasar-flutter).

@@ -1,3 +1,13 @@
+## 3.0.5
+- [Apple Pay] Replace the `pay` package dependency with a native PassKit implementation on iOS, removing the transitive `pay`/`pay_android`/`pay_ios`/`pay_platform_interface` dependencies. The `ApplePay` widget's public API is unchanged; `ApplePayButtonType` and `ApplePayButtonStyle` are now exported directly from `package:moyasar` instead of `package:pay`.
+- [Apple Pay] The `ApplePay` widget now hides itself automatically on non-iOS platforms and on iOS devices that can't use Apple Pay, instead of relying on the app to guard it with a platform check.
+- [Apple Pay] Users with no card in Wallet now see the payment button instead of nothing, and can add a card from inside the payment sheet (iOS 15+). On iOS 14 and below, where the sheet can't do that, the widget shows Apple's "Set Up Apple Pay" button, which opens Wallet, and switches back once the user returns.
+- [Apple Pay] Fix a crash when handling the native payment result: the token map from the platform channel was not converted before use.
+- [Apple Pay] Fix the amount being parsed with the device locale, which dropped the decimals on devices that use "," as the decimal separator (SAR 603.75 was charged as SAR 603).
+- [Apple Pay] Fix the button keeping stale payment data: the native view is now recreated when the amount, label, or any other Apple Pay parameter changes, and readiness is re-checked when the supported networks change.
+- [Apple Pay] Report `UnprocessableTokenError` when the native payment result is malformed, instead of leaving `onPaymentResult` with no response at all.
+- [Android] The `minSdkVersion 21` requirement previously called out for the `pay` package no longer applies.
+
 ## 3.0.4
 - [iOS] Add Swift Package Manager (SPM) support for the Moyasar plugin while keeping CocoaPods compatibility.
 - [Apple Pay] Upgrade `pay` dependency to `3.3.0` to align with SPM-compatible iOS dependency resolution.

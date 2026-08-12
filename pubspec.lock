@@ -62,11 +62,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.0.0"
-  flutter_localizations:
-    dependency: transitive
-    description: flutter
-    source: sdk
-    version: "0.0.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -88,14 +83,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.2"
-  intl:
-    dependency: transitive
-    description:
-      name: intl
-      sha256: "3df61194eb431efc39c4ceba583b95633a403f46c9fd341e550ce0bfa50e9aa5"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.20.2"
   leak_tracker:
     dependency: transitive
     description:
@@ -160,38 +147,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.9.1"
-  pay:
-    dependency: "direct main"
-    description:
-      name: pay
-      sha256: e012871f065c188e4c275e30b0000c174f6df99101ef137f9cc52ed13fad80e8
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.3.0"
-  pay_android:
-    dependency: transitive
-    description:
-      name: pay_android
-      sha256: "27dab62d564290aea584b6b39dbbda390b935d6d7296b54bc28de65579bfb049"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.2.0"
-  pay_ios:
-    dependency: transitive
-    description:
-      name: pay_ios
-      sha256: f36ee24c99454b2ee3d02d5dee969abb769f8e2c8e9de5ae272b909732ab2cff
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.2.0"
-  pay_platform_interface:
-    dependency: transitive
-    description:
-      name: pay_platform_interface
-      sha256: "39a9f5fa4bafc59ce103bd5e84a6362113c6e58c361aed8dde9494b182fac400"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.0"
   plugin_platform_interface:
     dependency: "direct main"
     description:
@@ -317,14 +272,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.25.1"
-  yaml:
-    dependency: transitive
-    description:
-      name: yaml
-      sha256: b9da305ac7c39faa3f030eccd175340f968459dae4af175130b3fc47e40d76ce
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.1.3"
 sdks:
   dart: ">=3.10.0 <4.0.0"
   flutter: ">=3.38.0"

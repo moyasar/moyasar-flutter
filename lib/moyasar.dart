@@ -11,6 +11,8 @@ export 'src/models/card_form_model.dart' show CardFormModel;
 export 'src/models/payment_config.dart' show PaymentConfig, PaymentNetwork;
 export 'src/models/payment_split.dart' show PaymentSplit;
 export 'src/models/apple_pay_config.dart' show ApplePayConfig;
+export 'src/models/apple_pay_button_type.dart'
+    show ApplePayButtonType, ApplePayButtonStyle;
 export 'src/models/samsung_pay_config.dart' show SamsungPayConfig;
 export 'src/models/credit_card_config.dart' show CreditCardConfig;
 export 'src/models/payment_request.dart' show PaymentRequest;

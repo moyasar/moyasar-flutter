@@ -2,8 +2,6 @@ PODS:
   - Flutter (1.0.0)
   - moyasar (0.0.1):
     - Flutter
-  - pay_ios (0.0.1):
-    - Flutter
   - webview_flutter_wkwebview (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -11,7 +9,6 @@ PODS:
 DEPENDENCIES:
   - Flutter (from `Flutter`)
   - moyasar (from `.symlinks/plugins/moyasar/ios`)
-  - pay_ios (from `.symlinks/plugins/pay_ios/ios`)
   - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/darwin`)
 
 EXTERNAL SOURCES:
@@ -19,15 +16,12 @@ EXTERNAL SOURCES:
     :path: Flutter
   moyasar:
     :path: ".symlinks/plugins/moyasar/ios"
-  pay_ios:
-    :path: ".symlinks/plugins/pay_ios/ios"
   webview_flutter_wkwebview:
     :path: ".symlinks/plugins/webview_flutter_wkwebview/darwin"
 
 SPEC CHECKSUMS:
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   moyasar: b31f9c29c1abe97e72e389c3b375ac141ac8d439
-  pay_ios: 616e4e1ef4b51b69e11042ff18ba6bbe7408e13b
   webview_flutter_wkwebview: 8ebf4fded22593026f7dbff1fbff31ea98573c8d
 
 PODFILE CHECKSUM: 30517025a2fecca2d72dac25f08abb5b9a8f1a56
