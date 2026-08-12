@@ -33,11 +33,36 @@ void main() {
         ),
       );
 
-  Widget buildSubject() => MaterialApp(
+  Widget buildSubject({int amount = 123, Function? onPaymentResult}) =>
+      MaterialApp(
         home: Scaffold(
-          body: ApplePay(config: buildConfig(), onPaymentResult: (_) {}),
+          body: ApplePay(
+            config: PaymentConfig(
+              publishableApiKey: 'pk_test_key',
+              amount: amount,
+              description: 'Test payment',
+              applePay: ApplePayConfig(
+                merchantId: 'merchant.com.test',
+                label: 'Test Store',
+                manual: false,
+                saveCard: false,
+              ),
+            ),
+            onPaymentResult: onPaymentResult ?? (_) {},
+          ),
         ),
       );
+
+  /// Delivers [arguments] to the widget's handler the way the native side
+  /// would, going through the real codec rather than calling the handler
+  /// directly.
+  Future<void> sendFromNative(String method, Object? arguments) {
+    return binding.defaultBinaryMessenger.handlePlatformMessage(
+      channel.name,
+      channel.codec.encodeMethodCall(MethodCall(method, arguments)),
+      (_) {},
+    );
+  }
 
   tearDown(() {
     binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, null);
@@ -85,5 +110,70 @@ void main() {
       (calls.single.arguments as Map)['supportedNetworks'],
       buildConfig().supportedNetworks.map((e) => e.toJson()).toList(),
     );
+  });
+
+  testWidgets('rebuilds the native view when the amount changes',
+      (tester) async {
+    // A native view reads its creationParams once, so a changed amount must
+    // produce a new key — otherwise the button would charge the stale amount.
+    mockNativeAvailability('ready');
+    debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+    addTearDown(() => debugDefaultTargetPlatformOverride = null);
+
+    await tester.pumpWidget(buildSubject(amount: 10000));
+    await tester.pumpAndSettle();
+    final firstKey = tester.widget<UiKitView>(find.byType(UiKitView)).key;
+
+    await tester.pumpWidget(buildSubject(amount: 20000));
+    await tester.pumpAndSettle();
+    final secondKey = tester.widget<UiKitView>(find.byType(UiKitView)).key;
+
+    expect(secondKey, isNot(firstKey));
+    expect(
+      tester.widget<UiKitView>(find.byType(UiKitView)).creationParams,
+      contains('"paymentAmount":"200.00"'),
+    );
+
+    debugDefaultTargetPlatformOverride = null;
+  });
+
+  testWidgets('reports an error when the native result is not a map',
+      (tester) async {
+    // A malformed payload must still reach onPaymentResult — throwing here
+    // would be swallowed by the channel and the payment would never respond.
+    mockNativeAvailability('ready');
+    debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+    addTearDown(() => debugDefaultTargetPlatformOverride = null);
+
+    final results = <dynamic>[];
+    await tester.pumpWidget(buildSubject(onPaymentResult: results.add));
+    await tester.pumpAndSettle();
+
+    await sendFromNative('onApplePayResult', null);
+    await sendFromNative('onApplePayResult', 'not-a-map');
+    await tester.pumpAndSettle();
+
+    expect(results, hasLength(2));
+    expect(results.every((r) => r is UnprocessableTokenError), isTrue);
+
+    debugDefaultTargetPlatformOverride = null;
+  });
+
+  testWidgets('reports a canceled payment when the native side errors',
+      (tester) async {
+    mockNativeAvailability('ready');
+    debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+    addTearDown(() => debugDefaultTargetPlatformOverride = null);
+
+    final results = <dynamic>[];
+    await tester.pumpWidget(buildSubject(onPaymentResult: results.add));
+    await tester.pumpAndSettle();
+
+    await sendFromNative('onApplePayError', null);
+    await tester.pumpAndSettle();
+
+    expect(results.single, isA<PaymentCanceledError>());
+
+    debugDefaultTargetPlatformOverride = null;
   });
 }

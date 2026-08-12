@@ -26,7 +26,15 @@ class ApplePayPaymentHandler: NSObject {
 
         let request = PKPaymentRequest()
 
-        request.paymentSummaryItems = [PKPaymentSummaryItem(label: config.paymentLabel, amount: NSDecimalNumber(string: config.paymentAmount) , type: .final)]
+        // The amount always crosses the channel with a "." separator, so parse it
+        // with a fixed one — the device locale would misread it where "," is the
+        // decimal mark, charging the wrong amount.
+        let amount = NSDecimalNumber(
+            string: config.paymentAmount,
+            locale: ["NSLocaleDecimalSeparator": "."]
+        )
+
+        request.paymentSummaryItems = [PKPaymentSummaryItem(label: config.paymentLabel, amount: amount, type: .final)]
         request.merchantIdentifier = config.merchantIdentifier
         request.countryCode = config.countryCode
         request.currencyCode = config.currencyCode

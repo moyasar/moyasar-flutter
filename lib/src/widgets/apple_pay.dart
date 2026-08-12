@@ -69,6 +69,22 @@ class _ApplePayState extends State<ApplePay> with WidgetsBindingObserver {
   }
 
   @override
+  void didUpdateWidget(covariant ApplePay oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (!_isRunningOnIos) {
+      return;
+    }
+
+    // Readiness is decided from the accepted networks, so it has to be
+    // re-checked when they change.
+    if (!listEquals(oldWidget.config.supportedNetworks,
+        widget.config.supportedNetworks)) {
+      _refreshAvailability();
+    }
+  }
+
+  @override
   void dispose() {
     if (_isRunningOnIos) {
       WidgetsBinding.instance.removeObserver(this);
@@ -117,11 +133,22 @@ class _ApplePayState extends State<ApplePay> with WidgetsBindingObserver {
 
   Future<dynamic> _handleNativeCall(MethodCall call) async {
     if (call.method == 'onApplePayResult') {
+      final arguments = call.arguments;
+
       // Values decoded by the standard codec arrive as `Map<Object?, Object?>`.
-      onApplePayResult(Map<String, dynamic>.from(call.arguments as Map));
+      // Anything else means the payload is malformed; report it rather than
+      // throwing, which would leave the payment with no response at all.
+      if (arguments is! Map) {
+        widget.onPaymentResult(UnprocessableTokenError());
+        return null;
+      }
+
+      onApplePayResult(Map<String, dynamic>.from(arguments));
     } else if (call.method == 'onApplePayError') {
       onApplePayError();
     }
+
+    return null;
   }
 
   void onApplePayError() {
@@ -174,19 +201,22 @@ class _ApplePayState extends State<ApplePay> with WidgetsBindingObserver {
       return const SizedBox.shrink();
     }
 
+    final nativeConfig = createCustomNativeConfig();
+
     return ConstrainedBox(
       constraints: BoxConstraints.tightFor(
         width: MediaQuery.of(context).size.width,
         height: 40,
       ),
       child: UiKitView(
-        // Keyed on availability so the native view is rebuilt — and the button
-        // swaps between "Set Up Apple Pay" and the payment button — when
-        // readiness changes.
-        key: ValueKey(availability),
+        // A native view reads `creationParams` once, when it is created, and
+        // Flutter only recreates it when the key changes. Keying on the config
+        // itself means any change the native side depends on — the amount above
+        // all — produces a fresh view instead of a button holding stale data.
+        key: ValueKey('${availability.name}|$nativeConfig'),
         viewType: _applePayButtonViewNativeId,
         creationParamsCodec: const StandardMessageCodec(),
-        creationParams: createCustomNativeConfig(),
+        creationParams: nativeConfig,
       ),
     );
   }
