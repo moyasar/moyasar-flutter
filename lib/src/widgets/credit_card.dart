@@ -219,6 +219,7 @@ class _CreditCardState extends State<CreditCard> {
 
   @override
   Widget build(BuildContext context) {
+    final fieldColor = Theme.of(context).inputDecorationTheme.fillColor;
     return Form(
       autovalidateMode: _autoValidateMode,
       key: _formKey,
@@ -240,7 +241,7 @@ class _CreditCardState extends State<CreditCard> {
           ),
           Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: fieldColor,
               borderRadius: BorderRadius.circular(6),
               boxShadow: [
                 BoxShadow(
@@ -290,7 +291,7 @@ class _CreditCardState extends State<CreditCard> {
           ),
           Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: fieldColor,
               borderRadius: BorderRadius.circular(6),
               boxShadow: [
                 BoxShadow(
