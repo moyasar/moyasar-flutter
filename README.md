@@ -231,7 +231,7 @@ STCPay(
 | `manual` | `bool` | **required** | Authorize now, capture later. |
 | `saveCard` | `bool` | **required** | Tokenize for later charges. |
 | `merchantCapabilities` | `List<String>` | `["3DS", "debit", "credit"]` | Must include `"3DS"`. |
-| `supportedCountries` | `List<String>` | `["SA"]` | Widening this raises fraud risk. |
+| `supportedCountries` | `List<String>` | `[]` | Allows cards issued in any country by default. Set a list such as `["SA"]` to restrict card-issuing countries. Does not change the payment currency. |
 
 ### `SamsungPayConfig`
 

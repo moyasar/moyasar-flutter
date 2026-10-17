@@ -15,9 +15,9 @@ class ApplePayConfig {
   /// Payment capabilities that the merchant supports.
   List<String> merchantCapabilities;
 
-  /// A list of ISO 3166 country codes to limit payments to cards from set countries.
-  /// Only Saudi Arabia is enabled by default to prevent fraudulent transactions.
-  /// You may enable more countries at your own risk.
+  /// ISO 3166 country codes restricting the countries where cards were issued.
+  /// Defaults to an empty list, allowing cards issued in any country.
+  /// Set a non-empty list, such as ['SA'], to restrict card-issuing countries.
   List<String> supportedCountries;
 
   ApplePayConfig(
@@ -26,7 +26,7 @@ class ApplePayConfig {
       required this.manual,
       required this.saveCard,
       this.merchantCapabilities = const ["3DS", "debit", "credit"],
-      this.supportedCountries = const ["SA"]})
+      this.supportedCountries = const []})
       : assert(merchantCapabilities.contains("3DS"),
             "Merchant capabilities must contain 3DS.");
 }

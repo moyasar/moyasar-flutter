@@ -1,4 +1,6 @@
 ## 3.0.6
+- [Example] Migrate the iOS example to Swift Package Manager while retaining CocoaPods support in the SDK. Reference plugin sources in Xcode without adding a duplicate local package override.
+- [Apple Pay] Allow cards issued in any country by default (`supportedCountries: []`). Explicit country lists still restrict accepted card-issuing countries; the payment currency remains SAR.
 - [Apple Pay] Use the current PassKit authorization delegate and deliver channel messages on the main queue. Report authorization success only after Moyasar returns a successful payment or authorization status.
 - [Apple Pay] Keep one native payment session active through processing and sheet dismissal, block overlapping attempts, and show a busy indicator.
 - [Apple Pay] Give each widget its own callback channel, preserve the original request and callback during rebuilds/disposal, and deliver the result once after dismissal.
