@@ -99,7 +99,7 @@ void onPaymentResult(result) {
   } else if (result is ValidationError) {
     // Invalid input — inspect result.errors.
   } else if (result is NetworkError || result is TimeoutError) {
-    // Connectivity problem; let the user retry.
+    // The payment may have reached the server. Reconcile it before retrying.
   }
 }
 ```
@@ -111,7 +111,7 @@ void onPaymentResult(result) {
 | `ValidationError` | Invalid request data. Has `message` and `errors`. |
 | `AuthError` | The publishable API key was rejected. |
 | `ApiError` | Moyasar returned a server-side error. |
-| `NetworkError` / `TimeoutError` | The request never completed. |
+| `NetworkError` / `TimeoutError` | The client did not receive a result; the payment may still have been processed. |
 | `UnspecifiedError` | Anything else. |
 
 Per-method details (masked card number, STC message, 3DS URL) live on `result.source`.
@@ -131,6 +131,32 @@ ApplePay(
 ```
 
 Renders Apple's native `PKPaymentButton` and drives the sheet through PassKit — no third-party dependency.
+
+Apple Pay currently accepts SAR in this SDK. It does not convert AED or another
+currency to SAR. Moyasar's [multi-currency support](https://docs.moyasar.com/guides/multi-currency/introduction)
+depends on the payment method and account; this SDK rejects non-SAR Apple Pay
+before opening the sheet.
+If a Saudi SAR charge is accepted by a card issued in another currency, any
+exchange rate or foreign-currency fee is set by the card issuer, not the SDK.
+
+The button stays busy until the current session finishes. The SDK submits an
+authorized token once, waits for Moyasar's response before reporting success to
+Apple Pay, and delivers `onPaymentResult` after the sheet closes. Closing the
+sheet after token submission does not cancel processing. The original callback
+can still run if its widget was removed; check `mounted` before updating a page.
+
+For a timeout, network error, or an unreadable response, check the payment on your
+backend before offering another payment. Assign and persist a `givenID` for the
+payment attempt before opening Apple Pay, and use that ID for reconciliation and
+any retry of the **same request**. A new Apple Pay token must not be treated as an
+idempotent replay of the original request. See [Moyasar idempotency](https://docs.moyasar.com/api/idempotency).
+
+Before fulfilling an order, your backend should fetch the payment with its secret
+key and verify the payment ID belongs to the order, plus its amount, currency,
+and status. `paid` confirms a direct payment; `authorized` confirms only a hold,
+and a manual-capture flow must verify successful capture before treating funds as
+collected. Complete the order idempotently so a repeated callback or webhook
+cannot fulfill it twice. Keep the order pending while a payment outcome is unknown.
 
 **Visibility** is handled for you:
 

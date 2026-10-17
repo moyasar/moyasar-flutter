@@ -3,7 +3,7 @@ import UIKit
 import PassKit
 
 protocol ApplePayButtonHandler: AnyObject {
-    func onApplePayButtonPressed(applePayConfig: Any?)
+    func onApplePayButtonPressed(applePayConfig: Any?, channel: FlutterMethodChannel)
     func onApplePaySetupButtonPressed()
 }
 
@@ -42,6 +42,7 @@ class ApplePayView: NSObject, FlutterPlatformView {
     private weak var delegate: ApplePayButtonHandler?
     private let applePayConfig: Any?
     private let availability: ApplePayAvailability
+    private let channel: FlutterMethodChannel
 
     init(
         frame: CGRect,
@@ -57,6 +58,10 @@ class ApplePayView: NSObject, FlutterPlatformView {
         // A config we can't read means we can't build a payment request either,
         // so render nothing rather than a button that could never charge.
         let config = ApplePayView.decodeConfig(from: args)
+        self.channel = FlutterMethodChannel(
+            name: config?.callbackChannel ?? "flutter.moyasar.com/apple_pay",
+            binaryMessenger: messenger
+        )
         self.availability = config
             .map { ApplePayAvailability.current(supportedNetworks: $0.supportedNetworks) }
             ?? .notSupported
@@ -68,7 +73,7 @@ class ApplePayView: NSObject, FlutterPlatformView {
     @objc func handleApplePayButtonPressed() {
         switch availability {
         case .ready:
-            delegate?.onApplePayButtonPressed(applePayConfig: applePayConfig)
+            delegate?.onApplePayButtonPressed(applePayConfig: applePayConfig, channel: channel)
         case .needsSetup:
             delegate?.onApplePaySetupButtonPressed()
         case .notSupported:

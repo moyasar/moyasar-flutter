@@ -25,8 +25,14 @@ This doc describes how to release new versions to pub.dev using GitHub Actions (
 
 **Important:** The workflow publishes **only if the tag points to a commit on `main`**. If someone pushes a tag from a branch or before the PR is merged, the action will fail and nothing is published.
 
-1. **Update version in `pubspec.yaml`**  
-   Set `version: X.Y.Z` to the version you want to release (e.g. `3.0.0`).
+1. **Prepare and validate the release**
+   - Update `pubspec.yaml`, the SDK `version` in `lib/src/moyasar.dart`, and `CHANGELOG.md` together.
+   - Run `flutter pub get` to refresh the package and example lockfiles.
+   - Run `flutter test` at the package root and in `example/`. These tests use mocked HTTP and do not submit payments.
+   - Run `flutter analyze --no-fatal-infos`. Existing informational lints are reported; warnings and errors still fail validation.
+   - Run `flutter pub publish --dry-run` and inspect the archive. Resolve package warnings; commit the release changes before the final dry run so the Git-state warning is cleared.
+   - For Apple Pay changes, complete the physical-device scenarios listed in `docs/apple_pay_investigation.md`. Widget tests and Swift type checks do not exercise real PassKit authorization.
+   - The prepared patch release is `3.0.6`; see `docs/releases/3.0.6.md` for its validation record.
 
 2. **Merge to `main`**  
    Get the release commit merged to `main` (e.g. via PR).
@@ -36,12 +42,12 @@ This doc describes how to release new versions to pub.dev using GitHub Actions (
    ```bash
    git checkout main
    git pull origin main
-   git tag v3.0.0
-   git push origin v3.0.0
+   git tag v3.0.6
+   git push origin v3.0.6
    ```
 
 4. **GitHub Action runs**  
-   The workflow checks that the tag is on `main`; if not, it fails. If it is, it runs tests and validations, then publishes to pub.dev (no manual token; uses OIDC).
+   The workflow checks that the tag is on `main`, verifies the version, and runs package/example tests and analysis. It then validates the package and publishes to pub.dev (no manual token; uses OIDC).
 
 5. **Check result**  
    - GitHub: Actions tab → “Publish to pub.dev” run.  

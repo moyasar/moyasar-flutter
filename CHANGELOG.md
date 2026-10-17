@@ -1,3 +1,10 @@
+## 3.0.6
+- [Apple Pay] Use the current PassKit authorization delegate and deliver channel messages on the main queue. Report authorization success only after Moyasar returns a successful payment or authorization status.
+- [Apple Pay] Keep one native payment session active through processing and sheet dismissal, block overlapping attempts, and show a busy indicator.
+- [Apple Pay] Give each widget its own callback channel, preserve the original request and callback during rebuilds/disposal, and deliver the result once after dismissal.
+- [Apple Pay] Return malformed-token and response-processing errors instead of leaving the authorization callback unresolved. Document reconciliation after ambiguous payment outcomes.
+- [Apple Pay] Apply supported card-issuing countries, validate payment requests before presenting the sheet, and reject non-SAR Apple Pay requests until Moyasar documents Apple Pay multi-currency support.
+
 ## 3.0.5
 - [Apple Pay] Replace the `pay` package dependency with a native PassKit implementation on iOS, removing the transitive `pay`/`pay_android`/`pay_ios`/`pay_platform_interface` dependencies. The `ApplePay` widget's public API is unchanged; `ApplePayButtonType` and `ApplePayButtonStyle` are now exported directly from `package:moyasar` instead of `package:pay`.
 - [Apple Pay] The `ApplePay` widget now hides itself automatically on non-iOS platforms and on iOS devices that can't use Apple Pay, instead of relying on the app to guard it with a platform check.

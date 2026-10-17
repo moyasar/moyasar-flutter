@@ -12,7 +12,7 @@ public class SwiftPlugin: NSObject, FlutterPlugin {
     
     init(flutterMessenger: FlutterBinaryMessenger) {
         self.channel = FlutterMethodChannel(name: applePayChannelId, binaryMessenger: flutterMessenger)
-        self.applePayHandler = ApplePayPaymentHandler(channel: channel)
+        self.applePayHandler = ApplePayPaymentHandler()
     }
     
     public static func register(with registrar: FlutterPluginRegistrar) {
@@ -40,8 +40,8 @@ public class SwiftPlugin: NSObject, FlutterPlugin {
 }
 
 extension SwiftPlugin: ApplePayButtonHandler {
-    func onApplePayButtonPressed(applePayConfig: Any?) {
-        applePayHandler.presentApplePay(applePayConfig: applePayConfig)
+    func onApplePayButtonPressed(applePayConfig: Any?, channel: FlutterMethodChannel) {
+        applePayHandler.presentApplePay(applePayConfig: applePayConfig, channel: channel)
     }
 
     func onApplePaySetupButtonPressed() {
