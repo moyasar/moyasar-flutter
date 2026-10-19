@@ -1,26 +1,30 @@
 import Flutter
 import PassKit
 
-/// Tracks progress through a single Apple Pay session so `paymentAuthorizationControllerDidFinish`
-/// can tell a user cancellation / failed authorization (report `onApplePayError`) apart from a
-/// sheet dismissal that follows a successful `onApplePayResult` (no further callback needed).
-private enum ApplePaySessionStatus {
-    case started, presented, authorizationStarted, authorized
+/// Keep the originating channel and controller alive until both the sheet and
+/// payment processing finish. Dismissing a sheet does not cancel an HTTP request.
+private final class ApplePaySession {
+    let controller: PKPaymentAuthorizationController
+    let channel: FlutterMethodChannel
+    var state = ApplePaySessionState()
+    var presentationError: String?
+
+    init(controller: PKPaymentAuthorizationController, channel: FlutterMethodChannel) {
+        self.controller = controller
+        self.channel = channel
+    }
 }
 
 class ApplePayPaymentHandler: NSObject {
 
-    private var controller: PKPaymentAuthorizationController?
-    private let channel: FlutterMethodChannel
-    private var sessionStatus: ApplePaySessionStatus = .started
+    private var session: ApplePaySession?
 
-    init(channel: FlutterMethodChannel) {
-        self.channel = channel
-    }
-
-    func presentApplePay(applePayConfig: Any?) {
+    func presentApplePay(applePayConfig: Any?, channel: FlutterMethodChannel) {
+        // The plugin has one handler for all buttons, so this also prevents
+        // overlapping payments started from different checkout widgets.
+        guard session == nil else { return }
         guard let applePayConfigData = (applePayConfig as? String)?.data(using: .utf8), let config = try? JSONDecoder().decode(ApplePayConfig.self, from: applePayConfigData) else {
-            channel.invokeMethod("onApplePayError", arguments: nil)
+            channel.invokeMethod("onApplePayError", arguments: "Invalid Apple Pay configuration. No payment was submitted.")
             return
         }
 
@@ -34,23 +38,55 @@ class ApplePayPaymentHandler: NSObject {
             locale: ["NSLocaleDecimalSeparator": "."]
         )
 
+        let networks = config.supportedNetworks.compactMap { PKPaymentNetwork.fromString($0) }
+        let capabilities = PKMerchantCapability(config.merchantCapabilities.compactMap { PKMerchantCapability.fromString($0) })
+        // Invalid requests can raise a PassKit exception rather than return a
+        // presentation error. Reject them before creating the controller.
+        guard amount != .notANumber, amount.compare(NSDecimalNumber.zero) == .orderedDescending,
+              !config.merchantIdentifier.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+              !config.paymentLabel.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+              config.countryCode.range(of: "^[A-Z]{2}$", options: .regularExpression) != nil,
+              config.currencyCode.range(of: "^[A-Z]{3}$", options: .regularExpression) != nil,
+              config.supportedCountries.allSatisfy({ $0.range(of: "^[A-Z]{2}$", options: .regularExpression) != nil }),
+              !networks.isEmpty, capabilities.contains(.threeDSecure) else {
+            channel.invokeMethod("onApplePayError", arguments: "Invalid Apple Pay payment request. Check the amount, merchant, countries, currency and capabilities. No payment was submitted.")
+            return
+        }
+
         request.paymentSummaryItems = [PKPaymentSummaryItem(label: config.paymentLabel, amount: amount, type: .final)]
         request.merchantIdentifier = config.merchantIdentifier
         request.countryCode = config.countryCode
         request.currencyCode = config.currencyCode
-        request.supportedNetworks = config.supportedNetworks.compactMap({ PKPaymentNetwork.fromString($0) })
-        request.merchantCapabilities = PKMerchantCapability(config.merchantCapabilities.compactMap({ PKMerchantCapability.fromString($0) }))
+        request.supportedNetworks = networks
+        request.merchantCapabilities = capabilities
+        // An empty list means no issuer-country restriction.
+        request.supportedCountries = config.supportedCountries.isEmpty ? nil : Set(config.supportedCountries)
 
-        sessionStatus = .started
-        controller = PKPaymentAuthorizationController(paymentRequest: request)
-        controller?.delegate = self
-        controller?.present(completion: { [weak self] presented in
-            if presented {
-                self?.sessionStatus = .presented
-            } else {
-                self?.channel.invokeMethod("onApplePayError", arguments: nil)
+        let controller = PKPaymentAuthorizationController(paymentRequest: request)
+        let session = ApplePaySession(controller: controller, channel: channel)
+        self.session = session
+        controller.delegate = self
+
+        // Dart snapshots the request and callback before we show the sheet.
+        // A detached widget must not start a payment with no result listener.
+        channel.invokeMethod("onApplePayStarted", arguments: applePayConfig) { response in
+            DispatchQueue.main.async {
+                guard self.session === session else { return }
+                guard response as? Bool == true else {
+                    controller.delegate = nil
+                    self.session = nil
+                    return
+                }
+                controller.present { presented in
+                    DispatchQueue.main.async {
+                        guard self.session === session, !presented else { return }
+                        session.presentationError = "Could not present Apple Pay. No payment was submitted."
+                        session.state.completeDismissal()
+                        self.finishIfReady(session)
+                    }
+                }
             }
-        })
+        }
     }
 
     /// Opens Wallet on the add-card screen.
@@ -60,30 +96,57 @@ class ApplePayPaymentHandler: NSObject {
     func openApplePaySetup() {
         PKPassLibrary().openPaymentSetup()
     }
+
+    private func finishIfReady(_ session: ApplePaySession) {
+        guard self.session === session, let outcome = session.state.takeOutcome() else { return }
+
+        let method = outcome == .payment ? "onApplePayFinished" : "onApplePayError"
+        session.channel.invokeMethod(method, arguments: session.presentationError) { _ in
+            DispatchQueue.main.async {
+                guard self.session === session else { return }
+                session.controller.delegate = nil
+                self.session = nil
+            }
+        }
+    }
 }
 
 extension ApplePayPaymentHandler: PKPaymentAuthorizationControllerDelegate {
 
-    func paymentAuthorizationControllerWillAuthorizePayment(_ controller: PKPaymentAuthorizationController) {
-        sessionStatus = .authorizationStarted
-    }
-
-    func paymentAuthorizationController(_ controller: PKPaymentAuthorizationController, didAuthorizePayment payment: PKPayment, completion: @escaping (PKPaymentAuthorizationStatus) -> Void) {
+    func paymentAuthorizationController(_ controller: PKPaymentAuthorizationController, didAuthorizePayment payment: PKPayment, handler completion: @escaping (PKPaymentAuthorizationResult) -> Void) {
         let paymentToken = String(decoding: payment.token.paymentData, as: UTF8.self)
 
-        sessionStatus = .authorized
-        channel.invokeMethod("onApplePayResult", arguments: [ "token": paymentToken ] )
-        completion(.success)
+        // Flutter channel calls and session mutations must run on the main queue.
+        DispatchQueue.main.async {
+            guard let session = self.session, session.controller === controller,
+                  session.state.submit() else {
+                completion(PKPaymentAuthorizationResult(status: .failure, errors: nil))
+                return
+            }
+            session.channel.invokeMethod("onApplePayResult", arguments: ["token": paymentToken]) { response in
+                DispatchQueue.main.async {
+                    guard self.session === session else { return }
+                    session.state.completeProcessing()
+                    // Token creation is not payment success. Dart replies only
+                    // after Moyasar has returned a payment status or an error.
+                    let status: PKPaymentAuthorizationStatus = response as? Bool == true ? .success : .failure
+                    completion(PKPaymentAuthorizationResult(status: status, errors: nil))
+                    self.finishIfReady(session)
+                }
+            }
+        }
     }
 
     func paymentAuthorizationControllerDidFinish(_ controller: PKPaymentAuthorizationController) {
-        let sessionStatus = self.sessionStatus
-
-        controller.dismiss {
-            // Only report an error if the sheet closed without a successful authorization
-            // (user canceled, or authorization started but didn't complete).
-            if sessionStatus != .authorized {
-                self.channel.invokeMethod("onApplePayError", arguments: nil)
+        DispatchQueue.main.async {
+            guard let session = self.session, session.controller === controller,
+                  session.state.beginDismissal() else { return }
+            controller.dismiss {
+                DispatchQueue.main.async {
+                    guard self.session === session else { return }
+                    session.state.completeDismissal()
+                    self.finishIfReady(session)
+                }
             }
         }
     }
@@ -123,6 +186,8 @@ internal extension PKPaymentNetwork {
             return .masterCard
         case "visa":
             return .visa
+        case "unionpay":
+            return .chinaUnionPay
         default:
             return nil
         }

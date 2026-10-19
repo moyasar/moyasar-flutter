@@ -24,6 +24,27 @@ jobs:
             exit 1
           fi
           echo "Tag is on main, proceeding to publish."
+      - name: Check release versions
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          python3 - <<'PY'
+          import os
+          import pathlib
+          import re
+
+          package_version = re.search(r'^version: (.+)$', pathlib.Path('pubspec.yaml').read_text(), re.M).group(1)
+          sdk_version = re.search(r"const version = '([^']+)';", pathlib.Path('lib/src/moyasar.dart').read_text()).group(1)
+          assert os.environ['RELEASE_TAG'] == f'v{package_version}', 'Tag and package version differ'
+          assert sdk_version == package_version, 'SDK User-Agent and package version differ'
+          assert pathlib.Path('CHANGELOG.md').read_text().startswith(f'## {package_version}\n'), 'Missing release changelog'
+          PY
+      - uses: flutter-actions/setup-flutter@6e2468fd827c4a7337cd4b835a6049b78bc0bd1f
+      - run: flutter pub get
+      - run: flutter test --no-pub
+      - run: flutter test --no-pub
+        working-directory: example
+      - run: flutter analyze --no-pub --no-fatal-infos
 
   publish:
     needs: tag-on-main

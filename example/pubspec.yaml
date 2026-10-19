@@ -4,7 +4,8 @@ publish_to: "none"
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.18.2 <3.0.0"
+  sdk: ">=2.18.2 <4.0.0"
+  flutter: ">=3.44.0"
 
 dependencies:
   flutter:
@@ -19,6 +20,8 @@ dev_dependencies:
   flutter_lints: ^4.0.0
 
 flutter:
+  config:
+    enable-swift-package-manager: true
   uses-material-design: true
   assets:
     - assets/

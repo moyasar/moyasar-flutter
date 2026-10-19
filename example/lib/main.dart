@@ -68,11 +68,15 @@ class _CoffeeShopState extends State<CoffeeShop> {
   );
 
   void onPaymentResult(result) {
+    // Apple Pay can finish after its button or checkout route is removed.
+    if (!mounted) return;
+
     if (result is PaymentResponse) {
       showToast(context, result.status.name);
       switch (result.status) {
         case PaymentStatus.paid:
-          // handle success.
+          // Send result.id to your backend. Verify its status, amount, and
+          // currency there before fulfilling the order.
           break;
         case PaymentStatus.failed:
           // handle failure.

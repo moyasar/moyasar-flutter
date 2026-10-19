@@ -11,8 +11,12 @@ void main() {
     expect(paymentConfig.currency, "SAR");
     expect(paymentConfig.description, "Coffee");
     expect(paymentConfig.metadata, null);
-    expect(paymentConfig.supportedNetworks,
-        [PaymentNetwork.amex, PaymentNetwork.visa, PaymentNetwork.mada, PaymentNetwork.masterCard]);
+    expect(paymentConfig.supportedNetworks, [
+      PaymentNetwork.visa,
+      PaymentNetwork.mada,
+      PaymentNetwork.masterCard,
+      PaymentNetwork.unionPay,
+    ]);
     expect(PaymentConfig.callbackUrl, "https://example.com/thanks");
   });
 
@@ -39,7 +43,7 @@ void main() {
     expect(paymentConfig.currency, "USD");
     expect(paymentConfig.description, "Coffee!");
     expect(paymentConfig.metadata, meta);
-    expect(paymentConfig.supportedNetworks, ["mada"]);
+    expect(paymentConfig.supportedNetworks, [PaymentNetwork.mada]);
     expect(PaymentConfig.callbackUrl, "https://example.com/thanks");
 
     expect(paymentConfig.creditCard!.saveCard, false);

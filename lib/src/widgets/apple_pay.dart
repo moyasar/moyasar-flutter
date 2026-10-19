@@ -50,7 +50,20 @@ class _ApplePayState extends State<ApplePay> with WidgetsBindingObserver {
   /// `null` while the native readiness check is still in flight.
   ApplePayAvailability? _availability;
 
-  bool get _isRunningOnIos => defaultTargetPlatform == TargetPlatform.iOS;
+  final bool _isRunningOnIos =
+      !kIsWeb && defaultTargetPlatform == TargetPlatform.iOS;
+  int _availabilityCheck = 0;
+  static int _nextCallbackId = 0;
+  late final MethodChannel _callbackChannel =
+      MethodChannel('${widget.channel.name}/callbacks/${_nextCallbackId++}');
+
+  PaymentRequest? _paymentRequest;
+  String? _apiKey;
+  Function? _paymentCallback;
+  String? _activeNativeConfig;
+  bool _submitted = false;
+  bool _disposed = false;
+  dynamic _pendingResult;
 
   @override
   void initState() {
@@ -63,7 +76,7 @@ class _ApplePayState extends State<ApplePay> with WidgetsBindingObserver {
       return;
     }
 
-    widget.channel.setMethodCallHandler(_handleNativeCall);
+    _callbackChannel.setMethodCallHandler(_handleNativeCall);
     WidgetsBinding.instance.addObserver(this);
     _refreshAvailability();
   }
@@ -78,17 +91,22 @@ class _ApplePayState extends State<ApplePay> with WidgetsBindingObserver {
 
     // Readiness is decided from the accepted networks, so it has to be
     // re-checked when they change.
-    if (!listEquals(oldWidget.config.supportedNetworks,
-        widget.config.supportedNetworks)) {
+    if (!listEquals(
+        oldWidget.config.supportedNetworks, widget.config.supportedNetworks)) {
       _refreshAvailability();
     }
   }
 
   @override
   void dispose() {
+    _disposed = true;
     if (_isRunningOnIos) {
       WidgetsBinding.instance.removeObserver(this);
-      widget.channel.setMethodCallHandler(null);
+      // An authorized payment can outlive its widget. Keep its own listener
+      // until the native session finishes, without affecting other buttons.
+      if (_paymentRequest == null) {
+        _callbackChannel.setMethodCallHandler(null);
+      }
     }
 
     super.dispose();
@@ -104,25 +122,26 @@ class _ApplePayState extends State<ApplePay> with WidgetsBindingObserver {
   }
 
   Future<void> _refreshAvailability() async {
+    final check = ++_availabilityCheck;
     ApplePayAvailability availability;
 
     try {
-      final name = await widget.channel
-          .invokeMethod<String>("getApplePayAvailability", {
+      final name =
+          await widget.channel.invokeMethod<String>("getApplePayAvailability", {
         "supportedNetworks":
             widget.config.supportedNetworks.map((e) => e.toJson()).toList()
       });
 
-      // An unrecognized response shouldn't hide a button that may well work, so
-      // fall back to showing the normal payment button.
-      availability =
-          ApplePayAvailability.fromName(name) ?? ApplePayAvailability.ready;
+      availability = ApplePayAvailability.fromName(name) ??
+          ApplePayAvailability.notSupported;
     } catch (error) {
       debugPrint("Apple Pay availability check failed: $error");
-      availability = ApplePayAvailability.ready;
+      availability = ApplePayAvailability.notSupported;
     }
 
-    if (!mounted || availability == _availability) {
+    if (!mounted ||
+        check != _availabilityCheck ||
+        availability == _availability) {
       return;
     }
 
@@ -132,46 +151,125 @@ class _ApplePayState extends State<ApplePay> with WidgetsBindingObserver {
   }
 
   Future<dynamic> _handleNativeCall(MethodCall call) async {
-    if (call.method == 'onApplePayResult') {
-      final arguments = call.arguments;
+    if (call.method == 'onApplePayStarted') {
+      if (_disposed || _paymentRequest != null) return false;
 
-      // Values decoded by the standard codec arrive as `Map<Object?, Object?>`.
-      // Anything else means the payload is malformed; report it rather than
-      // throwing, which would leave the payment with no response at all.
-      if (arguments is! Map) {
-        widget.onPaymentResult(UnprocessableTokenError());
-        return null;
+      // Reject a tap from a native view that Flutter is replacing. Otherwise
+      // the sheet could authorize an old total while we submit the new total.
+      final nativeConfig = createCustomNativeConfig();
+      if (call.arguments != nativeConfig) return false;
+
+      final config = widget.config;
+      // Moyasar currently documents multi-currency for card payments. Keep
+      // Apple Pay in SAR so the sheet and charge cannot disagree or imply a
+      // currency conversion the SDK does not perform.
+      if (config.currency != 'SAR') {
+        widget.onPaymentResult(UnspecifiedError(
+            'Apple Pay currently supports SAR only. No payment was submitted.'));
+        return false;
       }
-
-      onApplePayResult(Map<String, dynamic>.from(arguments));
+      final request = PaymentRequest(
+        config,
+        ApplePayPaymentRequestSource(
+            '', config.applePay!.manual, config.applePay!.saveCard),
+      );
+      try {
+        // PaymentConfig is mutable, including nested metadata and the splits
+        // list. Freeze those values before authorization starts as well.
+        request.metadata = config.metadata == null
+            ? null
+            : Map<String, dynamic>.from(
+                jsonDecode(jsonEncode(config.metadata)));
+        request.splits = config.splits == null ? null : List.of(config.splits!);
+      } catch (_) {
+        widget.onPaymentResult(UnspecifiedError(
+            'Invalid Apple Pay payment metadata. No payment was submitted.'));
+        return false;
+      }
+      _paymentRequest = request;
+      _apiKey = config.publishableApiKey;
+      _paymentCallback = widget.onPaymentResult;
+      _activeNativeConfig = nativeConfig;
+      setState(() {});
+      return true;
+    } else if (call.method == 'onApplePayResult') {
+      return _processToken(call.arguments);
+    } else if (call.method == 'onApplePayFinished') {
+      if (_pendingResult != null) _finishPayment(_pendingResult);
     } else if (call.method == 'onApplePayError') {
-      onApplePayError();
+      // Closing the sheet after token submission cannot undo processing and
+      // must not turn an in-flight charge into a reported cancellation.
+      if (!_submitted) {
+        final error = call.arguments is String
+            ? UnspecifiedError(call.arguments as String)
+            : PaymentCanceledError();
+        if (_paymentCallback != null) {
+          _finishPayment(error);
+        } else if (!_disposed && call.arguments is String) {
+          // Native request validation can fail before a session is started.
+          widget.onPaymentResult(error);
+        }
+      }
     }
 
     return null;
   }
 
-  void onApplePayError() {
-    widget.onPaymentResult(PaymentCanceledError());
-  }
+  Future<bool> _processToken(dynamic arguments) async {
+    final request = _paymentRequest;
+    if (request == null || _submitted) return false;
+    _submitted = true;
 
-  void onApplePayResult(Map<String, dynamic> paymentResult) async {
-    final token = paymentResult['token'];
-
-    if (((token ?? '') == '')) {
-      widget.onPaymentResult(UnprocessableTokenError());
-      return;
+    final token = arguments is Map ? arguments['token'] : null;
+    if (token is! String || token.trim().isEmpty) {
+      _pendingResult = UnprocessableTokenError();
+      return false;
     }
 
-    final source = ApplePayPaymentRequestSource(token,
-        widget.config.applePay!.manual, widget.config.applePay!.saveCard);
-    final paymentRequest = PaymentRequest(widget.config, source);
+    (request.source as ApplePayPaymentRequestSource).token = token;
+    try {
+      _pendingResult =
+          await Moyasar.pay(apiKey: _apiKey!, paymentRequest: request);
+      final result = _pendingResult;
+      if (result is PaymentResponse &&
+          (result.amount != request.amount ||
+              result.currency != request.currency)) {
+        _pendingResult = UnspecifiedError(
+            'Payment ${result.id} does not match the requested amount or currency. Verify it on your server before retrying.');
+      }
+    } catch (_) {
+      // Parsing failures must also settle the native authorization callback.
+      // Do not expose a response body or token in an exception message.
+      _pendingResult = UnspecifiedError(
+          'Could not process the Apple Pay response. Verify the payment status before retrying.');
+    }
 
-    final result = await Moyasar.pay(
-        apiKey: widget.config.publishableApiKey,
-        paymentRequest: paymentRequest);
+    final result = _pendingResult;
+    return result is PaymentResponse &&
+        (result.status == PaymentStatus.paid ||
+            result.status == PaymentStatus.authorized ||
+            result.status == PaymentStatus.captured);
+  }
 
-    widget.onPaymentResult(result);
+  void _finishPayment(dynamic result) {
+    final callback = _paymentCallback;
+    if (callback == null) return;
+
+    _paymentRequest = null;
+    _paymentCallback = null;
+    _apiKey = null;
+    _activeNativeConfig = null;
+    _pendingResult = null;
+    _submitted = false;
+    if (_disposed) {
+      _callbackChannel.setMethodCallHandler(null);
+    } else {
+      setState(() {});
+    }
+
+    // Deliver exactly once, after dismissal, to the callback that started the
+    // payment even if the parent rebuilt or removed the checkout meanwhile.
+    callback(result);
   }
 
   String createCustomNativeConfig() {
@@ -180,13 +278,52 @@ class _ApplePayState extends State<ApplePay> with WidgetsBindingObserver {
       "paymentLabel": "${widget.config.applePay?.label}",
       "merchantCapabilities": widget.config.applePay?.merchantCapabilities,
       "supportedCountries": widget.config.applePay?.supportedCountries,
-      "supportedNetworks": widget.config.supportedNetworks.map((e) => e.toJson()).toList(),
+      "supportedNetworks":
+          widget.config.supportedNetworks.map((e) => e.toJson()).toList(),
       "countryCode": "SA",
       "currencyCode": "SAR",
-      "paymentAmount": (widget.config.amount / 100).toStringAsFixed(2),
+      "paymentAmount":
+          _formatAmount(widget.config.amount, widget.config.currency),
       "buttonType": widget.buttonType.name,
       "buttonStyle": widget.buttonStyle.name,
+      "callbackChannel": _callbackChannel.name,
     });
+  }
+
+  /// Convert ISO 4217 minor units without floating-point rounding. Most
+  /// currencies use two digits; these are the zero, three and four digit ones.
+  static String _formatAmount(int amount, String currency) {
+    const zeroDigits = {
+      'BIF',
+      'CLP',
+      'DJF',
+      'GNF',
+      'ISK',
+      'JPY',
+      'KMF',
+      'KRW',
+      'PYG',
+      'RWF',
+      'UGX',
+      'UYI',
+      'VND',
+      'VUV',
+      'XAF',
+      'XOF',
+      'XPF',
+    };
+    const threeDigits = {'BHD', 'IQD', 'JOD', 'KWD', 'LYD', 'OMR', 'TND'};
+    final digits = zeroDigits.contains(currency)
+        ? 0
+        : threeDigits.contains(currency)
+            ? 3
+            : (currency == 'CLF' || currency == 'UYW')
+                ? 4
+                : 2;
+    if (digits == 0) return amount.toString();
+    final value = amount.abs().toString().padLeft(digits + 1, '0');
+    final split = value.length - digits;
+    return '${amount < 0 ? '-' : ''}${value.substring(0, split)}.${value.substring(split)}';
   }
 
   @override
@@ -201,22 +338,40 @@ class _ApplePayState extends State<ApplePay> with WidgetsBindingObserver {
       return const SizedBox.shrink();
     }
 
-    final nativeConfig = createCustomNativeConfig();
+    final nativeConfig = _activeNativeConfig ?? createCustomNativeConfig();
 
     return ConstrainedBox(
       constraints: BoxConstraints.tightFor(
         width: MediaQuery.of(context).size.width,
         height: 40,
       ),
-      child: UiKitView(
-        // A native view reads `creationParams` once, when it is created, and
-        // Flutter only recreates it when the key changes. Keying on the config
-        // itself means any change the native side depends on — the amount above
-        // all — produces a fresh view instead of a button holding stale data.
-        key: ValueKey('${availability.name}|$nativeConfig'),
-        viewType: _applePayButtonViewNativeId,
-        creationParamsCodec: const StandardMessageCodec(),
-        creationParams: nativeConfig,
+      child: IgnorePointer(
+        ignoring: _paymentRequest != null,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            UiKitView(
+              // A native view reads `creationParams` once, when it is created, and
+              // Flutter only recreates it when the key changes. Keying on the config
+              // itself means any change the native side depends on — the amount above
+              // all — produces a fresh view instead of a button holding stale data.
+              key: ValueKey('${availability.name}|$nativeConfig'),
+              viewType: _applePayButtonViewNativeId,
+              creationParamsCodec: const StandardMessageCodec(),
+              creationParams: nativeConfig,
+            ),
+            if (_paymentRequest != null)
+              const ColoredBox(
+                color: Color(0xCCFFFFFF),
+                child: Center(
+                  child: SizedBox.square(
+                    dimension: 22,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }

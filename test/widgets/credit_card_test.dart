@@ -30,29 +30,23 @@ void main() {
       await tester.pumpWidget(createTestableApp(
           locale: locale, tokenizeCard: false, manual: false));
 
-      const payButtonText = "Pay SAR 1.23";
-
-      Finder payButton = find.text(payButtonText);
+      final payButton = find.byType(ElevatedButton);
       expect(payButton, findsOneWidget);
-
-      await tester.tap(payButton);
-      await tester.pumpAndSettle();
-
-      expect(find.text(locale.nameRequired), findsOneWidget);
-      expect(find.text(locale.cardNumberRequired), findsOneWidget);
-      expect(find.text(locale.expiryRequired), findsOneWidget);
-      expect(find.text(locale.cvcRequired), findsOneWidget);
+      expect(tester.widget<ElevatedButton>(payButton).onPressed, isNull);
 
       Finder nameField = find.widgetWithText(TextFormField, locale.nameOnCard);
       Finder cardNumberField =
           find.widgetWithText(TextFormField, locale.cardNumber);
-      Finder expiryField =
-          find.widgetWithText(TextFormField, "${locale.expiry} (MM / YY)");
+      final expiryField =
+          find.widgetWithText(TextFormField, '${locale.expiry} (MM / YY)');
       Finder cvcField = find.widgetWithText(TextFormField, locale.cvc);
 
       await tester.enterText(nameField, "Faisal Alghurayri");
       await tester.enterText(cardNumberField, "4111111111111111");
-      await tester.enterText(expiryField, "12/30");
+      final expiryYear = (DateTime.now().year + 2).toString().substring(2);
+      await tester.enterText(expiryField, '12/$expiryYear');
+      await tester.pump();
+      expect(tester.widget<ElevatedButton>(payButton).onPressed, isNull);
       await tester.enterText(cvcField, "123");
 
       await tester.pumpAndSettle();
@@ -61,6 +55,7 @@ void main() {
       expect(find.text(locale.cardNumberRequired), findsNothing);
       expect(find.text(locale.expiryRequired), findsNothing);
       expect(find.text(locale.cvcRequired), findsNothing);
+      expect(tester.widget<ElevatedButton>(payButton).onPressed, isNotNull);
     });
 
     testWidgets('should show notice about saving credit card data.',
