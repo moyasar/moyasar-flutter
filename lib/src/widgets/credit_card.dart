@@ -108,14 +108,14 @@ class _CreditCardState extends State<CreditCard> {
           apiKey: widget.config.publishableApiKey,
           paymentRequest: paymentRequest);
     } catch (e) {
-      if (mounted) {
-        setState(() => _isSubmitting = false);
-        widget.onPaymentResult(ApiError(e.toString()));
-      }
+      // Only the UI update depends on the widget being mounted. The callback
+      if (mounted) setState(() => _isSubmitting = false);
+      widget.onPaymentResult(ApiError(e.toString()));
       return;
     }
 
-    setState(() => _isSubmitting = false);
+    // The widget may have been disposed while `Moyasar.pay` was awaiting.
+    if (mounted) setState(() => _isSubmitting = false);
 
     if (result is! PaymentResponse ||
         result.status != PaymentStatus.initiated) {

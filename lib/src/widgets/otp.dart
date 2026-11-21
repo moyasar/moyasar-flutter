@@ -59,7 +59,9 @@ class _OtpComponentState extends State<OtpComponent> {
 
     final result = await Moyasar.verifyOTP(
         transactionURL: widget.transactionUrl, otpRequest: otpRequest);
-    setState(() => _isSubmitting = false);
+
+    // The widget may have been disposed while `verifyOTP` was awaiting.
+    if (mounted) setState(() => _isSubmitting = false);
 
     if (result is! PaymentResponse ||
         result.status != PaymentStatus.initiated) {
