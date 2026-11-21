@@ -108,7 +108,8 @@ class _CreditCardState extends State<CreditCard> {
           apiKey: widget.config.publishableApiKey,
           paymentRequest: paymentRequest);
     } catch (e) {
-      // Only the UI update depends on the widget being mounted. The callback
+      // Only setState depends on `mounted`. Always deliver the result, since the
+      // customer may have left the page while the request was in flight.
       if (mounted) setState(() => _isSubmitting = false);
       widget.onPaymentResult(ApiError(e.toString()));
       return;
