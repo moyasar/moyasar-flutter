@@ -226,7 +226,9 @@ class _STCPayState extends State<STCPay> {
     final result = await Moyasar.pay(
         apiKey: widget.config.publishableApiKey,
         paymentRequest: paymentRequest);
-    setState(() => _isSubmitting = false);
+
+    // The widget may have been disposed while `Moyasar.pay` was awaiting.
+    if (mounted) setState(() => _isSubmitting = false);
 
     if (result is! PaymentResponse ||
         result.status != PaymentStatus.initiated) {
