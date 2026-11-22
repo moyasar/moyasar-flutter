@@ -1,3 +1,6 @@
+## 3.0.7
+- [Credit Card] Guard setState with mounted check after async calls in payment widgets.
+
 ## 3.0.6
 - [Example] Migrate the iOS example to Swift Package Manager while retaining CocoaPods support in the SDK. Reference plugin sources in Xcode without adding a duplicate local package override.
 - [Apple Pay] Allow cards issued in any country by default (`supportedCountries: []`). Explicit country lists still restrict accepted card-issuing countries; the payment currency remains SAR.
