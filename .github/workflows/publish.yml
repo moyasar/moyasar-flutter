@@ -14,12 +14,13 @@ jobs:
   tag-on-main:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
       - name: Ensure tag is on main
         run: |
-          if ! git branch -r --contains "$GITHUB_SHA" | grep -q 'origin/main'; then
+          git fetch origin main
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
             echo "::error::Tag $GITHUB_REF does not point to a commit on main. Merge to main first, then tag from main."
             exit 1
           fi
