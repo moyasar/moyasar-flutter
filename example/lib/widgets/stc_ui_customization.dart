@@ -33,12 +33,12 @@ class _STCPayCustomizerState extends State<STCPayCustomizer> {
           borderRadius: BorderRadius.circular(8),
         ),
       ),
-      child: const Row(
+      child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.phone_android, color: Colors.white),
-          SizedBox(width: 12),
-          Text(
+          const Icon(Icons.phone_android, color: Colors.white),
+          const SizedBox(width: 12),
+          const Text(
             'Custom STC UI Demo',
             style: TextStyle(
               color: Colors.white,
