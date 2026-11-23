@@ -31,7 +31,7 @@ android {
         namespace 'com.samsung.flutter.sdk.samsungpay.v2.samsung_pay_sdk_flutter'
     }
 
-    compileSdkVersion 33
+    compileSdkVersion 37
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
